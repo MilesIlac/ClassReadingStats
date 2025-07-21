@@ -1,12 +1,15 @@
 package com.milesilac.classreadingstats.model
 
+import java.util.UUID
+
 data class Student(
-    var sheetRowNumber: Int = 0,
+    var listId: String = UUID.randomUUID().toString(),
+    var orderId: Int = 0,
     var name: String,
     var section: String,
     var sex: String,
     var groupScreeningTest: GroupScreeningTest,
-    var isGradingPassage: Boolean = false,
+    var isGradingPassage: Boolean = true,
     var oralReading: OralReading? = null,
     var readingComprehension: ReadingComprehension? = null
 )

@@ -12,7 +12,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.ClassReadingStats">
         <activity
-            android:name=".TestMainActivity"
+            android:name=".activity.MainActivity"
             android:exported="true"
             android:theme="@style/Theme.ClassReadingStats">
             <intent-filter>
