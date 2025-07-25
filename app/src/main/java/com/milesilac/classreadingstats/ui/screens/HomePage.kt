@@ -34,6 +34,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.milesilac.classreadingstats.model.Student
 import com.milesilac.classreadingstats.model.toGradeLevelInt
 import com.milesilac.classreadingstats.ui.components.BottomNavBar
 import com.milesilac.classreadingstats.ui.components.TopInfoBar
@@ -44,7 +45,9 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
 
 @Composable
-fun HomePage() {
+fun HomePage(
+    onStudentEntryClick: (Student) -> Unit = {}
+) {
     val currentSheetLists = listOf(dummyStudentListsEightAmethyst, dummyStudentListsEightDiamond)
     val pagerState = rememberPagerState(pageCount = { currentSheetLists.size })
 
@@ -84,7 +87,8 @@ fun HomePage() {
             ) { page ->
                 // Our page content
                 StudentListPage(
-                    studentList = currentSheetLists[page].students
+                    studentList = currentSheetLists[page].students,
+                    onStudentEntryClick = onStudentEntryClick
                 )
             }
             Row(

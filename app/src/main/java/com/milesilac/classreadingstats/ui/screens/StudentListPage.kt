@@ -16,6 +16,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.milesilac.classreadingstats.model.Student
 import com.milesilac.classreadingstats.model.StudentList
 import com.milesilac.classreadingstats.model.toStudentSexOrientString
 import com.milesilac.classreadingstats.ui.components.StudentEntry
@@ -25,7 +26,8 @@ import sh.calvin.reorderable.rememberReorderableLazyListState
 
 @Composable
 fun StudentListPage(
-    studentList: List<StudentList>
+    studentList: List<StudentList>,
+    onStudentEntryClick: (Student) -> Unit = {}
 ) {
     var list by remember { mutableStateOf(studentList) }
     val lazyListState = rememberLazyListState()
@@ -87,7 +89,7 @@ fun StudentListPage(
                                 reorderableItemScope = this,
                                 isDragging = isDragging,
                                 textString = "${studentItem.student.orderId} ${studentItem.student.name}",
-                                onClick = {}
+                                onClick = { onStudentEntryClick(studentItem.student) }
                             )
                         }
                     }

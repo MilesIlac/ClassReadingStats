@@ -1,5 +1,8 @@
 package com.milesilac.classreadingstats.model
 
+import kotlinx.serialization.Serializable
+
+@Serializable
 data class OralReading(
     var numberOfMiscues: Int,
     var percentage: Float,

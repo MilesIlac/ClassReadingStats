@@ -16,6 +16,7 @@ import androidx.compose.material.icons.twotone.Edit
 import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -37,262 +38,265 @@ import com.milesilac.classreadingstats.ui.dummyStudentListsEightAmethyst
 
 @Composable
 fun StudentDetailsPage(
-    student: Student
+    student: Student,
+    onBackClick: () -> Unit = {}
 ) {
-    Column(
-        modifier = Modifier
-            .background(color = Color.White)
-            .padding(12.dp)
-            .fillMaxSize()
-    ) {
+    Surface {
         Column(
             modifier = Modifier
                 .background(color = Color.White)
-                .weight(1F)
+                .padding(12.dp)
                 .fillMaxSize()
         ) {
-            Text(
-                text = student.name.trim(),
+            Column(
                 modifier = Modifier
-                    .align(Alignment.CenterHorizontally),
-                color = Color.Black,
-                fontSize = 28.sp,
-                textAlign = TextAlign.Center
-            )
-            Spacer(modifier = Modifier.height(8.dp))
-            Row(
-                modifier = Modifier
-                    .align(Alignment.CenterHorizontally),
-                verticalAlignment = Alignment.CenterVertically
+                    .background(color = Color.White)
+                    .weight(1F)
+                    .fillMaxSize()
             ) {
                 Text(
-                    text = student.section.trim(),
-                    modifier = Modifier,
+                    text = student.name.trim(),
+                    modifier = Modifier
+                        .align(Alignment.CenterHorizontally),
                     color = Color.Black,
-                    fontSize = 16.sp,
+                    fontSize = 28.sp,
                     textAlign = TextAlign.Center
                 )
-                Spacer(modifier = Modifier.width(8.dp))
-                Text(
-                    text = "|",
-                    modifier = Modifier,
-                    color = Color.Black,
-                    fontSize = 16.sp,
-                    textAlign = TextAlign.Center
-                )
-                Spacer(modifier = Modifier.width(8.dp))
-                val sex = if (student.sex == "F") {
-                    "Female"
-                } else "Male"
-                Text(
-                    text = sex,
-                    modifier = Modifier,
-                    color = Color.Black,
-                    fontSize = 16.sp,
-                )
-            }
-            Spacer(modifier = Modifier.height(28.dp))
-            Text(
-                text = "Group Screening Test Score",
-                modifier = Modifier
-                    .align(Alignment.CenterHorizontally),
-                color = Color.Black,
-                fontSize = 24.sp,
-            )
-            Spacer(modifier = Modifier.height(8.dp))
-            val gstScore = student.groupScreeningTest.score
-            val gstComprehensionLevel = calculateComprehensionLevel(
-                score = gstScore
-            )
-            Text(
-                text = "$gstScore (Level - ${gstComprehensionLevel.toComprehensionLevelString()})",
-                modifier = Modifier
-                    .align(Alignment.CenterHorizontally),
-                color = Color.Black,
-                fontSize = 20.sp,
-            )
-            if (student.shouldGradePassage()) {
+                Spacer(modifier = Modifier.height(8.dp))
+                Row(
+                    modifier = Modifier
+                        .align(Alignment.CenterHorizontally),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        text = student.section.trim(),
+                        modifier = Modifier,
+                        color = Color.Black,
+                        fontSize = 16.sp,
+                        textAlign = TextAlign.Center
+                    )
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Text(
+                        text = "|",
+                        modifier = Modifier,
+                        color = Color.Black,
+                        fontSize = 16.sp,
+                        textAlign = TextAlign.Center
+                    )
+                    Spacer(modifier = Modifier.width(8.dp))
+                    val sex = if (student.sex == "F") {
+                        "Female"
+                    } else "Male"
+                    Text(
+                        text = sex,
+                        modifier = Modifier,
+                        color = Color.Black,
+                        fontSize = 16.sp,
+                    )
+                }
                 Spacer(modifier = Modifier.height(28.dp))
                 Text(
-                    text = "Oral Reading",
+                    text = "Group Screening Test Score",
                     modifier = Modifier
                         .align(Alignment.CenterHorizontally),
                     color = Color.Black,
                     fontSize = 24.sp,
                 )
                 Spacer(modifier = Modifier.height(8.dp))
+                val gstScore = student.groupScreeningTest.score
+                val gstComprehensionLevel = calculateComprehensionLevel(
+                    score = gstScore
+                )
                 Text(
-                    text = "No. Of Miscues: ${student.oralReading?.numberOfMiscues ?: -1}",
+                    text = "$gstScore (Level - ${gstComprehensionLevel.toComprehensionLevelString()})",
                     modifier = Modifier
                         .align(Alignment.CenterHorizontally),
                     color = Color.Black,
                     fontSize = 20.sp,
                 )
-                val oralReadingPercentage = student.oralReading?.percentage ?: -1F
-                val oralReadingLearnerLevel = calculateLearnerOralReading(percentage = oralReadingPercentage)
-                Text(
-                    text = "Percentage: $oralReadingPercentage",
-                    modifier = Modifier
-                        .align(Alignment.CenterHorizontally),
-                    color = Color.Black,
-                    fontSize = 20.sp,
-                )
-                Text(
-                    text = "Learner Level: ${oralReadingLearnerLevel.toLearnerLevelString()}",
-                    modifier = Modifier
-                        .align(Alignment.CenterHorizontally),
-                    color = Color.Black,
-                    fontSize = 20.sp,
-                )
-                Spacer(modifier = Modifier.height(28.dp))
-                Text(
-                    text = "Reading Comprehension",
-                    modifier = Modifier
-                        .align(Alignment.CenterHorizontally),
-                    color = Color.Black,
-                    fontSize = 24.sp,
-                )
-                Spacer(modifier = Modifier.height(8.dp))
-                val readingComprehensionPercentage = student.readingComprehension?.inputPercentage ?: -1F
-                val readingComprehensionLearnerLevel = calculateLearnerReadingComprehension(percentage = readingComprehensionPercentage)
-                Text(
-                    text = "Percentage: $readingComprehensionPercentage",
-                    modifier = Modifier
-                        .align(Alignment.CenterHorizontally),
-                    color = Color.Black,
-                    fontSize = 20.sp,
-                )
-                Text(
-                    text = "Learner Level: ${readingComprehensionLearnerLevel.toLearnerLevelString()}",
-                    modifier = Modifier
-                        .align(Alignment.CenterHorizontally),
-                    color = Color.Black,
-                    fontSize = 20.sp,
-                )
-            }
-        }
-        Column(
-            modifier = Modifier
-                .fillMaxWidth(),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Row(
-                modifier = Modifier,
-                horizontalArrangement = Arrangement.SpaceEvenly
-            ) {
                 if (student.shouldGradePassage()) {
-                    OutlinedButton(
-                        onClick = {},
-                        modifier = Modifier,
-                        colors = ButtonColors(
-                            containerColor = Color.White,
-                            contentColor = Color.Black,
-                            disabledContainerColor = Color.Gray,
-                            disabledContentColor = Color.White
-                        )
-                    ) {
-                        Row(
-                            modifier = Modifier,
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            Icon(
-                                imageVector = Icons.TwoTone.Edit,
-                                contentDescription = "Edit Oral Reading",
-                                tint = Color.Black
-                            )
-                            Spacer(modifier = Modifier.width(8.dp))
-                            Text(
-                                text = "Edit Oral Reading",
-                                modifier = Modifier,
-                                color = Color.Black,
-                            )
-                        }
-                    }
-                    OutlinedButton(
-                        onClick = {},
-                        modifier = Modifier,
-                        colors = ButtonColors(
-                            containerColor = Color.White,
-                            contentColor = Color.Black,
-                            disabledContainerColor = Color.Gray,
-                            disabledContentColor = Color.White
-                        )
-                    ) {
-                        Row(
-                            modifier = Modifier,
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            Icon(
-                                imageVector = Icons.TwoTone.Edit,
-                                contentDescription = "Edit Reading Compre",
-                                tint = Color.Black
-                            )
-                            Spacer(modifier = Modifier.width(8.dp))
-                            Text(
-                                text = "Edit Reading Compre",
-                                modifier = Modifier,
-                                color = Color.Black,
-                            )
-                        }
-                    }
+                    Spacer(modifier = Modifier.height(28.dp))
+                    Text(
+                        text = "Oral Reading",
+                        modifier = Modifier
+                            .align(Alignment.CenterHorizontally),
+                        color = Color.Black,
+                        fontSize = 24.sp,
+                    )
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Text(
+                        text = "No. Of Miscues: ${student.oralReading?.numberOfMiscues ?: -1}",
+                        modifier = Modifier
+                            .align(Alignment.CenterHorizontally),
+                        color = Color.Black,
+                        fontSize = 20.sp,
+                    )
+                    val oralReadingPercentage = student.oralReading?.percentage ?: -1F
+                    val oralReadingLearnerLevel = calculateLearnerOralReading(percentage = oralReadingPercentage)
+                    Text(
+                        text = "Percentage: $oralReadingPercentage",
+                        modifier = Modifier
+                            .align(Alignment.CenterHorizontally),
+                        color = Color.Black,
+                        fontSize = 20.sp,
+                    )
+                    Text(
+                        text = "Learner Level: ${oralReadingLearnerLevel.toLearnerLevelString()}",
+                        modifier = Modifier
+                            .align(Alignment.CenterHorizontally),
+                        color = Color.Black,
+                        fontSize = 20.sp,
+                    )
+                    Spacer(modifier = Modifier.height(28.dp))
+                    Text(
+                        text = "Reading Comprehension",
+                        modifier = Modifier
+                            .align(Alignment.CenterHorizontally),
+                        color = Color.Black,
+                        fontSize = 24.sp,
+                    )
+                    Spacer(modifier = Modifier.height(8.dp))
+                    val readingComprehensionPercentage = student.readingComprehension?.inputPercentage ?: -1F
+                    val readingComprehensionLearnerLevel = calculateLearnerReadingComprehension(percentage = readingComprehensionPercentage)
+                    Text(
+                        text = "Percentage: $readingComprehensionPercentage",
+                        modifier = Modifier
+                            .align(Alignment.CenterHorizontally),
+                        color = Color.Black,
+                        fontSize = 20.sp,
+                    )
+                    Text(
+                        text = "Learner Level: ${readingComprehensionLearnerLevel.toLearnerLevelString()}",
+                        modifier = Modifier
+                            .align(Alignment.CenterHorizontally),
+                        color = Color.Black,
+                        fontSize = 20.sp,
+                    )
                 }
             }
-            Row(
-                modifier = Modifier,
-                horizontalArrangement = Arrangement.SpaceEvenly
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth(),
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                OutlinedButton(
-                    onClick = {},
+                Row(
                     modifier = Modifier,
-                    colors = ButtonColors(
-                        containerColor = Color.White,
-                        contentColor = Color.Black,
-                        disabledContainerColor = Color.Gray,
-                        disabledContentColor = Color.White
-                    )
+                    horizontalArrangement = Arrangement.SpaceEvenly
                 ) {
-                    Row(
-                        modifier = Modifier,
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Icon(
-                            imageVector = Icons.TwoTone.Edit,
-                            contentDescription = "Edit GST",
-                            tint = Color.Black
-                        )
-                        Spacer(modifier = Modifier.width(8.dp))
-                        Text(
-                            text = "Edit GST",
+                    if (student.shouldGradePassage()) {
+                        OutlinedButton(
+                            onClick = {},
                             modifier = Modifier,
-                            color = Color.Black,
-                        )
+                            colors = ButtonColors(
+                                containerColor = Color.White,
+                                contentColor = Color.Black,
+                                disabledContainerColor = Color.Gray,
+                                disabledContentColor = Color.White
+                            )
+                        ) {
+                            Row(
+                                modifier = Modifier,
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Icon(
+                                    imageVector = Icons.TwoTone.Edit,
+                                    contentDescription = "Edit Oral Reading",
+                                    tint = Color.Black
+                                )
+                                Spacer(modifier = Modifier.width(8.dp))
+                                Text(
+                                    text = "Edit Oral Reading",
+                                    modifier = Modifier,
+                                    color = Color.Black,
+                                )
+                            }
+                        }
+                        OutlinedButton(
+                            onClick = {},
+                            modifier = Modifier,
+                            colors = ButtonColors(
+                                containerColor = Color.White,
+                                contentColor = Color.Black,
+                                disabledContainerColor = Color.Gray,
+                                disabledContentColor = Color.White
+                            )
+                        ) {
+                            Row(
+                                modifier = Modifier,
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Icon(
+                                    imageVector = Icons.TwoTone.Edit,
+                                    contentDescription = "Edit Reading Compre",
+                                    tint = Color.Black
+                                )
+                                Spacer(modifier = Modifier.width(8.dp))
+                                Text(
+                                    text = "Edit Reading Compre",
+                                    modifier = Modifier,
+                                    color = Color.Black,
+                                )
+                            }
+                        }
                     }
                 }
-                OutlinedButton(
-                    onClick = {},
+                Row(
                     modifier = Modifier,
-                    colors = ButtonColors(
-                        containerColor = Color.White,
-                        contentColor = Color.Black,
-                        disabledContainerColor = Color.Gray,
-                        disabledContentColor = Color.White
-                    )
+                    horizontalArrangement = Arrangement.SpaceEvenly
                 ) {
-                    Row(
+                    OutlinedButton(
+                        onClick = {},
                         modifier = Modifier,
-                        verticalAlignment = Alignment.CenterVertically
+                        colors = ButtonColors(
+                            containerColor = Color.White,
+                            contentColor = Color.Black,
+                            disabledContainerColor = Color.Gray,
+                            disabledContentColor = Color.White
+                        )
                     ) {
-                        Icon(
-                            imageVector = Icons.TwoTone.Close,
-                            contentDescription = "Back",
-                            tint = Color.Black
-                        )
-                        Spacer(modifier = Modifier.width(8.dp))
-                        Text(
-                            text = "Back",
+                        Row(
                             modifier = Modifier,
-                            color = Color.Black,
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Icon(
+                                imageVector = Icons.TwoTone.Edit,
+                                contentDescription = "Edit GST",
+                                tint = Color.Black
+                            )
+                            Spacer(modifier = Modifier.width(8.dp))
+                            Text(
+                                text = "Edit GST",
+                                modifier = Modifier,
+                                color = Color.Black,
+                            )
+                        }
+                    }
+                    OutlinedButton(
+                        onClick = { onBackClick() },
+                        modifier = Modifier,
+                        colors = ButtonColors(
+                            containerColor = Color.White,
+                            contentColor = Color.Black,
+                            disabledContainerColor = Color.Gray,
+                            disabledContentColor = Color.White
                         )
+                    ) {
+                        Row(
+                            modifier = Modifier,
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Icon(
+                                imageVector = Icons.TwoTone.Close,
+                                contentDescription = "Back",
+                                tint = Color.Black
+                            )
+                            Spacer(modifier = Modifier.width(8.dp))
+                            Text(
+                                text = "Back",
+                                modifier = Modifier,
+                                color = Color.Black,
+                            )
+                        }
                     }
                 }
             }
