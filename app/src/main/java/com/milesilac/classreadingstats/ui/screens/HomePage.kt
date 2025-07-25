@@ -84,7 +84,7 @@ fun HomePage() {
             ) { page ->
                 // Our page content
                 StudentListPage(
-                    studentList = currentSheetLists[page].students[0].second
+                    studentList = currentSheetLists[page].students
                 )
             }
             Row(

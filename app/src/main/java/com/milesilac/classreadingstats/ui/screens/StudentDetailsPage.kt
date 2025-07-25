@@ -26,6 +26,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.milesilac.classreadingstats.model.Student
+import com.milesilac.classreadingstats.model.StudentList
 import com.milesilac.classreadingstats.model.calculateComprehensionLevel
 import com.milesilac.classreadingstats.model.calculateLearnerOralReading
 import com.milesilac.classreadingstats.model.calculateLearnerReadingComprehension
@@ -303,6 +304,6 @@ fun StudentDetailsPage(
 @Composable
 fun StudentDetailsPagePreview() {
     StudentDetailsPage(
-        student = dummyStudentListsEightAmethyst.students[0].second[14]
+        student = (dummyStudentListsEightAmethyst.students[15] as StudentList.StudentDetails).student
     )
 }
