@@ -21,6 +21,7 @@ import com.milesilac.classreadingstats.model.StudentList
 import com.milesilac.classreadingstats.model.toStudentSexOrientString
 import com.milesilac.classreadingstats.ui.components.StudentEntry
 import com.milesilac.classreadingstats.ui.dummyStudentListsEightAmethyst
+import com.milesilac.classreadingstats.ui.theme.ProjectColors
 import sh.calvin.reorderable.ReorderableItem
 import sh.calvin.reorderable.rememberReorderableLazyListState
 
@@ -63,7 +64,7 @@ fun StudentListPage(
 
     LazyColumn(
         modifier = Modifier
-            .background(color = Color.White)
+            .background(color = ProjectColors.OffWhite4)
             .fillMaxSize(),
         state = lazyListState,
     ) {

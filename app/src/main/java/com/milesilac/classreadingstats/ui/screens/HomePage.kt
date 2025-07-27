@@ -19,7 +19,6 @@ import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.OutlinedButton
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -69,85 +68,83 @@ fun HomePage(
             }
     }
 
-    Surface {
-        Column(
+    Column(
+        modifier = Modifier
+            .background(color = Color.Red)
+            .fillMaxSize()
+    ) {
+        TopInfoBar(
+            section = currentSection
+        )
+        HorizontalPager(
+            state = pagerState,
             modifier = Modifier
-                .background(color = Color.Red)
                 .fillMaxSize()
-        ) {
-            TopInfoBar(
-                section = currentSection
+                .weight(1F),
+            beyondViewportPageCount = 2
+        ) { page ->
+            // Our page content
+            StudentListPage(
+                studentList = currentSheetLists[page].students,
+                onStudentEntryClick = onStudentEntryClick
             )
-            HorizontalPager(
-                state = pagerState,
+        }
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .background(color = Color.Green)
+        ) {
+            Box(
                 modifier = Modifier
-                    .fillMaxSize()
-                    .weight(1F),
-                beyondViewportPageCount = 2
-            ) { page ->
-                // Our page content
-                StudentListPage(
-                    studentList = currentSheetLists[page].students,
-                    onStudentEntryClick = onStudentEntryClick
+                    .background(color = Color.Yellow)
+                    .padding(ButtonDefaults.ContentPadding)
+                    .align(Alignment.CenterVertically)
+                    .clickable {
+
+                    },
+            ) {
+                Text(
+                    text = "${dummySections[0].gradeLevel.toGradeLevelInt()}",
+                    modifier = Modifier
+                        .align(Alignment.Center),
+                    color = Color.Black,
                 )
             }
-            Row(
+            Spacer(modifier = Modifier.width(6.dp))
+            LazyRow(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .background(color = Color.Green)
+                    .weight(1F)
+                    .padding(vertical = 2.dp),
+                state = rememberLazyListState(),
+                horizontalArrangement = Arrangement.spacedBy(6.dp)
             ) {
-                Box(
-                    modifier = Modifier
-                        .background(color = Color.Yellow)
-                        .padding(ButtonDefaults.ContentPadding)
-                        .align(Alignment.CenterVertically)
-                        .clickable {
-
+                itemsIndexed(items = dummySections) { index, section ->
+                    //val selected = TODO
+                    OutlinedButton(
+                        onClick = {
+                            coroutineScope.launch {
+                                pagerState.animateScrollToPage(page = index)
+                            }
                         },
-                ) {
-                    Text(
-                        text = "${dummySections[0].gradeLevel.toGradeLevelInt()}",
-                        modifier = Modifier
-                            .align(Alignment.Center),
-                        color = Color.Black,
-                    )
-                }
-                Spacer(modifier = Modifier.width(6.dp))
-                LazyRow(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .weight(1F)
-                        .padding(vertical = 2.dp),
-                    state = rememberLazyListState(),
-                    horizontalArrangement = Arrangement.spacedBy(6.dp)
-                ) {
-                    itemsIndexed(items = dummySections) { index, section ->
-                        //val selected = TODO
-                        OutlinedButton(
-                            onClick = {
-                                coroutineScope.launch {
-                                    pagerState.animateScrollToPage(page = index)
-                                }
-                            },
+                        modifier = Modifier,
+                        colors = ButtonColors(
+                            containerColor = Color.White,
+                            contentColor = Color.Black,
+                            disabledContainerColor = Color.Gray,
+                            disabledContentColor = Color.White
+                        )
+                    ) {
+                        Text(
+                            text = section.sectionName,
                             modifier = Modifier,
-                            colors = ButtonColors(
-                                containerColor = Color.White,
-                                contentColor = Color.Black,
-                                disabledContainerColor = Color.Gray,
-                                disabledContentColor = Color.White
-                            )
-                        ) {
-                            Text(
-                                text = section.sectionName,
-                                modifier = Modifier,
-                                color = Color.Black,
-                            )
-                        }
+                            color = Color.Black,
+                        )
                     }
                 }
             }
-            BottomNavBar()
         }
+        BottomNavBar()
     }
 }
 

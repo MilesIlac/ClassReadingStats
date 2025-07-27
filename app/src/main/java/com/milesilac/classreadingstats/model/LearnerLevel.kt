@@ -48,3 +48,15 @@ fun calculateLearnerReadingComprehension(
         else -> LearnerLevel.ERROR
     }
 }
+
+fun calculateLearnerOverallReadingProfile(
+    orLevel: LearnerLevel,
+    rcLevel: LearnerLevel
+): LearnerLevel {
+    return when {
+        orLevel == LearnerLevel.INDEPENDENT && rcLevel == LearnerLevel.INDEPENDENT -> LearnerLevel.INDEPENDENT
+        orLevel == LearnerLevel.FRUSTRATION || rcLevel == LearnerLevel.FRUSTRATION -> LearnerLevel.FRUSTRATION
+        orLevel == LearnerLevel.INSTRUCTIONAL || rcLevel == LearnerLevel.INSTRUCTIONAL -> LearnerLevel.INSTRUCTIONAL
+        else -> LearnerLevel.ERROR
+    }
+}
