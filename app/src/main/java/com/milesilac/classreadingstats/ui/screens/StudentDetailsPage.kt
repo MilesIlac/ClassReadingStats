@@ -66,17 +66,17 @@ fun StudentDetailsPage(
     ) {
         Column(
             modifier = Modifier
-                .background(color = ProjectColors.OffWhite4)
-                .weight(1F)
-                .fillMaxSize()
-                .verticalScroll(state = scrollState)
+                .fillMaxWidth(),
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Column(
                 modifier = Modifier
                     .background(color = ProjectColors.OffBlue2)
                     .padding(
-                        horizontal = 12.dp,
-                        vertical = 28.dp
+                        start = 12.dp,
+                        end = 12.dp,
+                        top = 28.dp,
+                        bottom = 20.dp
                     )
                     .fillMaxWidth()
                     .align(Alignment.CenterHorizontally),
@@ -121,35 +121,38 @@ fun StudentDetailsPage(
                         textAlign = TextAlign.Center
                     )
                 }
-            }
-            Row(
-                modifier = Modifier
-                    .padding(
-                        horizontal = 12.dp,
-                        vertical = 10.dp
-                    )
-                    .fillMaxWidth()
-                    .align(Alignment.CenterHorizontally),
-                horizontalArrangement = Arrangement.Center,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Text(
-                    text = "Click Here to View Student Info",
+                Spacer(modifier = Modifier.height(16.dp))
+                Row(
                     modifier = Modifier,
-                    color = Color.Black,
-                    fontSize = 16.sp.nonScaledSp,
-                    overflow = TextOverflow.Ellipsis,
-                    maxLines = 1
-                )
-                Spacer(modifier = Modifier.width(8.dp))
-                Icon(
-                    imageVector = Icons.AutoMirrored.TwoTone.OpenInNew,
-                    contentDescription = "Click Here to View Student Info",
-                    modifier = Modifier
-                        .size(20.dp),
-                    tint = Color.Black
-                )
+                    horizontalArrangement = Arrangement.Center,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        text = "View Student Info",
+                        modifier = Modifier,
+                        color = ProjectColors.OffWhite4,
+                        fontSize = 14.sp.nonScaledSp,
+                        overflow = TextOverflow.Ellipsis,
+                        maxLines = 1
+                    )
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Icon(
+                        imageVector = Icons.AutoMirrored.TwoTone.OpenInNew,
+                        contentDescription = "View Student Info",
+                        modifier = Modifier
+                            .size(20.dp),
+                        tint = ProjectColors.OffWhite4
+                    )
+                }
             }
+        }
+        Column(
+            modifier = Modifier
+                .background(color = ProjectColors.OffWhite4)
+                .weight(1F)
+                .fillMaxSize()
+                .verticalScroll(state = scrollState)
+        ) {
             Column(
                 modifier = Modifier
                     .background(color = ProjectColors.OffViolet1)
