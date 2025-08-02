@@ -4,6 +4,7 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class OralReading(
+    var totalNumberOfWordsInSelection: Int,
     var numberOfMiscues: Int,
     var percentage: Float,
     var level: LearnerLevel
@@ -13,7 +14,7 @@ data class OralReading(
 
 fun calculateOralReadingPercentage(
     numberOfMiscues: Int,
-    totalOfItems: Int
+    totalNumberOfWordsInSelection: Int
 ): Float {
-    return ((numberOfMiscues / totalOfItems) * 100).toFloat()
+    return (((totalNumberOfWordsInSelection - numberOfMiscues) / totalNumberOfWordsInSelection) * 100).toFloat()
 }

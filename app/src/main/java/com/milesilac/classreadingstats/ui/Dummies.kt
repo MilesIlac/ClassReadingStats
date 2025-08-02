@@ -33,6 +33,7 @@ val dummyStudentListsEightAmethyst = ClassSheet(
                 ),
                 isGradingPassage = true,
                 oralReading = OralReading(
+                    totalNumberOfWordsInSelection = 106,
                     numberOfMiscues = 3,
                     percentage = 97.17F,
                     level = LearnerLevel.INDEPENDENT
@@ -55,6 +56,7 @@ val dummyStudentListsEightAmethyst = ClassSheet(
                 ),
                 isGradingPassage = true,
                 oralReading = OralReading(
+                    totalNumberOfWordsInSelection = 106,
                     numberOfMiscues = 8,
                     percentage = 92.45F,
                     level = LearnerLevel.INSTRUCTIONAL
@@ -77,6 +79,7 @@ val dummyStudentListsEightAmethyst = ClassSheet(
                 ),
                 isGradingPassage = true,
                 oralReading = OralReading(
+                    totalNumberOfWordsInSelection = 106,
                     numberOfMiscues = 3,
                     percentage = 97.17F,
                     level = LearnerLevel.INDEPENDENT
@@ -99,6 +102,7 @@ val dummyStudentListsEightAmethyst = ClassSheet(
                 ),
                 isGradingPassage = true,
                 oralReading = OralReading(
+                    totalNumberOfWordsInSelection = 106,
                     numberOfMiscues = 9,
                     percentage = 91.51F,
                     level = LearnerLevel.INSTRUCTIONAL
@@ -121,6 +125,7 @@ val dummyStudentListsEightAmethyst = ClassSheet(
                 ),
                 isGradingPassage = true,
                 oralReading = OralReading(
+                    totalNumberOfWordsInSelection = 106,
                     numberOfMiscues = 10,
                     percentage = 90.52F,
                     level = LearnerLevel.INSTRUCTIONAL
@@ -143,6 +148,7 @@ val dummyStudentListsEightAmethyst = ClassSheet(
                 ),
                 isGradingPassage = true,
                 oralReading = OralReading(
+                    totalNumberOfWordsInSelection = 106,
                     numberOfMiscues = 10,
                     percentage = 90.52F,
                     level = LearnerLevel.INSTRUCTIONAL
@@ -165,6 +171,7 @@ val dummyStudentListsEightAmethyst = ClassSheet(
                 ),
                 isGradingPassage = true,
                 oralReading = OralReading(
+                    totalNumberOfWordsInSelection = 106,
                     numberOfMiscues = 10,
                     percentage = 90.52F,
                     level = LearnerLevel.INSTRUCTIONAL
@@ -187,6 +194,7 @@ val dummyStudentListsEightAmethyst = ClassSheet(
                 ),
                 isGradingPassage = true,
                 oralReading = OralReading(
+                    totalNumberOfWordsInSelection = 106,
                     numberOfMiscues = 2,
                     percentage = 98.11F,
                     level = LearnerLevel.INDEPENDENT
@@ -209,6 +217,7 @@ val dummyStudentListsEightAmethyst = ClassSheet(
                 ),
                 isGradingPassage = true,
                 oralReading = OralReading(
+                    totalNumberOfWordsInSelection = 106,
                     numberOfMiscues = 8,
                     percentage = 92.45F,
                     level = LearnerLevel.INSTRUCTIONAL
@@ -231,6 +240,7 @@ val dummyStudentListsEightAmethyst = ClassSheet(
                 ),
                 isGradingPassage = true,
                 oralReading = OralReading(
+                    totalNumberOfWordsInSelection = 106,
                     numberOfMiscues = 9,
                     percentage = 91.51F,
                     level = LearnerLevel.INSTRUCTIONAL
@@ -253,6 +263,7 @@ val dummyStudentListsEightAmethyst = ClassSheet(
                 ),
                 isGradingPassage = true,
                 oralReading = OralReading(
+                    totalNumberOfWordsInSelection = 106,
                     numberOfMiscues = 17,
                     percentage = 80.23F,
                     level = LearnerLevel.FRUSTRATION
@@ -275,6 +286,7 @@ val dummyStudentListsEightAmethyst = ClassSheet(
                 ),
                 isGradingPassage = true,
                 oralReading = OralReading(
+                    totalNumberOfWordsInSelection = 106,
                     numberOfMiscues = 9,
                     percentage = 91.51F,
                     level = LearnerLevel.INSTRUCTIONAL
@@ -297,6 +309,7 @@ val dummyStudentListsEightAmethyst = ClassSheet(
                 ),
                 isGradingPassage = true,
                 oralReading = OralReading(
+                    totalNumberOfWordsInSelection = 106,
                     numberOfMiscues = 9,
                     percentage = 91.51F,
                     level = LearnerLevel.INSTRUCTIONAL
@@ -319,6 +332,7 @@ val dummyStudentListsEightAmethyst = ClassSheet(
                 ),
                 isGradingPassage = true,
                 oralReading = OralReading(
+                    totalNumberOfWordsInSelection = 106,
                     numberOfMiscues = 10,
                     percentage = 90.52F,
                     level = LearnerLevel.INSTRUCTIONAL
@@ -341,6 +355,7 @@ val dummyStudentListsEightAmethyst = ClassSheet(
                 ),
                 isGradingPassage = true,
                 oralReading = OralReading(
+                    totalNumberOfWordsInSelection = 106,
                     numberOfMiscues = 10,
                     percentage = 90.52F,
                     level = LearnerLevel.INSTRUCTIONAL
@@ -363,6 +378,7 @@ val dummyStudentListsEightAmethyst = ClassSheet(
                 ),
                 isGradingPassage = true,
                 oralReading = OralReading(
+                    totalNumberOfWordsInSelection = 106,
                     numberOfMiscues = 8,
                     percentage = 92.45F,
                     level = LearnerLevel.INSTRUCTIONAL
@@ -385,6 +401,7 @@ val dummyStudentListsEightAmethyst = ClassSheet(
                 ),
                 isGradingPassage = true,
                 oralReading = OralReading(
+                    totalNumberOfWordsInSelection = 106,
                     numberOfMiscues = 8,
                     percentage = 92.45F,
                     level = LearnerLevel.INSTRUCTIONAL
@@ -407,6 +424,7 @@ val dummyStudentListsEightAmethyst = ClassSheet(
                 ),
                 isGradingPassage = true,
                 oralReading = OralReading(
+                    totalNumberOfWordsInSelection = 106,
                     numberOfMiscues = 8,
                     percentage = 92.45F,
                     level = LearnerLevel.INSTRUCTIONAL
@@ -429,6 +447,7 @@ val dummyStudentListsEightAmethyst = ClassSheet(
                 ),
                 isGradingPassage = true,
                 oralReading = OralReading(
+                    totalNumberOfWordsInSelection = 106,
                     numberOfMiscues = 3,
                     percentage = 97.17F,
                     level = LearnerLevel.INDEPENDENT
@@ -451,6 +470,7 @@ val dummyStudentListsEightAmethyst = ClassSheet(
                 ),
                 isGradingPassage = true,
                 oralReading = OralReading(
+                    totalNumberOfWordsInSelection = 106,
                     numberOfMiscues = 2,
                     percentage = 98.11F,
                     level = LearnerLevel.INDEPENDENT
@@ -473,6 +493,7 @@ val dummyStudentListsEightAmethyst = ClassSheet(
                 ),
                 isGradingPassage = true,
                 oralReading = OralReading(
+                    totalNumberOfWordsInSelection = 106,
                     numberOfMiscues = 2,
                     percentage = 98.11F,
                     level = LearnerLevel.INDEPENDENT
@@ -495,6 +516,7 @@ val dummyStudentListsEightAmethyst = ClassSheet(
                 ),
                 isGradingPassage = true,
                 oralReading = OralReading(
+                    totalNumberOfWordsInSelection = 106,
                     numberOfMiscues = 19,
                     percentage = 77.91F,
                     level = LearnerLevel.FRUSTRATION
@@ -518,6 +540,7 @@ val dummyStudentListsEightAmethyst = ClassSheet(
                 ),
                 isGradingPassage = true,
                 oralReading = OralReading(
+                    totalNumberOfWordsInSelection = 106,
                     numberOfMiscues = 3,
                     percentage = 97.17F,
                     level = LearnerLevel.INDEPENDENT
@@ -548,6 +571,7 @@ val dummyStudentListsEightDiamond = ClassSheet(
                 ),
                 isGradingPassage = true,
                 oralReading = OralReading(
+                    totalNumberOfWordsInSelection = 106,
                     numberOfMiscues = 3,
                     percentage = 97.17F,
                     level = LearnerLevel.INDEPENDENT
@@ -570,6 +594,7 @@ val dummyStudentListsEightDiamond = ClassSheet(
                 ),
                 isGradingPassage = true,
                 oralReading = OralReading(
+                    totalNumberOfWordsInSelection = 106,
                     numberOfMiscues = 7,
                     percentage = 93.4F,
                     level = LearnerLevel.INSTRUCTIONAL
@@ -592,6 +617,7 @@ val dummyStudentListsEightDiamond = ClassSheet(
                 ),
                 isGradingPassage = true,
                 oralReading = OralReading(
+                    totalNumberOfWordsInSelection = 106,
                     numberOfMiscues = 7,
                     percentage = 93.4F,
                     level = LearnerLevel.INSTRUCTIONAL
@@ -614,6 +640,7 @@ val dummyStudentListsEightDiamond = ClassSheet(
                 ),
                 isGradingPassage = true,
                 oralReading = OralReading(
+                    totalNumberOfWordsInSelection = 106,
                     numberOfMiscues = 2,
                     percentage = 98.11F,
                     level = LearnerLevel.INDEPENDENT
@@ -636,6 +663,7 @@ val dummyStudentListsEightDiamond = ClassSheet(
                 ),
                 isGradingPassage = true,
                 oralReading = OralReading(
+                    totalNumberOfWordsInSelection = 106,
                     numberOfMiscues = 9,
                     percentage = 91.51F,
                     level = LearnerLevel.INSTRUCTIONAL
@@ -658,6 +686,7 @@ val dummyStudentListsEightDiamond = ClassSheet(
                 ),
                 isGradingPassage = true,
                 oralReading = OralReading(
+                    totalNumberOfWordsInSelection = 106,
                     numberOfMiscues = 2,
                     percentage = 98.11F,
                     level = LearnerLevel.INDEPENDENT
@@ -680,6 +709,7 @@ val dummyStudentListsEightDiamond = ClassSheet(
                 ),
                 isGradingPassage = true,
                 oralReading = OralReading(
+                    totalNumberOfWordsInSelection = 106,
                     numberOfMiscues = 3,
                     percentage = 97.17F,
                     level = LearnerLevel.INDEPENDENT
@@ -702,6 +732,7 @@ val dummyStudentListsEightDiamond = ClassSheet(
                 ),
                 isGradingPassage = true,
                 oralReading = OralReading(
+                    totalNumberOfWordsInSelection = 106,
                     numberOfMiscues = 2,
                     percentage = 98.11F,
                     level = LearnerLevel.INDEPENDENT
@@ -724,6 +755,7 @@ val dummyStudentListsEightDiamond = ClassSheet(
                 ),
                 isGradingPassage = true,
                 oralReading = OralReading(
+                    totalNumberOfWordsInSelection = 106,
                     numberOfMiscues = 10,
                     percentage = 90.56F,
                     level = LearnerLevel.INSTRUCTIONAL
@@ -746,6 +778,7 @@ val dummyStudentListsEightDiamond = ClassSheet(
                 ),
                 isGradingPassage = true,
                 oralReading = OralReading(
+                    totalNumberOfWordsInSelection = 106,
                     numberOfMiscues = 2,
                     percentage = 98.11F,
                     level = LearnerLevel.INSTRUCTIONAL
@@ -768,6 +801,7 @@ val dummyStudentListsEightDiamond = ClassSheet(
                 ),
                 isGradingPassage = true,
                 oralReading = OralReading(
+                    totalNumberOfWordsInSelection = 106,
                     numberOfMiscues = 2,
                     percentage = 98.11F,
                     level = LearnerLevel.INDEPENDENT
@@ -790,6 +824,7 @@ val dummyStudentListsEightDiamond = ClassSheet(
                 ),
                 isGradingPassage = true,
                 oralReading = OralReading(
+                    totalNumberOfWordsInSelection = 106,
                     numberOfMiscues = 9,
                     percentage = 91.51F,
                     level = LearnerLevel.INSTRUCTIONAL
@@ -812,6 +847,7 @@ val dummyStudentListsEightDiamond = ClassSheet(
                 ),
                 isGradingPassage = true,
                 oralReading = OralReading(
+                    totalNumberOfWordsInSelection = 106,
                     numberOfMiscues = 2,
                     percentage = 98.11F,
                     level = LearnerLevel.INDEPENDENT
@@ -834,6 +870,7 @@ val dummyStudentListsEightDiamond = ClassSheet(
                 ),
                 isGradingPassage = true,
                 oralReading = OralReading(
+                    totalNumberOfWordsInSelection = 106,
                     numberOfMiscues = 3,
                     percentage = 97.17F,
                     level = LearnerLevel.INDEPENDENT
@@ -856,6 +893,7 @@ val dummyStudentListsEightDiamond = ClassSheet(
                 ),
                 isGradingPassage = true,
                 oralReading = OralReading(
+                    totalNumberOfWordsInSelection = 106,
                     numberOfMiscues = 9,
                     percentage = 91.51F,
                     level = LearnerLevel.INSTRUCTIONAL
@@ -878,6 +916,7 @@ val dummyStudentListsEightDiamond = ClassSheet(
                 ),
                 isGradingPassage = true,
                 oralReading = OralReading(
+                    totalNumberOfWordsInSelection = 106,
                     numberOfMiscues = 3,
                     percentage = 97.17F,
                     level = LearnerLevel.INDEPENDENT
@@ -900,6 +939,7 @@ val dummyStudentListsEightDiamond = ClassSheet(
                 ),
                 isGradingPassage = true,
                 oralReading = OralReading(
+                    totalNumberOfWordsInSelection = 106,
                     numberOfMiscues = 3,
                     percentage = 97.17F,
                     level = LearnerLevel.INDEPENDENT

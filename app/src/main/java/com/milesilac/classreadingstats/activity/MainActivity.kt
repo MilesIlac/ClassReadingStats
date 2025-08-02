@@ -15,6 +15,7 @@ import androidx.navigation3.ui.NavDisplay
 import com.milesilac.classreadingstats.model.Student
 import com.milesilac.classreadingstats.ui.dummyStudentListsEightAmethyst
 import com.milesilac.classreadingstats.ui.screens.HomePage
+import com.milesilac.classreadingstats.ui.screens.StudentDetailEditPage
 import com.milesilac.classreadingstats.ui.screens.StudentDetailsPage
 
 class MainActivity : AppCompatActivity() {
@@ -40,6 +41,13 @@ class MainActivity : AppCompatActivity() {
                     entry<RouteStudentDetails> { key ->
                         StudentDetailsPage(
                             student = key.student,
+                            onEditClick = { backStack.add(RouteStudentDetailEdit(key.student)) },
+                            onBackClick = { backStack.removeLastOrNull() }
+                        )
+                    }
+                    entry<RouteStudentDetailEdit> { key ->
+                        StudentDetailEditPage(
+                            student = key.student,
                             onBackClick = { backStack.removeLastOrNull() }
                         )
                     }
@@ -58,3 +66,6 @@ private data object RouteHome : NavKey
 
 @kotlinx.serialization.Serializable
 private data class RouteStudentDetails(val student: Student) : NavKey
+
+@kotlinx.serialization.Serializable
+private data class RouteStudentDetailEdit(val student: Student) : NavKey

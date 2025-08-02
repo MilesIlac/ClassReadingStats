@@ -9,13 +9,11 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.twotone.OpenInNew
 import androidx.compose.material.icons.twotone.Close
 import androidx.compose.material.icons.twotone.Edit
 import androidx.compose.material3.ButtonColors
@@ -27,11 +25,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.milesilac.classreadingstats.helpers.nonScaledSp
 import com.milesilac.classreadingstats.model.Student
 import com.milesilac.classreadingstats.model.StudentList
 import com.milesilac.classreadingstats.model.calculateComprehensionLevel
@@ -47,6 +43,7 @@ import com.milesilac.classreadingstats.ui.theme.ProjectColors
 @Composable
 fun StudentDetailsPage(
     student: Student,
+    onEditClick: () -> Unit = {},
     onBackClick: () -> Unit = {}
 ) {
     val scrollState = rememberScrollState()
@@ -76,7 +73,7 @@ fun StudentDetailsPage(
                         start = 12.dp,
                         end = 12.dp,
                         top = 28.dp,
-                        bottom = 20.dp
+                        bottom = 28.dp
                     )
                     .fillMaxWidth()
                     .align(Alignment.CenterHorizontally),
@@ -121,29 +118,6 @@ fun StudentDetailsPage(
                         textAlign = TextAlign.Center
                     )
                 }
-                Spacer(modifier = Modifier.height(16.dp))
-                Row(
-                    modifier = Modifier,
-                    horizontalArrangement = Arrangement.Center,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Text(
-                        text = "View Student Info",
-                        modifier = Modifier,
-                        color = ProjectColors.OffWhite4,
-                        fontSize = 14.sp.nonScaledSp,
-                        overflow = TextOverflow.Ellipsis,
-                        maxLines = 1
-                    )
-                    Spacer(modifier = Modifier.width(8.dp))
-                    Icon(
-                        imageVector = Icons.AutoMirrored.TwoTone.OpenInNew,
-                        contentDescription = "View Student Info",
-                        modifier = Modifier
-                            .size(20.dp),
-                        tint = ProjectColors.OffWhite4
-                    )
-                }
             }
         }
         Column(
@@ -171,25 +145,6 @@ fun StudentDetailsPage(
                     fontSize = 24.sp,
                     textAlign = TextAlign.Center
                 )
-                Row(
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Icon(
-                        imageVector = Icons.TwoTone.Edit,
-                        contentDescription = "Click to Edit Group Screening Test Score",
-                        modifier = Modifier.size(20.dp),
-                        tint = ProjectColors.OffWhite4
-                    )
-                    Spacer(modifier = Modifier.width(4.dp))
-                    Text(
-                        text = "Click to Edit",
-                        modifier = Modifier,
-                        color = ProjectColors.OffWhite4,
-                        fontSize = 14.sp.nonScaledSp,
-                        overflow = TextOverflow.Ellipsis,
-                        maxLines = 1
-                    )
-                }
             }
             val gstScore = student.groupScreeningTest.score
             val gstComprehensionLevel = calculateComprehensionLevel(
@@ -227,25 +182,6 @@ fun StudentDetailsPage(
                         fontSize = 24.sp,
                         textAlign = TextAlign.Center
                     )
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Icon(
-                            imageVector = Icons.TwoTone.Edit,
-                            contentDescription = "Click to Edit Oral Reading",
-                            modifier = Modifier.size(20.dp),
-                            tint = ProjectColors.OffWhite4
-                        )
-                        Spacer(modifier = Modifier.width(4.dp))
-                        Text(
-                            text = "Click to Edit",
-                            modifier = Modifier,
-                            color = ProjectColors.OffWhite4,
-                            fontSize = 14.sp.nonScaledSp,
-                            overflow = TextOverflow.Ellipsis,
-                            maxLines = 1
-                        )
-                    }
                 }
                 Column(
                     modifier = Modifier
@@ -297,25 +233,6 @@ fun StudentDetailsPage(
                         fontSize = 24.sp,
                         textAlign = TextAlign.Center
                     )
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Icon(
-                            imageVector = Icons.TwoTone.Edit,
-                            contentDescription = "Click to Edit Reading Comprehension",
-                            modifier = Modifier.size(20.dp),
-                            tint = ProjectColors.OffWhite4
-                        )
-                        Spacer(modifier = Modifier.width(4.dp))
-                        Text(
-                            text = "Click to Edit",
-                            modifier = Modifier,
-                            color = ProjectColors.OffWhite4,
-                            fontSize = 14.sp.nonScaledSp,
-                            overflow = TextOverflow.Ellipsis,
-                            maxLines = 1
-                        )
-                    }
                 }
                 Column(
                     modifier = Modifier
@@ -380,6 +297,34 @@ fun StudentDetailsPage(
                     ),
                 horizontalArrangement = Arrangement.SpaceEvenly
             ) {
+                OutlinedButton(
+                    onClick = { onEditClick() },
+                    modifier = Modifier,
+                    colors = ButtonColors(
+                        containerColor = Color.White,
+                        contentColor = Color.Black,
+                        disabledContainerColor = Color.Gray,
+                        disabledContentColor = Color.White
+                    )
+                ) {
+                    Row(
+                        modifier = Modifier,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Icon(
+                            imageVector = Icons.TwoTone.Edit,
+                            contentDescription = "Edit",
+                            tint = Color.Black
+                        )
+                        Spacer(modifier = Modifier.width(8.dp))
+                        Text(
+                            text = "Edit",
+                            modifier = Modifier,
+                            color = Color.Black,
+                        )
+                    }
+                }
+                Spacer(modifier = Modifier.width(12.dp))
                 OutlinedButton(
                     onClick = { onBackClick() },
                     modifier = Modifier,
