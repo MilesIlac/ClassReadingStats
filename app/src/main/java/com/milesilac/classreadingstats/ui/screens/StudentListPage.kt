@@ -18,6 +18,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.milesilac.classreadingstats.model.Student
 import com.milesilac.classreadingstats.model.StudentList
+import com.milesilac.classreadingstats.model.StudentSexOrient
 import com.milesilac.classreadingstats.model.toStudentSexOrientString
 import com.milesilac.classreadingstats.ui.components.StudentEntry
 import com.milesilac.classreadingstats.ui.dummyStudentListsEightAmethyst
@@ -31,6 +32,8 @@ fun StudentListPage(
     onStudentEntryClick: (Student) -> Unit = {}
 ) {
     var list by remember { mutableStateOf(studentList) }
+    val maleCount = list.count { it is StudentList.StudentDetails && it.student.sex == StudentSexOrient.MALE.toStudentSexOrientString() }
+    val femaleCount = list.count { it is StudentList.StudentDetails && it.student.sex == StudentSexOrient.FEMALE.toStudentSexOrientString() }
     val lazyListState = rememberLazyListState()
     val reorderableLazyListState = rememberReorderableLazyListState(lazyListState) { from, to ->
         // can't use .index because there are other items in the list (headers, footers, etc)
@@ -71,9 +74,14 @@ fun StudentListPage(
         list.forEach { studentItem ->
             when (studentItem) {
                 is StudentList.Header -> {
+                    val headerText = if (studentItem.sex.toStudentSexOrientString() == StudentSexOrient.MALE.toStudentSexOrientString()) {
+                        "${studentItem.sex.toStudentSexOrientString()} - $maleCount"
+                    } else {
+                        "${studentItem.sex.toStudentSexOrientString()} - $femaleCount"
+                    }
                     stickyHeader {
                         Text(
-                            text = studentItem.sex.toStudentSexOrientString(),
+                            text = headerText,
                             Modifier
                                 .animateItem()
                                 .fillMaxWidth()
@@ -89,7 +97,7 @@ fun StudentListPage(
                             StudentEntry(
                                 reorderableItemScope = this,
                                 isDragging = isDragging,
-                                textString = "${studentItem.student.orderId} ${studentItem.student.name}",
+                                student = studentItem.student,
                                 onClick = { onStudentEntryClick(studentItem.student) }
                             )
                         }

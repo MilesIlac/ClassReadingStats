@@ -1,11 +1,13 @@
 package com.milesilac.classreadingstats.ui.components
 
 import androidx.compose.animation.core.animateDpAsState
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.twotone.Menu
 import androidx.compose.material3.Icon
@@ -20,42 +22,59 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.milesilac.classreadingstats.model.Student
+import com.milesilac.classreadingstats.model.StudentList
+import com.milesilac.classreadingstats.ui.dummyStudentListsEightAmethyst
+import com.milesilac.classreadingstats.ui.theme.ProjectColors
 import sh.calvin.reorderable.ReorderableCollectionItemScope
 
 @Composable
 fun StudentEntry(
     reorderableItemScope: ReorderableCollectionItemScope? = null,
     isDragging: Boolean = true,
-    textString: String,
+    student: Student,
     onClick: () -> Unit = {}
 ) {
     val elevation by animateDpAsState(if (isDragging) 4.dp else 0.dp)
 
     Surface(
         modifier = Modifier
+            .clickable {
+                onClick()
+            }
             .fillMaxWidth(),
+        color = ProjectColors.OffWhite4,
         shadowElevation = elevation
     ) {
         Row(
             modifier = Modifier
-                .padding(horizontal = 8.dp)
-                .background(color = Color.White)
-                .clickable {
-//                    println("${textString.trim()} clicked")
-                    onClick()
-                },
+                .padding(
+                    horizontal = 8.dp,
+                    vertical = 2.dp
+                ),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Text(
-                text = textString.trim(),
+            Column(
                 modifier = Modifier
                     .weight(1F)
-                    .padding(end = 8.dp),
-                color = Color.Black,
-                overflow = TextOverflow.Clip,
-                softWrap = false,
-                maxLines = 1
-            )
+            ) {
+                Row(
+                    modifier = Modifier,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        text = "${student.orderId} ${student.name}".trim(),
+                        modifier = Modifier
+                            .weight(1F)
+                            .padding(end = 8.dp),
+                        color = Color.Black,
+                        overflow = TextOverflow.Clip,
+                        softWrap = false,
+                        maxLines = 1
+                    )
+                }
+            }
+            Spacer(modifier = Modifier.width(8.dp))
             IconButton(
                 modifier = reorderableItemScope?.let {
                     with (it) {
@@ -78,6 +97,6 @@ fun StudentEntry(
 @Composable
 fun StudentEntryPreview() {
     StudentEntry(
-        textString = "UsedOn:UsedOn:UsedOn:Used On:Used On:Used On:Used On:Used On:"
+        student = (dummyStudentListsEightAmethyst.students[15] as StudentList.StudentDetails).student
     )
 }

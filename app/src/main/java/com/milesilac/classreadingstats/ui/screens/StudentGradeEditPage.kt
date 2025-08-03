@@ -31,7 +31,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.milesilac.classreadingstats.model.Student
+import com.milesilac.classreadingstats.model.ReadingTest
 import com.milesilac.classreadingstats.model.StudentList
 import com.milesilac.classreadingstats.model.calculateComprehensionLevel
 import com.milesilac.classreadingstats.model.calculateLearnerOralReading
@@ -45,20 +45,20 @@ import com.milesilac.classreadingstats.ui.theme.ProjectColors
 @Composable
 fun StudentGradeEditPage(
     modifier: Modifier = Modifier,
-    student: Student,
+    studentTest: ReadingTest,
 ) {
     val focusManager = LocalFocusManager.current
 
     val scrollState = rememberScrollState()
-    val shouldGradePassage = student.shouldGradePassage()
+    val shouldGradePassage = studentTest.shouldGradePassage()
 
-    val gstScore = student.groupScreeningTest.score
+    val gstScore = studentTest.groupScreeningTest.score
 //    val gstComprehensionLevel = calculateComprehensionLevel(
 //        score = gstScore
 //    )
-    val inputGST = remember { mutableStateOf(student.groupScreeningTest.score.toString()) }
-    val inputOR = remember { mutableStateOf((student.oralReading?.numberOfMiscues ?: -1).toString()) }
-    val inputRC = remember { mutableStateOf((student.readingComprehension?.inputPercentage ?: -1F).toString()) }
+    val inputGST = remember { mutableStateOf(studentTest.groupScreeningTest.score.toString()) }
+    val inputOR = remember { mutableStateOf((studentTest.oralReading?.numberOfMiscues ?: -1).toString()) }
+    val inputRC = remember { mutableStateOf((studentTest.readingComprehension?.inputPercentage ?: -1F).toString()) }
     val gstComprehensionLevel = remember {
         derivedStateOf {
             calculateComprehensionLevel(
@@ -67,10 +67,10 @@ fun StudentGradeEditPage(
         }
     }
 
-    val oralReadingPercentage = student.oralReading?.percentage ?: -1F
+    val oralReadingPercentage = studentTest.oralReading?.percentage ?: -1F
     val oralReadingLearnerLevel = calculateLearnerOralReading(percentage = oralReadingPercentage)
 
-    val readingComprehensionPercentage = student.readingComprehension?.inputPercentage ?: -1F
+    val readingComprehensionPercentage = studentTest.readingComprehension?.inputPercentage ?: -1F
     val readingComprehensionLearnerLevel = calculateLearnerReadingComprehension(percentage = readingComprehensionPercentage)
 
     Column(
@@ -444,6 +444,6 @@ fun StudentGradeEditPage(
 @Composable
 fun StudentGradeEditPagePreview() {
     StudentGradeEditPage(
-        student = (dummyStudentListsEightAmethyst.students[15] as StudentList.StudentDetails).student
+        studentTest = (dummyStudentListsEightAmethyst.students[15] as StudentList.StudentDetails).student.preTest
     )
 }

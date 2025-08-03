@@ -1,7 +1,9 @@
 package com.milesilac.classreadingstats.ui.screens
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -11,8 +13,10 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.twotone.Close
 import androidx.compose.material.icons.twotone.Edit
@@ -21,24 +25,24 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.milesilac.classreadingstats.helpers.nonScaledSp
 import com.milesilac.classreadingstats.model.Student
 import com.milesilac.classreadingstats.model.StudentList
-import com.milesilac.classreadingstats.model.calculateComprehensionLevel
 import com.milesilac.classreadingstats.model.calculateLearnerOralReading
 import com.milesilac.classreadingstats.model.calculateLearnerOverallReadingProfile
 import com.milesilac.classreadingstats.model.calculateLearnerReadingComprehension
-import com.milesilac.classreadingstats.model.shouldGradePassage
-import com.milesilac.classreadingstats.model.toComprehensionLevelString
-import com.milesilac.classreadingstats.model.toLearnerLevelString
 import com.milesilac.classreadingstats.ui.dummyStudentListsEightAmethyst
 import com.milesilac.classreadingstats.ui.theme.ProjectColors
+import kotlinx.coroutines.launch
 
 @Composable
 fun StudentDetailsPage(
@@ -46,13 +50,16 @@ fun StudentDetailsPage(
     onEditClick: () -> Unit = {},
     onBackClick: () -> Unit = {}
 ) {
-    val scrollState = rememberScrollState()
-    val shouldGradePassage = student.shouldGradePassage()
+    val pagerState = rememberPagerState(pageCount = { 2 })
+    val coroutineScope = rememberCoroutineScope()
 
-    val oralReadingPercentage = student.oralReading?.percentage ?: -1F
+    val scrollState = rememberScrollState()
+    val hasPostTest = true //student.postTest != null
+
+    val oralReadingPercentage = student.preTest.oralReading?.percentage ?: -1F
     val oralReadingLearnerLevel = calculateLearnerOralReading(percentage = oralReadingPercentage)
 
-    val readingComprehensionPercentage = student.readingComprehension?.inputPercentage ?: -1F
+    val readingComprehensionPercentage = student.preTest.readingComprehension?.inputPercentage ?: -1F
     val readingComprehensionLearnerLevel = calculateLearnerReadingComprehension(percentage = readingComprehensionPercentage)
 
     Column(
@@ -120,142 +127,92 @@ fun StudentDetailsPage(
                 }
             }
         }
-        Column(
+        HorizontalPager(
+            state = pagerState,
             modifier = Modifier
-                .background(color = ProjectColors.OffWhite4)
-                .weight(1F)
                 .fillMaxSize()
-                .verticalScroll(state = scrollState)
-        ) {
-            Column(
-                modifier = Modifier
-                    .background(color = ProjectColors.OffViolet1)
-                    .padding(
-                        horizontal = 12.dp,
-                        vertical = 12.dp
+                .weight(1F),
+            beyondViewportPageCount = 1
+        ) { page ->
+            // Our page content
+            when (page) {
+                1 -> {
+                    StudentGradeDetailPage(
+                        studentTest = student.postTest ?: student.preTest,
                     )
-                    .fillMaxWidth()
-                    .align(Alignment.CenterHorizontally),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                Text(
-                    text = "Group Screening Test Score",
-                    modifier = Modifier,
-                    color = ProjectColors.OffWhite4,
-                    fontSize = 24.sp,
-                    textAlign = TextAlign.Center
+                }
+                else -> StudentGradeDetailPage(
+                    studentTest = student.preTest,
                 )
             }
-            val gstScore = student.groupScreeningTest.score
-            val gstComprehensionLevel = calculateComprehensionLevel(
-                score = gstScore
-            )
-            Text(
-                text = "$gstScore (Level - ${gstComprehensionLevel.toComprehensionLevelString()})",
+        }
+        Column(
+            modifier = Modifier
+                .fillMaxWidth(),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Row(
                 modifier = Modifier
-                    .padding(
-                        horizontal = 12.dp,
-                        vertical = 12.dp
-                    )
-                    .fillMaxWidth()
-                    .align(Alignment.CenterHorizontally),
-                color = Color.Black,
-                fontSize = 20.sp,
-                textAlign = TextAlign.Center
-            )
-            if (shouldGradePassage) {
-                Column(
+                    .fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Box(
                     modifier = Modifier
-                        .background(color = ProjectColors.OffOrange3)
-                        .padding(
-                            horizontal = 12.dp,
-                            vertical = 12.dp
+                        .background(
+                            color = Color.DarkGray
                         )
+                        .padding(horizontal = 2.dp, vertical = 4.dp)
                         .fillMaxWidth()
-                        .align(Alignment.CenterHorizontally),
-                    horizontalAlignment = Alignment.CenterHorizontally
+                        .weight(1F),
                 ) {
                     Text(
-                        text = "Oral Reading",
-                        modifier = Modifier,
-                        color = ProjectColors.OffWhite4,
-                        fontSize = 24.sp,
+                        text = "PreTest",
+                        modifier = Modifier
+                            .background(
+                                color = ProjectColors.OffWhite4,
+                                shape = RoundedCornerShape(12.dp)
+                            )
+                            .clip(shape = RoundedCornerShape(12.dp))
+                            .clickable {
+                                coroutineScope.launch {
+                                    pagerState.animateScrollToPage(page = 0)
+                                }
+                            }
+                            .padding(vertical = 12.dp)
+                            .fillMaxWidth()
+                            .align(Alignment.Center),
+                        color = Color.Black,
+                        fontSize = 20.sp.nonScaledSp,
                         textAlign = TextAlign.Center
                     )
                 }
-                Column(
+                Box(
                     modifier = Modifier
-                        .padding(
-                            horizontal = 12.dp,
-                            vertical = 12.dp
+                        .background(
+                            color = Color.DarkGray
                         )
+                        .padding(horizontal = 2.dp, vertical = 4.dp)
                         .fillMaxWidth()
-                        .align(Alignment.CenterHorizontally),
-                    horizontalAlignment = Alignment.CenterHorizontally
+                        .weight(1F),
                 ) {
                     Text(
-                        text = "No. Of Miscues: ${student.oralReading?.numberOfMiscues ?: -1}",
-                        modifier = Modifier,
+                        text = "PostTest",
+                        modifier = Modifier
+                            .background(
+                                color = ProjectColors.OffWhite4,
+                                shape = RoundedCornerShape(12.dp)
+                            )
+                            .clip(shape = RoundedCornerShape(12.dp))
+                            .clickable {
+                                coroutineScope.launch {
+                                    pagerState.animateScrollToPage(page = 1)
+                                }
+                            }
+                            .padding(vertical = 12.dp)
+                            .fillMaxWidth()
+                            .align(Alignment.Center),
                         color = Color.Black,
-                        fontSize = 20.sp,
-                        textAlign = TextAlign.Center
-                    )
-                    Text(
-                        text = "Percentage: $oralReadingPercentage",
-                        modifier = Modifier,
-                        color = Color.Black,
-                        fontSize = 20.sp,
-                        textAlign = TextAlign.Center
-                    )
-                    Text(
-                        text = "Learner Level: ${oralReadingLearnerLevel.toLearnerLevelString()}",
-                        modifier = Modifier,
-                        color = Color.Black,
-                        fontSize = 20.sp,
-                        textAlign = TextAlign.Center
-                    )
-                }
-                Column(
-                    modifier = Modifier
-                        .background(color = ProjectColors.OffAquaGreen1)
-                        .padding(
-                            horizontal = 12.dp,
-                            vertical = 12.dp
-                        )
-                        .fillMaxWidth()
-                        .align(Alignment.CenterHorizontally),
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    Text(
-                        text = "Reading Comprehension",
-                        modifier = Modifier,
-                        color = ProjectColors.OffWhite4,
-                        fontSize = 24.sp,
-                        textAlign = TextAlign.Center
-                    )
-                }
-                Column(
-                    modifier = Modifier
-                        .padding(
-                            horizontal = 12.dp,
-                            vertical = 12.dp
-                        )
-                        .fillMaxWidth()
-                        .align(Alignment.CenterHorizontally),
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    Text(
-                        text = "Percentage: $readingComprehensionPercentage",
-                        modifier = Modifier,
-                        color = Color.Black,
-                        fontSize = 20.sp,
-                        textAlign = TextAlign.Center
-                    )
-                    Text(
-                        text = "Learner Level: ${readingComprehensionLearnerLevel.toLearnerLevelString()}",
-                        modifier = Modifier,
-                        color = Color.Black,
-                        fontSize = 20.sp,
+                        fontSize = 20.sp.nonScaledSp,
                         textAlign = TextAlign.Center
                     )
                 }
@@ -269,13 +226,13 @@ fun StudentDetailsPage(
             Column (
                 modifier = Modifier
                     .background(color = ProjectColors.OffYellow1)
-                    .padding(vertical = 24.dp)
+                    .padding(vertical = 20.dp)
                     .fillMaxWidth()
                     .align(Alignment.CenterHorizontally),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Text(
-                    text = "READING PROFILE",
+                    text = "PRETEST READING PROFILE",
                     modifier = Modifier,
                     color = Color.Black,
                     fontSize = 24.sp,
@@ -288,6 +245,31 @@ fun StudentDetailsPage(
                     fontSize = 24.sp,
                     textAlign = TextAlign.Center
                 )
+            }
+            if (hasPostTest) {
+                Column (
+                    modifier = Modifier
+                        .background(color = ProjectColors.OffBlue2)
+                        .padding(vertical = 20.dp)
+                        .fillMaxWidth()
+                        .align(Alignment.CenterHorizontally),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Text(
+                        text = "POSTTEST READING PROFILE",
+                        modifier = Modifier,
+                        color = ProjectColors.OffWhite4,
+                        fontSize = 24.sp,
+                        textAlign = TextAlign.Center
+                    )
+                    Text(
+                        text = "${calculateLearnerOverallReadingProfile(orLevel = oralReadingLearnerLevel, rcLevel = readingComprehensionLearnerLevel)}",
+                        modifier = Modifier,
+                        color = ProjectColors.OffWhite4,
+                        fontSize = 24.sp,
+                        textAlign = TextAlign.Center
+                    )
+                }
             }
             Row(
                 modifier = Modifier
