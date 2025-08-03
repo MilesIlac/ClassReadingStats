@@ -1,5 +1,8 @@
 package com.milesilac.classreadingstats.ui.screens
 
+import android.content.ContentResolver
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -35,6 +38,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.milesilac.classreadingstats.model.Student
 import com.milesilac.classreadingstats.model.toGradeLevelInt
+import com.milesilac.classreadingstats.service.exportNewFileToExcel
 import com.milesilac.classreadingstats.ui.components.BottomNavBar
 import com.milesilac.classreadingstats.ui.components.TopInfoBar
 import com.milesilac.classreadingstats.ui.dummySections
@@ -43,9 +47,12 @@ import com.milesilac.classreadingstats.ui.dummyStudentListsEightDiamond
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
 
+@RequiresApi(Build.VERSION_CODES.Q)
 @Composable
 fun HomePage(
-    onStudentEntryClick: (Student) -> Unit = {}
+    contentResolver: ContentResolver? = null,
+    onStudentEntryClick: (Student) -> Unit = {},
+    onToast: (String) -> Unit = {}
 ) {
     val currentSheetLists = listOf(dummyStudentListsEightAmethyst, dummyStudentListsEightDiamond)
     val pagerState = rememberPagerState(pageCount = { currentSheetLists.size })
@@ -74,7 +81,16 @@ fun HomePage(
             .fillMaxSize()
     ) {
         TopInfoBar(
-            section = currentSection
+            section = currentSection,
+            onExportClick = {
+                contentResolver?.let {
+                    exportNewFileToExcel(
+                        contentResolver = it,
+                        classBook = currentSheetLists,
+                        onToast = onToast
+                    )
+                }
+            }
         )
         HorizontalPager(
             state = pagerState,
@@ -148,6 +164,7 @@ fun HomePage(
     }
 }
 
+@RequiresApi(Build.VERSION_CODES.Q)
 @Preview
 @Composable
 fun HomePagePreview() {

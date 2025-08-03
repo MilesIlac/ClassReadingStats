@@ -18,8 +18,7 @@ import com.milesilac.classreadingstats.ui.dummyStudentListsEightAmethyst
 @Composable
 fun TopInfoBar(
     section: String,
-    onGroupButtonClick: () -> Unit = {},
-    onDeleteButtonClick: () -> Unit = {}
+    onExportClick: () -> Unit = {},
 ) {
     TopAppBar(
         title = {
@@ -31,7 +30,9 @@ fun TopInfoBar(
         actions = {
             IconButton(
                 modifier = Modifier,
-                onClick = {},
+                onClick = {
+                    onExportClick()
+                },
             ) {
                 Icon(
                     imageVector = Icons.TwoTone.MoreVert,

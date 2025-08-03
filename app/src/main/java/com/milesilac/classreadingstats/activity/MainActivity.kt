@@ -1,7 +1,10 @@
 package com.milesilac.classreadingstats.activity
 
+import android.os.Build
 import android.os.Bundle
+import android.widget.Toast
 import androidx.activity.compose.setContent
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -20,6 +23,7 @@ import com.milesilac.classreadingstats.ui.screens.StudentDetailsPage
 
 class MainActivity : AppCompatActivity() {
 
+    @RequiresApi(Build.VERSION_CODES.Q)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
@@ -33,8 +37,14 @@ class MainActivity : AppCompatActivity() {
                 entryProvider = entryProvider {
                     entry<RouteHome> {
                         HomePage(
+                            contentResolver = contentResolver,
                             onStudentEntryClick = { student ->
                                 backStack.add(RouteStudentDetails(student))
+                            },
+                            onToast = { toastText ->
+                                this@MainActivity.run {
+                                    Toast.makeText(this, toastText, Toast.LENGTH_SHORT).show()
+                                }
                             }
                         )
                     }

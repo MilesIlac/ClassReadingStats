@@ -13,9 +13,9 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.milesilac.classreadingstats.model.Student
 import com.milesilac.classreadingstats.model.StudentList
 import com.milesilac.classreadingstats.model.StudentSexOrient
@@ -85,9 +85,13 @@ fun StudentListPage(
                             Modifier
                                 .animateItem()
                                 .fillMaxWidth()
-                                .background(color = Color.Green)
-                                .padding(8.dp),
-                            color = Color.Black,
+                                .background(color = ProjectColors.OffGreen1)
+                                .padding(
+                                    horizontal = 8.dp,
+                                    vertical = 16.dp
+                                ),
+                            color = ProjectColors.OffWhite4,
+                            fontSize = 16.sp
                         )
                     }
                 }

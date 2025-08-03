@@ -10,8 +10,8 @@ activity-compose = "1.10.1"
 appcompat = "1.7.1"
 material = "1.14.0-alpha03"
 constraintlayout = "2.2.1"
-navigationFragmentKtx = "2.9.2"
-navigationUiKtx = "2.9.2"
+navigationFragmentKtx = "2.9.3"
+navigationUiKtx = "2.9.3"
 
 # Serialization
 serialization = "1.9.0"
@@ -20,15 +20,18 @@ serialization = "1.9.0"
 compose-bom = "2025.07.00"
 
 # Jetpack Navigation 3
-navigation3 = "1.0.0-alpha05"
+navigation3 = "1.0.0-alpha06"
 
 #Calvin-LL Reorderable
 calvin-reorderable = "2.5.1"
 
+#Apache POI
+poi-version = "5.4.1"
+
 # Testing Dependencies
 junit = "4.13.2"
-junitAndroid = "1.2.1"
-espressoCore = "3.6.1"
+junitAndroid = "1.3.0"
+espressoCore = "3.7.0"
 
 
 [libraries]
@@ -65,6 +68,10 @@ androidx-navigation3-ui = { module = "androidx.navigation3:navigation3-ui", vers
 
 #Calvin-LL Reorderable
 reorderable-list-items = { module = "sh.calvin.reorderable:reorderable", version.ref = "calvin-reorderable" }
+
+#Apache POI
+apache-poi = { module = "org.apache.poi:poi", version.ref = "poi-version" }
+apache-poi-ooxml = { module = "org.apache.poi:poi-ooxml", version.ref = "poi-version" }
 
 # Testing Dependencies
 junit = { group = "junit", name = "junit", version.ref = "junit" }
