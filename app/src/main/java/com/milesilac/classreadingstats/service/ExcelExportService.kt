@@ -7,7 +7,14 @@ import android.os.Environment
 import android.provider.MediaStore
 import androidx.annotation.RequiresApi
 import com.milesilac.classreadingstats.model.ClassSheet
+import com.milesilac.classreadingstats.model.StudentList
+import com.milesilac.classreadingstats.model.calculateLearnerOralReading
+import com.milesilac.classreadingstats.model.calculateLearnerOverallReadingProfile
+import com.milesilac.classreadingstats.model.calculateLearnerReadingComprehension
+import com.milesilac.classreadingstats.model.calculateOralReadingPercentage
+import com.milesilac.classreadingstats.model.toComprehensionLevelString
 import com.milesilac.classreadingstats.model.toGradeLevelInt
+import com.milesilac.classreadingstats.model.toLearnerLevelString
 import org.apache.poi.ss.usermodel.CellStyle
 import org.apache.poi.ss.usermodel.HorizontalAlignment
 import org.apache.poi.ss.usermodel.VerticalAlignment
@@ -24,9 +31,20 @@ fun exportNewFileToExcel(
 ) {
 
     val newBook = XSSFWorkbook()
+    val numberDataFormat = newBook.createDataFormat()
     val cellStyle = newBook.createCellStyle().apply {
         alignment = HorizontalAlignment.CENTER
         verticalAlignment = VerticalAlignment.CENTER
+    }
+    val orPercentCellStyle = newBook.createCellStyle().apply {
+        alignment = HorizontalAlignment.CENTER
+        verticalAlignment = VerticalAlignment.CENTER
+        dataFormat = numberDataFormat.getFormat("0.00")
+    }
+    val rcPercentCellStyle = newBook.createCellStyle().apply {
+        alignment = HorizontalAlignment.CENTER
+        verticalAlignment = VerticalAlignment.CENTER
+        dataFormat = numberDataFormat.getFormat("0.0")
     }
 
     classBook.forEach {
@@ -38,16 +56,133 @@ fun exportNewFileToExcel(
                 hasPostTest = hasPostTest
             )
         }
+        var lastRowIndex = 4 // ideally rowStartIndex + 4
 
-        var lastRowIndex = 3 // ideally rowStartIndex + 3
-        //TODO actual data logic; lastRowIndex should be updated with this
+        val doMaleStudentsExist = it.maleStudents.any { item -> item is StudentList.StudentDetails }
+        if (doMaleStudentsExist) {
+            for (student in it.maleStudents) {
+                if (student is StudentList.StudentDetails) {
+                    val pretestNumberOfMiscues = student.student.preTest.oralReading?.numberOfMiscues ?: -1.0
+                    val pretestTotalNumberOfWords = student.student.preTest.oralReading?.totalNumberOfWordsInSelection ?: -1.0
+                    val pretestORPercentage = calculateOralReadingPercentage(
+                        numberOfMiscues = pretestNumberOfMiscues,
+                        totalNumberOfWordsInSelection = pretestTotalNumberOfWords
+                    )
+                    val pretestORLevel = calculateLearnerOralReading(percentage = pretestORPercentage)
+                    val pretestRCPercentage = student.student.preTest.readingComprehension?.inputPercentage ?: -1.0
+                    val pretestRCLevel = calculateLearnerReadingComprehension(percentage = pretestRCPercentage)
+                    addStudents(
+                        classSheet = classSheet,
+                        rowIndex = lastRowIndex,
+                        cellStyle = cellStyle,
+                        orPercentCellStyle = orPercentCellStyle,
+                        rcPercentCellStyle = rcPercentCellStyle,
+                        hasPostTest = hasPostTest,
+                        studentOrderId = student.student.orderId,
+                        studentName = student.student.name,
+                        studentGSTScore = student.student.preTest.groupScreeningTest.score,
+                        studentGSTComprehensionLevel = student.student.preTest.groupScreeningTest.comprehensionLevel.toComprehensionLevelString(),
+                        studentORNumberOfMiscues = pretestNumberOfMiscues,
+                        studentORTotalNumberOfWords = pretestTotalNumberOfWords,
+                        studentORPercentage = pretestORPercentage,
+                        studentORLevel = pretestORLevel.toLearnerLevelString(),
+                        studentRCPercentage = pretestRCPercentage,
+                        studentRCLevel = pretestRCLevel.toLearnerLevelString(),
+                        studentOverallReadingProfile = calculateLearnerOverallReadingProfile(orLevel = pretestORLevel, rcLevel = pretestRCLevel).toLearnerLevelString()
+                    )
+                    lastRowIndex++
+                }
+            }
+        }
 
-        val newLastRowIndex = lastRowIndex + 2
-        classSheet.createLabels(
-            rowStartIndex = newLastRowIndex,
-            cellStyle = cellStyle,
-            hasPostTest = hasPostTest
-        )
+
+        val doFemaleStudentsExist = it.femaleStudents.any { item -> item is StudentList.StudentDetails }
+        when {
+            doFemaleStudentsExist && doMaleStudentsExist -> {
+                lastRowIndex = lastRowIndex + 2
+                classSheet.createLabels(
+                    rowStartIndex = lastRowIndex,
+                    cellStyle = cellStyle,
+                    hasPostTest = hasPostTest
+                )
+                lastRowIndex = lastRowIndex + 4
+                for (student in it.femaleStudents) {
+                    if (student is StudentList.StudentDetails) {
+                        val pretestNumberOfMiscues = student.student.preTest.oralReading?.numberOfMiscues ?: -1.0
+                        val pretestTotalNumberOfWords = student.student.preTest.oralReading?.totalNumberOfWordsInSelection ?: -1.0
+                        val pretestORPercentage = calculateOralReadingPercentage(
+                            numberOfMiscues = pretestNumberOfMiscues,
+                            totalNumberOfWordsInSelection = pretestTotalNumberOfWords
+                        )
+                        val pretestORLevel = calculateLearnerOralReading(percentage = pretestORPercentage)
+                        val pretestRCPercentage = student.student.preTest.readingComprehension?.inputPercentage ?: -1.0
+                        val pretestRCLevel = calculateLearnerReadingComprehension(percentage = pretestRCPercentage)
+                        addStudents(
+                            classSheet = classSheet,
+                            rowIndex = lastRowIndex,
+                            cellStyle = cellStyle,
+                            orPercentCellStyle = orPercentCellStyle,
+                            rcPercentCellStyle = rcPercentCellStyle,
+                            hasPostTest = hasPostTest,
+                            studentOrderId = student.student.orderId,
+                            studentName = student.student.name,
+                            studentGSTScore = student.student.preTest.groupScreeningTest.score,
+                            studentGSTComprehensionLevel = student.student.preTest.groupScreeningTest.comprehensionLevel.toComprehensionLevelString(),
+                            studentORNumberOfMiscues = pretestNumberOfMiscues,
+                            studentORTotalNumberOfWords = pretestTotalNumberOfWords,
+                            studentORPercentage = pretestORPercentage,
+                            studentORLevel = pretestORLevel.toLearnerLevelString(),
+                            studentRCPercentage = pretestRCPercentage,
+                            studentRCLevel = pretestRCLevel.toLearnerLevelString(),
+                            studentOverallReadingProfile = calculateLearnerOverallReadingProfile(orLevel = pretestORLevel, rcLevel = pretestRCLevel).toLearnerLevelString()
+                        )
+                        lastRowIndex++
+                    }
+                }
+            }
+            doFemaleStudentsExist -> {
+                lastRowIndex = lastRowIndex + 4
+                classSheet.createLabels(
+                    rowStartIndex = lastRowIndex,
+                    cellStyle = cellStyle,
+                    hasPostTest = hasPostTest
+                )
+                lastRowIndex = lastRowIndex + 4
+                for (student in it.femaleStudents) {
+                    if (student is StudentList.StudentDetails) {
+                        val pretestNumberOfMiscues = student.student.preTest.oralReading?.numberOfMiscues ?: -1.0
+                        val pretestTotalNumberOfWords = student.student.preTest.oralReading?.totalNumberOfWordsInSelection ?: -1.0
+                        val pretestORPercentage = calculateOralReadingPercentage(
+                            numberOfMiscues = pretestNumberOfMiscues,
+                            totalNumberOfWordsInSelection = pretestTotalNumberOfWords
+                        )
+                        val pretestORLevel = calculateLearnerOralReading(percentage = pretestORPercentage)
+                        val pretestRCPercentage = student.student.preTest.readingComprehension?.inputPercentage ?: -1.0
+                        val pretestRCLevel = calculateLearnerReadingComprehension(percentage = pretestRCPercentage)
+                        addStudents(
+                            classSheet = classSheet,
+                            rowIndex = lastRowIndex,
+                            cellStyle = cellStyle,
+                            orPercentCellStyle = orPercentCellStyle,
+                            rcPercentCellStyle = rcPercentCellStyle,
+                            hasPostTest = hasPostTest,
+                            studentOrderId = student.student.orderId,
+                            studentName = student.student.name,
+                            studentGSTScore = student.student.preTest.groupScreeningTest.score,
+                            studentGSTComprehensionLevel = student.student.preTest.groupScreeningTest.comprehensionLevel.toComprehensionLevelString(),
+                            studentORNumberOfMiscues = pretestNumberOfMiscues,
+                            studentORTotalNumberOfWords = pretestTotalNumberOfWords,
+                            studentORPercentage = pretestORPercentage,
+                            studentORLevel = pretestORLevel.toLearnerLevelString(),
+                            studentRCPercentage = pretestRCPercentage,
+                            studentRCLevel = pretestRCLevel.toLearnerLevelString(),
+                            studentOverallReadingProfile = calculateLearnerOverallReadingProfile(orLevel = pretestORLevel, rcLevel = pretestRCLevel).toLearnerLevelString()
+                        )
+                        lastRowIndex++
+                    }
+                }
+            }
+        }
     }
 
     val contentValues = ContentValues().apply {
@@ -294,4 +429,78 @@ fun XSSFSheet.createLabels(
     }
 
     return classSheet
+}
+
+fun addStudents(
+    classSheet: XSSFSheet,
+    rowIndex: Int,
+    cellStyle: CellStyle,
+    orPercentCellStyle: CellStyle,
+    rcPercentCellStyle: CellStyle,
+    hasPostTest: Boolean,
+    studentOrderId: Double,
+    studentName: String,
+    studentGSTScore: Double,
+    studentGSTComprehensionLevel: String,
+    studentORNumberOfMiscues: Double,
+    studentORTotalNumberOfWords: Double,
+    studentORPercentage: Double,
+    studentORLevel: String,
+    studentRCPercentage: Double,
+    studentRCLevel: String,
+    studentOverallReadingProfile: String,
+) {
+    val studentRow = classSheet.createRow(rowIndex)
+    studentRow.createCell(0).apply {
+        setCellValue(studentOrderId)
+        setCellStyle(cellStyle)
+    }
+    studentRow.createCell(1).apply {
+        setCellValue(studentName)
+        setCellStyle(cellStyle)
+    }
+    studentRow.createCell(2).apply {
+        setCellValue(studentGSTScore)
+        setCellStyle(cellStyle)
+    }
+    studentRow.createCell(3, ).apply {
+        setCellValue(studentGSTComprehensionLevel)
+        setCellStyle(cellStyle)
+    }
+    studentRow.createCell(4).apply {
+        if (studentORNumberOfMiscues > -1) {
+            setCellValue(studentORNumberOfMiscues)
+        } else setCellValue("")
+        setCellStyle(cellStyle)
+    }
+    studentRow.createCell(5).apply {
+        if (studentORTotalNumberOfWords > -1) {
+            setCellValue(studentORTotalNumberOfWords)
+        } else setCellValue("")
+        setCellStyle(cellStyle)
+    }
+    studentRow.createCell(6).apply {
+        if (studentORPercentage != -0.01) {
+            setCellValue(studentORPercentage)
+        } else setCellValue("")
+        setCellStyle(orPercentCellStyle)
+    }
+    studentRow.createCell(7).apply {
+        setCellValue(studentORLevel)
+        setCellStyle(cellStyle)
+    }
+    studentRow.createCell(8).apply {
+        if (studentRCPercentage > -1) {
+            setCellValue(studentRCPercentage)
+        } else setCellValue("")
+        setCellStyle(rcPercentCellStyle)
+    }
+    studentRow.createCell(9).apply {
+        setCellValue(studentRCLevel)
+        setCellStyle(cellStyle)
+    }
+    studentRow.createCell(10).apply {
+        setCellValue(studentOverallReadingProfile)
+        setCellStyle(cellStyle)
+    }
 }

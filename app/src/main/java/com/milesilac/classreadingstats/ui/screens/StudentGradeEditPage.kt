@@ -67,10 +67,11 @@ fun StudentGradeEditPage(
         }
     }
 
-    val oralReadingPercentage = studentTest.oralReading?.percentage ?: -1F
+    //TODO fix editText decimals
+    val oralReadingPercentage = studentTest.oralReading?.percentage ?: -1.0
     val oralReadingLearnerLevel = calculateLearnerOralReading(percentage = oralReadingPercentage)
 
-    val readingComprehensionPercentage = studentTest.readingComprehension?.inputPercentage ?: -1F
+    val readingComprehensionPercentage = studentTest.readingComprehension?.inputPercentage ?: -1.0
     val readingComprehensionLearnerLevel = calculateLearnerReadingComprehension(percentage = readingComprehensionPercentage)
 
     Column(
@@ -444,6 +445,6 @@ fun StudentGradeEditPage(
 @Composable
 fun StudentGradeEditPagePreview() {
     StudentGradeEditPage(
-        studentTest = (dummyStudentListsEightAmethyst.students[15] as StudentList.StudentDetails).student.preTest
+        studentTest = (dummyStudentListsEightAmethyst.maleStudents[15] as StudentList.StudentDetails).student.preTest
     )
 }

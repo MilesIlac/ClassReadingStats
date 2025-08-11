@@ -56,10 +56,10 @@ fun StudentDetailsPage(
     val scrollState = rememberScrollState()
     val hasPostTest = true //student.postTest != null
 
-    val oralReadingPercentage = student.preTest.oralReading?.percentage ?: -1F
+    val oralReadingPercentage = student.preTest.oralReading?.percentage ?: -1.0
     val oralReadingLearnerLevel = calculateLearnerOralReading(percentage = oralReadingPercentage)
 
-    val readingComprehensionPercentage = student.preTest.readingComprehension?.inputPercentage ?: -1F
+    val readingComprehensionPercentage = student.preTest.readingComprehension?.inputPercentage ?: -1.0
     val readingComprehensionLearnerLevel = calculateLearnerReadingComprehension(percentage = readingComprehensionPercentage)
 
     Column(
@@ -343,6 +343,6 @@ fun StudentDetailsPage(
 @Composable
 fun StudentDetailsPagePreview() {
     StudentDetailsPage(
-        student = (dummyStudentListsEightAmethyst.students[15] as StudentList.StudentDetails).student
+        student = (dummyStudentListsEightAmethyst.maleStudents[15] as StudentList.StudentDetails).student
     )
 }

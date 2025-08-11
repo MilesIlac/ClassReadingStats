@@ -28,7 +28,7 @@ fun LearnerLevel.toLearnerLevelString(): String {
 }
 
 fun calculateLearnerOralReading(
-    percentage: Float
+    percentage: Double
 ): LearnerLevel {
     return when (percentage) {
         in 97.0..100.0 -> LearnerLevel.INDEPENDENT
@@ -39,7 +39,7 @@ fun calculateLearnerOralReading(
 }
 
 fun calculateLearnerReadingComprehension(
-    percentage: Float
+    percentage: Double
 ): LearnerLevel {
     return when (percentage) {
         in 80.0..100.0 -> LearnerLevel.INDEPENDENT

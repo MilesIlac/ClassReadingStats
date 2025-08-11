@@ -63,7 +63,7 @@ fun StudentEntry(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text(
-                        text = "${student.orderId} ${student.name}".trim(),
+                        text = "${student.orderId.toInt()} ${student.name}".trim(),
                         modifier = Modifier
                             .weight(1F)
                             .padding(end = 8.dp),
@@ -97,6 +97,6 @@ fun StudentEntry(
 @Composable
 fun StudentEntryPreview() {
     StudentEntry(
-        student = (dummyStudentListsEightAmethyst.students[15] as StudentList.StudentDetails).student
+        student = (dummyStudentListsEightAmethyst.maleStudents[15] as StudentList.StudentDetails).student
     )
 }

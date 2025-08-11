@@ -116,6 +116,6 @@ fun StudentListPage(
 @Composable
 fun StudentListPagePreview() {
     StudentListPage(
-        studentList = dummyStudentListsEightAmethyst.students
+        studentList = dummyStudentListsEightAmethyst.maleStudents + dummyStudentListsEightAmethyst.femaleStudents
     )
 }

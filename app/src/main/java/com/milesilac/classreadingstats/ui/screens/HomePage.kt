@@ -100,8 +100,9 @@ fun HomePage(
             beyondViewportPageCount = 2
         ) { page ->
             // Our page content
+            val combinedList = currentSheetLists[page].maleStudents + currentSheetLists[page].femaleStudents
             StudentListPage(
-                studentList = currentSheetLists[page].students,
+                studentList = combinedList,
                 onStudentEntryClick = onStudentEntryClick
             )
         }

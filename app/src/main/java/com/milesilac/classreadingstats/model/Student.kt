@@ -6,7 +6,7 @@ import java.util.UUID
 @Serializable
 data class Student(
     var listId: String = UUID.randomUUID().toString(),
-    var orderId: Int = 0,
+    var orderId: Double = 0.0,
     var name: String,
     var section: String,
     var sex: String,

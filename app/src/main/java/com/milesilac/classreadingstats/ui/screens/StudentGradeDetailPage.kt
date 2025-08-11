@@ -34,10 +34,10 @@ fun StudentGradeDetailPage(
     val scrollState = rememberScrollState()
     val shouldGradePassage = studentTest.shouldGradePassage()
 
-    val oralReadingPercentage = studentTest.oralReading?.percentage ?: -1F
+    val oralReadingPercentage = studentTest.oralReading?.percentage ?: -1.0
     val oralReadingLearnerLevel = calculateLearnerOralReading(percentage = oralReadingPercentage)
 
-    val readingComprehensionPercentage = studentTest.readingComprehension?.inputPercentage ?: -1F
+    val readingComprehensionPercentage = studentTest.readingComprehension?.inputPercentage ?: -1.0
     val readingComprehensionLearnerLevel = calculateLearnerReadingComprehension(percentage = readingComprehensionPercentage)
 
     Column(
@@ -67,10 +67,10 @@ fun StudentGradeDetailPage(
         }
         val gstScore = studentTest.groupScreeningTest.score
         val gstComprehensionLevel = calculateComprehensionLevel(
-            score = gstScore
+            score = gstScore.toInt()
         )
         Text(
-            text = "$gstScore (Level - ${gstComprehensionLevel.toComprehensionLevelString()})",
+            text = "${gstScore.toInt()} (Level - ${gstComprehensionLevel.toComprehensionLevelString()})",
             modifier = Modifier
                 .padding(
                     horizontal = 12.dp,
@@ -113,7 +113,7 @@ fun StudentGradeDetailPage(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Text(
-                    text = "No. Of Miscues: ${studentTest.oralReading?.numberOfMiscues ?: -1}",
+                    text = "No. Of Miscues: ${(studentTest.oralReading?.numberOfMiscues ?: -1).toInt()}",
                     modifier = Modifier,
                     color = Color.Black,
                     fontSize = 20.sp,
@@ -186,6 +186,6 @@ fun StudentGradeDetailPage(
 @Composable
 fun StudentGradeDetailPagePreview() {
     StudentGradeDetailPage(
-        studentTest = (dummyStudentListsEightAmethyst.students[15] as StudentList.StudentDetails).student.preTest
+        studentTest = (dummyStudentListsEightAmethyst.maleStudents[15] as StudentList.StudentDetails).student.preTest
     )
 }

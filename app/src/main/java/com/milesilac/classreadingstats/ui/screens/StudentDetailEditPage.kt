@@ -274,6 +274,6 @@ fun StudentDetailEditPage(
 @Composable
 fun StudentDetailEditPagePreview() {
     StudentDetailEditPage(
-        student = (dummyStudentListsEightAmethyst.students[15] as StudentList.StudentDetails).student
+        student = (dummyStudentListsEightAmethyst.maleStudents[15] as StudentList.StudentDetails).student
     )
 }
