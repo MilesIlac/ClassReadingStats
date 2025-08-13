@@ -115,7 +115,7 @@ fun StudentGradeDetailPage(
                     textAlign = TextAlign.Center
                 )
                 Text(
-                    text = "Percentage: $oralReadingPercentage",
+                    text = "Percentage: %.2f".format(oralReadingPercentage),
                     modifier = Modifier,
                     color = Color.Black,
                     fontSize = 20.sp,

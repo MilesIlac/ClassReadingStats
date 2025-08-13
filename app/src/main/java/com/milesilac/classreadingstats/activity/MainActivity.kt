@@ -64,6 +64,9 @@ class MainActivity : AppCompatActivity() {
                     entry<RouteStudentDetailEdit> { key ->
                         StudentDetailEditPage(
                             student = key.student,
+                            onSaveClick = { editedStudent ->
+
+                            },
                             onBackClick = { backStack.removeLastOrNull() }
                         )
                     }

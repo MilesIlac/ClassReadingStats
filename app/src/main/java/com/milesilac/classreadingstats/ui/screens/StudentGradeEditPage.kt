@@ -17,9 +17,13 @@ import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusDirection
@@ -31,45 +35,68 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.milesilac.classreadingstats.helpers.isPositiveInteger
+import com.milesilac.classreadingstats.helpers.isProperPositiveDecimal
+import com.milesilac.classreadingstats.helpers.removeExtraZeroes
+import com.milesilac.classreadingstats.helpers.removeExtraZeroesForDecimal
+import com.milesilac.classreadingstats.model.GroupScreeningTest
 import com.milesilac.classreadingstats.model.LearnerLevel
+import com.milesilac.classreadingstats.model.OralReading
+import com.milesilac.classreadingstats.model.ReadingComprehension
 import com.milesilac.classreadingstats.model.ReadingTest
 import com.milesilac.classreadingstats.model.StudentList
-import com.milesilac.classreadingstats.model.calculateComprehensionLevel
 import com.milesilac.classreadingstats.model.toComprehensionLevelString
 import com.milesilac.classreadingstats.model.toLearnerLevelString
 import com.milesilac.classreadingstats.ui.dummyStudentListsEightAmethyst
 import com.milesilac.classreadingstats.ui.theme.ProjectColors
+import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.distinctUntilChanged
 
 @Composable
 fun StudentGradeEditPage(
     modifier: Modifier = Modifier,
+    studentName: String = "", // for key
     studentTest: ReadingTest,
+    onUpdateGrade: (ReadingTest) -> Unit = {}
 ) {
     val focusManager = LocalFocusManager.current
-
     val scrollState = rememberScrollState()
-    val shouldGradePassage = studentTest.shouldGradePassage()
 
-    val gstScore = studentTest.groupScreeningTest.score
-//    val gstComprehensionLevel = calculateComprehensionLevel(
-//        score = gstScore
-//    )
-    val inputGST = remember { mutableStateOf(studentTest.groupScreeningTest.score.toString()) }
-    val inputOR = remember { mutableStateOf((studentTest.oralReading?.numberOfMiscues ?: -1).toString()) }
-    val inputRC = remember { mutableStateOf((studentTest.readingComprehension?.inputPercentage ?: -1F).toString()) }
-    val gstComprehensionLevel = remember {
+    var inputGST by remember { mutableStateOf(studentTest.groupScreeningTest.score.toInt().toString()) }
+    var inputORTotalWords by remember { mutableStateOf((studentTest.oralReading?.totalNumberOfWordsInSelection?.toInt() ?: -1).toString()) }
+    var inputORMiscues by remember { mutableStateOf((studentTest.oralReading?.numberOfMiscues?.toInt() ?: -1).toString()) }
+    var inputRC by remember { mutableStateOf((studentTest.readingComprehension?.inputPercentage ?: -1.0).toString()) }
+    val newReadingTest by remember {
         derivedStateOf {
-            calculateComprehensionLevel(
-                score = runCatching { inputGST.value.toInt() }.getOrElse { 0 }
+            ReadingTest(
+                groupScreeningTest = GroupScreeningTest(
+                    score = runCatching { inputGST.toDouble() }.getOrElse { 0.0 }
+                ),
+                oralReading = OralReading(
+                    totalNumberOfWordsInSelection = inputORTotalWords.toDouble(),
+                    numberOfMiscues = runCatching { inputORMiscues.toDouble() }.getOrElse { 0.0 }
+                ),
+                readingComprehension = ReadingComprehension(
+                    inputPercentage = runCatching { inputRC.toDouble() }.getOrElse { 0.0 }
+                )
             )
         }
     }
+    val shouldGradePassage = newReadingTest.shouldGradePassage()
+    val oralReadingPercentage = newReadingTest.oralReading?.percentage ?: -1.0
+    val oralReadingLearnerLevel = newReadingTest.oralReading?.level ?: LearnerLevel.ERROR
+    val readingComprehensionLearnerLevel = newReadingTest.readingComprehension?.level ?: LearnerLevel.ERROR
 
-    //TODO fix editText decimals
-    val oralReadingPercentage = studentTest.oralReading?.percentage ?: -1.0
-    val oralReadingLearnerLevel = studentTest.oralReading?.level ?: LearnerLevel.ERROR
-
-    val readingComprehensionLearnerLevel = studentTest.readingComprehension?.level ?: LearnerLevel.ERROR
+    // Listen for readingTest input change
+    LaunchedEffect(studentName) {
+        snapshotFlow { newReadingTest }
+            .distinctUntilChanged()
+            .debounce(800L)
+            .collect { readingTest ->
+                // Trigger your side-effect here
+                onUpdateGrade(readingTest)
+            }
+    }
 
     Column(
         modifier = modifier
@@ -117,9 +144,11 @@ fun StudentGradeEditPage(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 OutlinedTextField(
-                    value = inputGST.value,
+                    value = inputGST,
                     onValueChange = { newValue ->
-                        inputGST.value = newValue
+                        if (newValue.isPositiveInteger()) {
+                            inputGST = newValue.removeExtraZeroes()
+                        }
                     },
                     modifier = Modifier
                         .fillMaxWidth()
@@ -166,7 +195,7 @@ fun StudentGradeEditPage(
                 }
             }
             Text(
-                text = "Comprehension Level: ${gstComprehensionLevel.value.toComprehensionLevelString()}",
+                text = "Comprehension Level: ${newReadingTest.groupScreeningTest.comprehensionLevel.toComprehensionLevelString()}",
                 modifier = Modifier
                     .padding(top = 12.dp)
                     .fillMaxWidth()
@@ -218,9 +247,11 @@ fun StudentGradeEditPage(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     OutlinedTextField(
-                        value = inputOR.value,
+                        value = inputORTotalWords,
                         onValueChange = { newValue ->
-                            inputOR.value = newValue
+                            if (newValue.isPositiveInteger()) {
+                                inputORTotalWords = newValue.removeExtraZeroes()
+                            }
                         },
                         modifier = Modifier
                             .fillMaxWidth()
@@ -270,9 +301,11 @@ fun StudentGradeEditPage(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     OutlinedTextField(
-                        value = inputOR.value,
+                        value = inputORMiscues,
                         onValueChange = { newValue ->
-                            inputOR.value = newValue
+                            if (newValue.isPositiveInteger()) {
+                                inputORMiscues = newValue.removeExtraZeroes()
+                            }
                         },
                         modifier = Modifier
                             .fillMaxWidth()
@@ -319,7 +352,7 @@ fun StudentGradeEditPage(
                     }
                 }
                 Text(
-                    text = "Percentage: $oralReadingPercentage",
+                    text = "Percentage: %.2f".format(oralReadingPercentage),
                     modifier = Modifier
                         .padding(top = 12.dp)
                         .fillMaxWidth(),
@@ -376,9 +409,11 @@ fun StudentGradeEditPage(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     OutlinedTextField(
-                        value = inputRC.value,
+                        value = inputRC,
                         onValueChange = { newValue ->
-                            inputRC.value = newValue
+                            if (newValue.isProperPositiveDecimal()) {
+                                inputRC = newValue.removeExtraZeroesForDecimal()
+                            }
                         },
                         modifier = Modifier
                             .fillMaxWidth()

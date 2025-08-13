@@ -23,6 +23,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -35,6 +36,7 @@ import androidx.compose.ui.unit.sp
 import com.milesilac.classreadingstats.helpers.nonScaledSp
 import com.milesilac.classreadingstats.model.Student
 import com.milesilac.classreadingstats.model.StudentList
+import com.milesilac.classreadingstats.model.emptyReadingTest
 import com.milesilac.classreadingstats.ui.dummyStudentListsEightAmethyst
 import com.milesilac.classreadingstats.ui.theme.ProjectColors
 import kotlinx.coroutines.launch
@@ -42,11 +44,12 @@ import kotlinx.coroutines.launch
 @Composable
 fun StudentDetailEditPage(
     student: Student,
-    onSaveClick: () -> Unit = {},
+    onSaveClick: (Student) -> Unit = {},
     onBackClick: () -> Unit = {},
 ) {
     val pagerState = rememberPagerState(pageCount = { 2 })
     val coroutineScope = rememberCoroutineScope()
+    val inputStudent = remember { student }
 
     Column(
         modifier = Modifier
@@ -71,7 +74,7 @@ fun StudentDetailEditPage(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Text(
-                    text = student.name.trim(),
+                    text = inputStudent.name.trim(),
                     modifier = Modifier,
                     color = ProjectColors.OffWhite4,
                     fontSize = 28.sp,
@@ -91,12 +94,22 @@ fun StudentDetailEditPage(
                 1 -> {
                     StudentGradeEditPage(
                         modifier = Modifier,
-                        studentTest = student.postTest ?: student.preTest,
+                        studentName = inputStudent.name,
+                        studentTest = inputStudent.postTest ?: emptyReadingTest(),
+                        onUpdateGrade = { readingTest ->
+                            inputStudent.postTest = readingTest
+                            println("Grade updated; gstScore: ${inputStudent.postTest?.groupScreeningTest?.score}")
+                        }
                     )
                 }
                 else -> StudentGradeEditPage(
                     modifier = Modifier,
-                    studentTest = student.preTest,
+                    studentName = inputStudent.name,
+                    studentTest = inputStudent.preTest,
+                    onUpdateGrade = { readingTest ->
+                        inputStudent.preTest = readingTest
+                        println("Grade updated; gstScore: ${inputStudent.preTest.groupScreeningTest.score}")
+                    }
                 )
             }
         }
@@ -180,7 +193,7 @@ fun StudentDetailEditPage(
                 horizontalArrangement = Arrangement.SpaceEvenly
             ) {
                 OutlinedButton(
-                    onClick = { onSaveClick() },
+                    onClick = { onSaveClick(inputStudent) },
                     modifier = Modifier,
                     colors = ButtonColors(
                         containerColor = Color.White,
