@@ -7,11 +7,9 @@ import android.os.Environment
 import android.provider.MediaStore
 import androidx.annotation.RequiresApi
 import com.milesilac.classreadingstats.model.ClassSheet
+import com.milesilac.classreadingstats.model.LearnerLevel
 import com.milesilac.classreadingstats.model.StudentList
-import com.milesilac.classreadingstats.model.calculateLearnerOralReading
 import com.milesilac.classreadingstats.model.calculateLearnerOverallReadingProfile
-import com.milesilac.classreadingstats.model.calculateLearnerReadingComprehension
-import com.milesilac.classreadingstats.model.calculateOralReadingPercentage
 import com.milesilac.classreadingstats.model.toComprehensionLevelString
 import com.milesilac.classreadingstats.model.toGradeLevelInt
 import com.milesilac.classreadingstats.model.toLearnerLevelString
@@ -77,13 +75,10 @@ fun exportNewFileToExcel(
                 )
                 val pretestNumberOfMiscues = student.student.preTest.oralReading?.numberOfMiscues ?: -1.0
                 val pretestTotalNumberOfWords = student.student.preTest.oralReading?.totalNumberOfWordsInSelection ?: -1.0
-                val pretestORPercentage = calculateOralReadingPercentage(
-                    numberOfMiscues = pretestNumberOfMiscues,
-                    totalNumberOfWordsInSelection = pretestTotalNumberOfWords
-                )
-                val pretestORLevel = calculateLearnerOralReading(percentage = pretestORPercentage)
+                val pretestORPercentage = student.student.preTest.oralReading?.percentage ?: -1.0
+                val pretestORLevel = student.student.preTest.oralReading?.level ?: LearnerLevel.ERROR
                 val pretestRCPercentage = student.student.preTest.readingComprehension?.inputPercentage ?: -1.0
-                val pretestRCLevel = calculateLearnerReadingComprehension(percentage = pretestRCPercentage)
+                val pretestRCLevel = student.student.preTest.readingComprehension?.level ?: LearnerLevel.ERROR
                 addStudentGrades(
                     classSheet = classSheet,
                     rowIndex = lastRowIndex,
@@ -130,13 +125,10 @@ fun exportNewFileToExcel(
                 )
                 val pretestNumberOfMiscues = student.student.preTest.oralReading?.numberOfMiscues ?: -1.0
                 val pretestTotalNumberOfWords = student.student.preTest.oralReading?.totalNumberOfWordsInSelection ?: -1.0
-                val pretestORPercentage = calculateOralReadingPercentage(
-                    numberOfMiscues = pretestNumberOfMiscues,
-                    totalNumberOfWordsInSelection = pretestTotalNumberOfWords
-                )
-                val pretestORLevel = calculateLearnerOralReading(percentage = pretestORPercentage)
+                val pretestORPercentage = student.student.preTest.oralReading?.percentage ?: -1.0
+                val pretestORLevel = student.student.preTest.oralReading?.level ?: LearnerLevel.ERROR
                 val pretestRCPercentage = student.student.preTest.readingComprehension?.inputPercentage ?: -1.0
-                val pretestRCLevel = calculateLearnerReadingComprehension(percentage = pretestRCPercentage)
+                val pretestRCLevel = student.student.preTest.readingComprehension?.level ?: LearnerLevel.ERROR
                 addStudentGrades(
                     classSheet = classSheet,
                     rowIndex = lastRowIndex,

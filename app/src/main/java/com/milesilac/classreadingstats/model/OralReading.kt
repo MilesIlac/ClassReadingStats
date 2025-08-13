@@ -3,22 +3,24 @@ package com.milesilac.classreadingstats.model
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class OralReading(
+class OralReading(
     var totalNumberOfWordsInSelection: Double,
     var numberOfMiscues: Double,
-    var percentage: Double,
-    var level: LearnerLevel
-)
-
-//remember to code input for total number of items
+) {
+    val percentage: Double get() = calculateOralReadingPercentage(
+        numberOfMiscues = numberOfMiscues,
+        totalNumberOfWordsInSelection = totalNumberOfWordsInSelection
+    )
+    val level: LearnerLevel get() = calculateLearnerOralReading(percentage = percentage)
+}
 
 fun calculateOralReadingPercentage(
+    totalNumberOfWordsInSelection: Double,
     numberOfMiscues: Double,
-    totalNumberOfWordsInSelection: Double
 ): Double {
     return when {
-        numberOfMiscues == -1.0 -> -0.01
         totalNumberOfWordsInSelection == -1.0 -> -0.01
+        numberOfMiscues == -1.0 -> -0.01
         else -> ((totalNumberOfWordsInSelection - numberOfMiscues) / totalNumberOfWordsInSelection) * 100
     }
 }

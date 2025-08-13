@@ -31,12 +31,10 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.milesilac.classreadingstats.model.LearnerLevel
 import com.milesilac.classreadingstats.model.ReadingTest
 import com.milesilac.classreadingstats.model.StudentList
 import com.milesilac.classreadingstats.model.calculateComprehensionLevel
-import com.milesilac.classreadingstats.model.calculateLearnerOralReading
-import com.milesilac.classreadingstats.model.calculateLearnerReadingComprehension
-import com.milesilac.classreadingstats.model.shouldGradePassage
 import com.milesilac.classreadingstats.model.toComprehensionLevelString
 import com.milesilac.classreadingstats.model.toLearnerLevelString
 import com.milesilac.classreadingstats.ui.dummyStudentListsEightAmethyst
@@ -69,10 +67,9 @@ fun StudentGradeEditPage(
 
     //TODO fix editText decimals
     val oralReadingPercentage = studentTest.oralReading?.percentage ?: -1.0
-    val oralReadingLearnerLevel = calculateLearnerOralReading(percentage = oralReadingPercentage)
+    val oralReadingLearnerLevel = studentTest.oralReading?.level ?: LearnerLevel.ERROR
 
-    val readingComprehensionPercentage = studentTest.readingComprehension?.inputPercentage ?: -1.0
-    val readingComprehensionLearnerLevel = calculateLearnerReadingComprehension(percentage = readingComprehensionPercentage)
+    val readingComprehensionLearnerLevel = studentTest.readingComprehension?.level ?: LearnerLevel.ERROR
 
     Column(
         modifier = modifier

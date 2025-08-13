@@ -3,7 +3,10 @@ package com.milesilac.classreadingstats.model
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class GroupScreeningTest(
+class GroupScreeningTest(
     var score: Double,
-    var comprehensionLevel: ComprehensionLevel
-)
+) {
+    val comprehensionLevel: ComprehensionLevel get() = calculateComprehensionLevel(
+        score = score.toInt()
+    )
+}

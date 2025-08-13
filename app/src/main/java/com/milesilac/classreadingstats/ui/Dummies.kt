@@ -2,10 +2,8 @@ package com.milesilac.classreadingstats.ui
 
 import com.milesilac.classreadingstats.model.ClassSection
 import com.milesilac.classreadingstats.model.ClassSheet
-import com.milesilac.classreadingstats.model.ComprehensionLevel
 import com.milesilac.classreadingstats.model.GradeLevel
 import com.milesilac.classreadingstats.model.GroupScreeningTest
-import com.milesilac.classreadingstats.model.LearnerLevel
 import com.milesilac.classreadingstats.model.OralReading
 import com.milesilac.classreadingstats.model.ReadingComprehension
 import com.milesilac.classreadingstats.model.ReadingTest
@@ -31,18 +29,17 @@ val dummyStudentListsEightAmethyst = ClassSheet(
                 preTest = ReadingTest(
                     groupScreeningTest = GroupScreeningTest(
                         score = 13.0,
-                        comprehensionLevel = ComprehensionLevel.FIVE
+//                        comprehensionLevel = ComprehensionLevel.FIVE
                     ),
-                    isGradingPassage = true,
                     oralReading = OralReading(
                         totalNumberOfWordsInSelection = 106.0,
                         numberOfMiscues = 3.0,
-                        percentage = 97.17,
-                        level = LearnerLevel.INDEPENDENT
+//                        percentage = 97.17,
+//                        level = LearnerLevel.INDEPENDENT
                     ),
                     readingComprehension = ReadingComprehension(
                         inputPercentage = 86.0,
-                        level = LearnerLevel.INDEPENDENT
+//                        level = LearnerLevel.INDEPENDENT
                     )
                 ),
             )
@@ -56,18 +53,17 @@ val dummyStudentListsEightAmethyst = ClassSheet(
                 preTest = ReadingTest(
                     groupScreeningTest = GroupScreeningTest(
                         score = 13.0,
-                        comprehensionLevel = ComprehensionLevel.FIVE
+//                        comprehensionLevel = ComprehensionLevel.FIVE
                     ),
-                    isGradingPassage = true,
                     oralReading = OralReading(
                         totalNumberOfWordsInSelection = 106.0,
                         numberOfMiscues = 8.0,
-                        percentage = 92.45,
-                        level = LearnerLevel.INSTRUCTIONAL
+//                        percentage = 92.45,
+//                        level = LearnerLevel.INSTRUCTIONAL
                     ),
                     readingComprehension = ReadingComprehension(
                         inputPercentage = 63.0,
-                        level = LearnerLevel.INSTRUCTIONAL
+//                        level = LearnerLevel.INSTRUCTIONAL
                     )
                 ),
             )
@@ -81,18 +77,17 @@ val dummyStudentListsEightAmethyst = ClassSheet(
                 preTest = ReadingTest(
                     groupScreeningTest = GroupScreeningTest(
                         score = 15.0,
-                        comprehensionLevel = ComprehensionLevel.FIVE
+//                        comprehensionLevel = ComprehensionLevel.FIVE
                     ),
-                    isGradingPassage = true,
                     oralReading = OralReading(
                         totalNumberOfWordsInSelection = 106.0,
                         numberOfMiscues = 3.0,
-                        percentage = 97.17,
-                        level = LearnerLevel.INDEPENDENT
+//                        percentage = 97.17,
+//                        level = LearnerLevel.INDEPENDENT
                     ),
                     readingComprehension = ReadingComprehension(
                         inputPercentage = 86.0,
-                        level = LearnerLevel.INDEPENDENT
+//                        level = LearnerLevel.INDEPENDENT
                     )
                 ),
             )
@@ -106,18 +101,17 @@ val dummyStudentListsEightAmethyst = ClassSheet(
                 preTest = ReadingTest(
                     groupScreeningTest = GroupScreeningTest(
                         score = 12.0,
-                        comprehensionLevel = ComprehensionLevel.FIVE
+//                        comprehensionLevel = ComprehensionLevel.FIVE
                     ),
-                    isGradingPassage = true,
                     oralReading = OralReading(
                         totalNumberOfWordsInSelection = 106.0,
                         numberOfMiscues = 9.0,
-                        percentage = 91.51,
-                        level = LearnerLevel.INSTRUCTIONAL
+//                        percentage = 91.51,
+//                        level = LearnerLevel.INSTRUCTIONAL
                     ),
                     readingComprehension = ReadingComprehension(
                         inputPercentage = 71.0,
-                        level = LearnerLevel.INSTRUCTIONAL
+//                        level = LearnerLevel.INSTRUCTIONAL
                     )
                 ),
             )
@@ -131,18 +125,17 @@ val dummyStudentListsEightAmethyst = ClassSheet(
                 preTest = ReadingTest(
                     groupScreeningTest = GroupScreeningTest(
                         score = 11.0,
-                        comprehensionLevel = ComprehensionLevel.FIVE
+//                        comprehensionLevel = ComprehensionLevel.FIVE
                     ),
-                    isGradingPassage = true,
                     oralReading = OralReading(
                         totalNumberOfWordsInSelection = 106.0,
                         numberOfMiscues = 10.0,
-                        percentage = 90.52,
-                        level = LearnerLevel.INSTRUCTIONAL
+//                        percentage = 90.52,
+//                        level = LearnerLevel.INSTRUCTIONAL
                     ),
                     readingComprehension = ReadingComprehension(
                         inputPercentage = 71.0,
-                        level = LearnerLevel.INSTRUCTIONAL
+//                        level = LearnerLevel.INSTRUCTIONAL
                     )
                 ),
             )
@@ -156,18 +149,17 @@ val dummyStudentListsEightAmethyst = ClassSheet(
                 preTest = ReadingTest(
                     groupScreeningTest = GroupScreeningTest(
                         score = 16.0,
-                        comprehensionLevel = ComprehensionLevel.SIX
+//                        comprehensionLevel = ComprehensionLevel.SIX
                     ),
-                    isGradingPassage = true,
                     oralReading = OralReading(
                         totalNumberOfWordsInSelection = 106.0,
                         numberOfMiscues = 10.0,
-                        percentage = 90.52,
-                        level = LearnerLevel.INSTRUCTIONAL
+//                        percentage = 90.52,
+//                        level = LearnerLevel.INSTRUCTIONAL
                     ),
                     readingComprehension = ReadingComprehension(
                         inputPercentage = 63.0,
-                        level = LearnerLevel.INSTRUCTIONAL
+//                        level = LearnerLevel.INSTRUCTIONAL
                     )
                 ),
             )
@@ -181,18 +173,17 @@ val dummyStudentListsEightAmethyst = ClassSheet(
                 preTest = ReadingTest(
                     groupScreeningTest = GroupScreeningTest(
                         score = 7.0,
-                        comprehensionLevel = ComprehensionLevel.FIVE
+//                        comprehensionLevel = ComprehensionLevel.FIVE
                     ),
-                    isGradingPassage = true,
                     oralReading = OralReading(
                         totalNumberOfWordsInSelection = 106.0,
                         numberOfMiscues = 10.0,
-                        percentage = 90.52,
-                        level = LearnerLevel.INSTRUCTIONAL
+//                        percentage = 90.52,
+//                        level = LearnerLevel.INSTRUCTIONAL
                     ),
                     readingComprehension = ReadingComprehension(
                         inputPercentage = 63.0,
-                        level = LearnerLevel.INSTRUCTIONAL
+//                        level = LearnerLevel.INSTRUCTIONAL
                     )
                 ),
             )
@@ -206,18 +197,17 @@ val dummyStudentListsEightAmethyst = ClassSheet(
                 preTest = ReadingTest(
                     groupScreeningTest = GroupScreeningTest(
                         score = 14.0,
-                        comprehensionLevel = ComprehensionLevel.FIVE
+//                        comprehensionLevel = ComprehensionLevel.FIVE
                     ),
-                    isGradingPassage = true,
                     oralReading = OralReading(
                         totalNumberOfWordsInSelection = 106.0,
                         numberOfMiscues = 2.0,
-                        percentage = 98.11,
-                        level = LearnerLevel.INDEPENDENT
+//                        percentage = 98.11,
+//                        level = LearnerLevel.INDEPENDENT
                     ),
                     readingComprehension = ReadingComprehension(
                         inputPercentage = 86.0,
-                        level = LearnerLevel.INDEPENDENT
+//                        level = LearnerLevel.INDEPENDENT
                     )
                 ),
             )
@@ -231,18 +221,17 @@ val dummyStudentListsEightAmethyst = ClassSheet(
                 preTest = ReadingTest(
                     groupScreeningTest = GroupScreeningTest(
                         score = 16.0,
-                        comprehensionLevel = ComprehensionLevel.SIX
+//                        comprehensionLevel = ComprehensionLevel.SIX
                     ),
-                    isGradingPassage = true,
                     oralReading = OralReading(
                         totalNumberOfWordsInSelection = 106.0,
                         numberOfMiscues = 8.0,
-                        percentage = 92.45,
-                        level = LearnerLevel.INSTRUCTIONAL
+//                        percentage = 92.45,
+//                        level = LearnerLevel.INSTRUCTIONAL
                     ),
                     readingComprehension = ReadingComprehension(
                         inputPercentage = 63.0,
-                        level = LearnerLevel.INSTRUCTIONAL
+//                        level = LearnerLevel.INSTRUCTIONAL
                     )
                 ),
             )
@@ -256,18 +245,17 @@ val dummyStudentListsEightAmethyst = ClassSheet(
                 preTest = ReadingTest(
                     groupScreeningTest = GroupScreeningTest(
                         score = 16.0,
-                        comprehensionLevel = ComprehensionLevel.SIX
+//                        comprehensionLevel = ComprehensionLevel.SIX
                     ),
-                    isGradingPassage = true,
                     oralReading = OralReading(
                         totalNumberOfWordsInSelection = 106.0,
                         numberOfMiscues = 9.0,
-                        percentage = 91.51,
-                        level = LearnerLevel.INSTRUCTIONAL
+//                        percentage = 91.51,
+//                        level = LearnerLevel.INSTRUCTIONAL
                     ),
                     readingComprehension = ReadingComprehension(
                         inputPercentage = 63.0,
-                        level = LearnerLevel.INSTRUCTIONAL
+//                        level = LearnerLevel.INSTRUCTIONAL
                     )
                 ),
             )
@@ -281,18 +269,17 @@ val dummyStudentListsEightAmethyst = ClassSheet(
                 preTest = ReadingTest(
                     groupScreeningTest = GroupScreeningTest(
                         score = 8.0,
-                        comprehensionLevel = ComprehensionLevel.FIVE
+//                        comprehensionLevel = ComprehensionLevel.FIVE
                     ),
-                    isGradingPassage = true,
                     oralReading = OralReading(
                         totalNumberOfWordsInSelection = 106.0,
                         numberOfMiscues = 17.0,
-                        percentage = 80.23,
-                        level = LearnerLevel.FRUSTRATION
+//                        percentage = 80.23,
+//                        level = LearnerLevel.FRUSTRATION
                     ),
                     readingComprehension = ReadingComprehension(
                         inputPercentage = 43.0,
-                        level = LearnerLevel.FRUSTRATION
+//                        level = LearnerLevel.FRUSTRATION
                     )
                 ),
             )
@@ -306,18 +293,17 @@ val dummyStudentListsEightAmethyst = ClassSheet(
                 preTest = ReadingTest(
                     groupScreeningTest = GroupScreeningTest(
                         score = 14.0,
-                        comprehensionLevel = ComprehensionLevel.FIVE
+//                        comprehensionLevel = ComprehensionLevel.FIVE
                     ),
-                    isGradingPassage = true,
                     oralReading = OralReading(
                         totalNumberOfWordsInSelection = 106.0,
                         numberOfMiscues = 9.0,
-                        percentage = 91.51,
-                        level = LearnerLevel.INSTRUCTIONAL
+//                        percentage = 91.51,
+//                        level = LearnerLevel.INSTRUCTIONAL
                     ),
                     readingComprehension = ReadingComprehension(
                         inputPercentage = 71.0,
-                        level = LearnerLevel.INSTRUCTIONAL
+//                        level = LearnerLevel.INSTRUCTIONAL
                     )
                 ),
             )
@@ -331,18 +317,17 @@ val dummyStudentListsEightAmethyst = ClassSheet(
                 preTest = ReadingTest(
                     groupScreeningTest = GroupScreeningTest(
                         score = 19.0,
-                        comprehensionLevel = ComprehensionLevel.FIVE
+//                        comprehensionLevel = ComprehensionLevel.FIVE
                     ),
-                    isGradingPassage = true,
                     oralReading = OralReading(
                         totalNumberOfWordsInSelection = 106.0,
                         numberOfMiscues = 9.0,
-                        percentage = 91.51,
-                        level = LearnerLevel.INSTRUCTIONAL
+//                        percentage = 91.51,
+//                        level = LearnerLevel.INSTRUCTIONAL
                     ),
                     readingComprehension = ReadingComprehension(
                         inputPercentage = 63.0,
-                        level = LearnerLevel.INSTRUCTIONAL
+//                        level = LearnerLevel.INSTRUCTIONAL
                     )
                 ),
             )
@@ -356,18 +341,17 @@ val dummyStudentListsEightAmethyst = ClassSheet(
                 preTest = ReadingTest(
                     groupScreeningTest = GroupScreeningTest(
                         score = 15.0,
-                        comprehensionLevel = ComprehensionLevel.FIVE
+//                        comprehensionLevel = ComprehensionLevel.FIVE
                     ),
-                    isGradingPassage = true,
                     oralReading = OralReading(
                         totalNumberOfWordsInSelection = 106.0,
                         numberOfMiscues = 10.0,
-                        percentage = 90.52,
-                        level = LearnerLevel.INSTRUCTIONAL
+//                        percentage = 90.52,
+//                        level = LearnerLevel.INSTRUCTIONAL
                     ),
                     readingComprehension = ReadingComprehension(
                         inputPercentage = 71.0,
-                        level = LearnerLevel.INSTRUCTIONAL
+//                        level = LearnerLevel.INSTRUCTIONAL
                     )
                 ),
             )
@@ -381,18 +365,17 @@ val dummyStudentListsEightAmethyst = ClassSheet(
                 preTest = ReadingTest(
                     groupScreeningTest = GroupScreeningTest(
                         score = 18.0,
-                        comprehensionLevel = ComprehensionLevel.SIX
+//                        comprehensionLevel = ComprehensionLevel.SIX
                     ),
-                    isGradingPassage = true,
                     oralReading = OralReading(
                         totalNumberOfWordsInSelection = 106.0,
                         numberOfMiscues = 10.0,
-                        percentage = 90.52,
-                        level = LearnerLevel.INSTRUCTIONAL
+//                        percentage = 90.52,
+//                        level = LearnerLevel.INSTRUCTIONAL
                     ),
                     readingComprehension = ReadingComprehension(
                         inputPercentage = 63.0,
-                        level = LearnerLevel.INSTRUCTIONAL
+//                        level = LearnerLevel.INSTRUCTIONAL
                     )
                 ),
             )
@@ -406,18 +389,17 @@ val dummyStudentListsEightAmethyst = ClassSheet(
                 preTest = ReadingTest(
                     groupScreeningTest = GroupScreeningTest(
                         score = 13.0,
-                        comprehensionLevel = ComprehensionLevel.FIVE
+//                        comprehensionLevel = ComprehensionLevel.FIVE
                     ),
-                    isGradingPassage = true,
                     oralReading = OralReading(
                         totalNumberOfWordsInSelection = 106.0,
                         numberOfMiscues = 8.0,
-                        percentage = 92.45,
-                        level = LearnerLevel.INSTRUCTIONAL
+//                        percentage = 92.45,
+//                        level = LearnerLevel.INSTRUCTIONAL
                     ),
                     readingComprehension = ReadingComprehension(
                         inputPercentage = 71.0,
-                        level = LearnerLevel.INSTRUCTIONAL
+//                        level = LearnerLevel.INSTRUCTIONAL
                     )
                 ),
             )
@@ -431,18 +413,17 @@ val dummyStudentListsEightAmethyst = ClassSheet(
                 preTest = ReadingTest(
                     groupScreeningTest = GroupScreeningTest(
                         score = 14.0,
-                        comprehensionLevel = ComprehensionLevel.FIVE
+//                        comprehensionLevel = ComprehensionLevel.FIVE
                     ),
-                    isGradingPassage = true,
                     oralReading = OralReading(
                         totalNumberOfWordsInSelection = 106.0,
                         numberOfMiscues = 8.0,
-                        percentage = 92.45,
-                        level = LearnerLevel.INSTRUCTIONAL
+//                        percentage = 92.45,
+//                        level = LearnerLevel.INSTRUCTIONAL
                     ),
                     readingComprehension = ReadingComprehension(
                         inputPercentage = 100.0,
-                        level = LearnerLevel.INDEPENDENT
+//                        level = LearnerLevel.INDEPENDENT
                     )
                 ),
             )
@@ -456,18 +437,17 @@ val dummyStudentListsEightAmethyst = ClassSheet(
                 preTest = ReadingTest(
                     groupScreeningTest = GroupScreeningTest(
                         score = 12.0,
-                        comprehensionLevel = ComprehensionLevel.FIVE
+//                        comprehensionLevel = ComprehensionLevel.FIVE
                     ),
-                    isGradingPassage = true,
                     oralReading = OralReading(
                         totalNumberOfWordsInSelection = 106.0,
                         numberOfMiscues = 8.0,
-                        percentage = 92.45,
-                        level = LearnerLevel.INSTRUCTIONAL
+//                        percentage = 92.45,
+//                        level = LearnerLevel.INSTRUCTIONAL
                     ),
                     readingComprehension = ReadingComprehension(
                         inputPercentage = 71.0,
-                        level = LearnerLevel.INSTRUCTIONAL
+//                        level = LearnerLevel.INSTRUCTIONAL
                     )
                 ),
             )
@@ -481,18 +461,17 @@ val dummyStudentListsEightAmethyst = ClassSheet(
                 preTest = ReadingTest(
                     groupScreeningTest = GroupScreeningTest(
                         score = 17.0,
-                        comprehensionLevel = ComprehensionLevel.SIX
+//                        comprehensionLevel = ComprehensionLevel.SIX
                     ),
-                    isGradingPassage = true,
                     oralReading = OralReading(
                         totalNumberOfWordsInSelection = 106.0,
                         numberOfMiscues = 3.0,
-                        percentage = 97.17,
-                        level = LearnerLevel.INDEPENDENT
+//                        percentage = 97.17,
+//                        level = LearnerLevel.INDEPENDENT
                     ),
                     readingComprehension = ReadingComprehension(
                         inputPercentage = 88.0,
-                        level = LearnerLevel.INDEPENDENT
+//                        level = LearnerLevel.INDEPENDENT
                     )
                 ),
             )
@@ -506,18 +485,17 @@ val dummyStudentListsEightAmethyst = ClassSheet(
                 preTest = ReadingTest(
                     groupScreeningTest = GroupScreeningTest(
                         score = 6.0,
-                        comprehensionLevel = ComprehensionLevel.SIX
+//                        comprehensionLevel = ComprehensionLevel.SIX
                     ),
-                    isGradingPassage = true,
                     oralReading = OralReading(
                         totalNumberOfWordsInSelection = 106.0,
                         numberOfMiscues = 2.0,
-                        percentage = 98.11,
-                        level = LearnerLevel.INDEPENDENT
+//                        percentage = 98.11,
+//                        level = LearnerLevel.INDEPENDENT
                     ),
                     readingComprehension = ReadingComprehension(
                         inputPercentage = 86.0,
-                        level = LearnerLevel.INDEPENDENT
+//                        level = LearnerLevel.INDEPENDENT
                     )
                 ),
             )
@@ -531,18 +509,17 @@ val dummyStudentListsEightAmethyst = ClassSheet(
                 preTest = ReadingTest(
                     groupScreeningTest = GroupScreeningTest(
                         score = 13.0,
-                        comprehensionLevel = ComprehensionLevel.FIVE
+//                        comprehensionLevel = ComprehensionLevel.FIVE
                     ),
-                    isGradingPassage = true,
                     oralReading = OralReading(
                         totalNumberOfWordsInSelection = 106.0,
                         numberOfMiscues = 2.0,
-                        percentage = 98.11,
-                        level = LearnerLevel.INDEPENDENT
+//                        percentage = 98.11,
+//                        level = LearnerLevel.INDEPENDENT
                     ),
                     readingComprehension = ReadingComprehension(
                         inputPercentage = 86.0,
-                        level = LearnerLevel.INDEPENDENT
+//                        level = LearnerLevel.INDEPENDENT
                     )
                 ),
             )
@@ -556,18 +533,17 @@ val dummyStudentListsEightAmethyst = ClassSheet(
                 preTest = ReadingTest(
                     groupScreeningTest = GroupScreeningTest(
                         score = 12.0,
-                        comprehensionLevel = ComprehensionLevel.FIVE
+//                        comprehensionLevel = ComprehensionLevel.FIVE
                     ),
-                    isGradingPassage = true,
                     oralReading = OralReading(
                         totalNumberOfWordsInSelection = 106.0,
                         numberOfMiscues = 19.0,
-                        percentage = 77.91,
-                        level = LearnerLevel.FRUSTRATION
+//                        percentage = 77.91,
+//                        level = LearnerLevel.FRUSTRATION
                     ),
                     readingComprehension = ReadingComprehension(
                         inputPercentage = 43.0,
-                        level = LearnerLevel.FRUSTRATION
+//                        level = LearnerLevel.FRUSTRATION
                     )
                 ),
             )
@@ -584,18 +560,17 @@ val dummyStudentListsEightAmethyst = ClassSheet(
                 preTest = ReadingTest(
                     groupScreeningTest = GroupScreeningTest(
                         score = 15.0,
-                        comprehensionLevel = ComprehensionLevel.FIVE
+//                        comprehensionLevel = ComprehensionLevel.FIVE
                     ),
-                    isGradingPassage = true,
                     oralReading = OralReading(
                         totalNumberOfWordsInSelection = 106.0,
                         numberOfMiscues = 3.0,
-                        percentage = 97.17,
-                        level = LearnerLevel.INDEPENDENT
+//                        percentage = 97.17,
+//                        level = LearnerLevel.INDEPENDENT
                     ),
                     readingComprehension = ReadingComprehension(
                         inputPercentage = 100.0,
-                        level = LearnerLevel.INDEPENDENT
+//                        level = LearnerLevel.INDEPENDENT
                     )
                 ),
             )
@@ -616,18 +591,17 @@ val dummyStudentListsEightDiamond = ClassSheet(
                 preTest = ReadingTest(
                     groupScreeningTest = GroupScreeningTest(
                         score = 15.0,
-                        comprehensionLevel = ComprehensionLevel.FIVE
+//                        comprehensionLevel = ComprehensionLevel.FIVE
                     ),
-                    isGradingPassage = true,
                     oralReading = OralReading(
                         totalNumberOfWordsInSelection = 106.0,
                         numberOfMiscues = 3.0,
-                        percentage = 97.17,
-                        level = LearnerLevel.INDEPENDENT
+//                        percentage = 97.17,
+//                        level = LearnerLevel.INDEPENDENT
                     ),
                     readingComprehension = ReadingComprehension(
                         inputPercentage = 100.0,
-                        level = LearnerLevel.INDEPENDENT
+//                        level = LearnerLevel.INDEPENDENT
                     )
                 ),
             )
@@ -641,18 +615,17 @@ val dummyStudentListsEightDiamond = ClassSheet(
                 preTest = ReadingTest(
                     groupScreeningTest = GroupScreeningTest(
                         score = 10.0,
-                        comprehensionLevel = ComprehensionLevel.FIVE
+//                        comprehensionLevel = ComprehensionLevel.FIVE
                     ),
-                    isGradingPassage = true,
                     oralReading = OralReading(
                         totalNumberOfWordsInSelection = 106.0,
                         numberOfMiscues = 7.0,
-                        percentage = 93.4,
-                        level = LearnerLevel.INSTRUCTIONAL
+//                        percentage = 93.4,
+//                        level = LearnerLevel.INSTRUCTIONAL
                     ),
                     readingComprehension = ReadingComprehension(
                         inputPercentage = 100.0,
-                        level = LearnerLevel.INDEPENDENT
+//                        level = LearnerLevel.INDEPENDENT
                     )
                 ),
             )
@@ -666,18 +639,17 @@ val dummyStudentListsEightDiamond = ClassSheet(
                 preTest = ReadingTest(
                     groupScreeningTest = GroupScreeningTest(
                         score = 5.0,
-                        comprehensionLevel = ComprehensionLevel.FIVE
+//                        comprehensionLevel = ComprehensionLevel.FIVE
                     ),
-                    isGradingPassage = true,
                     oralReading = OralReading(
                         totalNumberOfWordsInSelection = 106.0,
                         numberOfMiscues = 7.0,
-                        percentage = 93.4,
-                        level = LearnerLevel.INSTRUCTIONAL
+//                        percentage = 93.4,
+//                        level = LearnerLevel.INSTRUCTIONAL
                     ),
                     readingComprehension = ReadingComprehension(
                         inputPercentage = 100.0,
-                        level = LearnerLevel.INDEPENDENT
+//                        level = LearnerLevel.INDEPENDENT
                     )
                 ),
             )
@@ -691,18 +663,17 @@ val dummyStudentListsEightDiamond = ClassSheet(
                 preTest = ReadingTest(
                     groupScreeningTest = GroupScreeningTest(
                         score = 12.0,
-                        comprehensionLevel = ComprehensionLevel.FIVE
+//                        comprehensionLevel = ComprehensionLevel.FIVE
                     ),
-                    isGradingPassage = true,
                     oralReading = OralReading(
                         totalNumberOfWordsInSelection = 106.0,
                         numberOfMiscues = 2.0,
-                        percentage = 98.11,
-                        level = LearnerLevel.INDEPENDENT
+//                        percentage = 98.11,
+//                        level = LearnerLevel.INDEPENDENT
                     ),
                     readingComprehension = ReadingComprehension(
                         inputPercentage = 86.0,
-                        level = LearnerLevel.INDEPENDENT
+//                        level = LearnerLevel.INDEPENDENT
                     )
                 ),
             )
@@ -716,18 +687,17 @@ val dummyStudentListsEightDiamond = ClassSheet(
                 preTest = ReadingTest(
                     groupScreeningTest = GroupScreeningTest(
                         score = 9.0,
-                        comprehensionLevel = ComprehensionLevel.FIVE
+//                        comprehensionLevel = ComprehensionLevel.FIVE
                     ),
-                    isGradingPassage = true,
                     oralReading = OralReading(
                         totalNumberOfWordsInSelection = 106.0,
                         numberOfMiscues = 9.0,
-                        percentage = 91.51,
-                        level = LearnerLevel.INSTRUCTIONAL
+//                        percentage = 91.51,
+//                        level = LearnerLevel.INSTRUCTIONAL
                     ),
                     readingComprehension = ReadingComprehension(
                         inputPercentage = 71.0,
-                        level = LearnerLevel.INSTRUCTIONAL
+//                        level = LearnerLevel.INSTRUCTIONAL
                     )
                 ),
             )
@@ -741,18 +711,17 @@ val dummyStudentListsEightDiamond = ClassSheet(
                 preTest = ReadingTest(
                     groupScreeningTest = GroupScreeningTest(
                         score = 12.0,
-                        comprehensionLevel = ComprehensionLevel.FIVE
+//                        comprehensionLevel = ComprehensionLevel.FIVE
                     ),
-                    isGradingPassage = true,
                     oralReading = OralReading(
                         totalNumberOfWordsInSelection = 106.0,
                         numberOfMiscues = 2.0,
-                        percentage = 98.11,
-                        level = LearnerLevel.INDEPENDENT
+//                        percentage = 98.11,
+//                        level = LearnerLevel.INDEPENDENT
                     ),
                     readingComprehension = ReadingComprehension(
                         inputPercentage = 71.0,
-                        level = LearnerLevel.INSTRUCTIONAL
+//                        level = LearnerLevel.INSTRUCTIONAL
                     )
                 ),
             )
@@ -766,18 +735,17 @@ val dummyStudentListsEightDiamond = ClassSheet(
                 preTest = ReadingTest(
                     groupScreeningTest = GroupScreeningTest(
                         score = 15.0,
-                        comprehensionLevel = ComprehensionLevel.FIVE
+//                        comprehensionLevel = ComprehensionLevel.FIVE
                     ),
-                    isGradingPassage = true,
                     oralReading = OralReading(
                         totalNumberOfWordsInSelection = 106.0,
                         numberOfMiscues = 3.0,
-                        percentage = 97.17,
-                        level = LearnerLevel.INDEPENDENT
+//                        percentage = 97.17,
+//                        level = LearnerLevel.INDEPENDENT
                     ),
                     readingComprehension = ReadingComprehension(
                         inputPercentage = 100.0,
-                        level = LearnerLevel.INDEPENDENT
+//                        level = LearnerLevel.INDEPENDENT
                     )
                 ),
             )
@@ -791,18 +759,17 @@ val dummyStudentListsEightDiamond = ClassSheet(
                 preTest = ReadingTest(
                     groupScreeningTest = GroupScreeningTest(
                         score = 5.0,
-                        comprehensionLevel = ComprehensionLevel.FIVE
+//                        comprehensionLevel = ComprehensionLevel.FIVE
                     ),
-                    isGradingPassage = true,
                     oralReading = OralReading(
                         totalNumberOfWordsInSelection = 106.0,
                         numberOfMiscues = 2.0,
-                        percentage = 98.11,
-                        level = LearnerLevel.INDEPENDENT
+//                        percentage = 98.11,
+//                        level = LearnerLevel.INDEPENDENT
                     ),
                     readingComprehension = ReadingComprehension(
                         inputPercentage = 100.0,
-                        level = LearnerLevel.INDEPENDENT
+//                        level = LearnerLevel.INDEPENDENT
                     )
                 ),
             )
@@ -816,18 +783,17 @@ val dummyStudentListsEightDiamond = ClassSheet(
                 preTest = ReadingTest(
                     groupScreeningTest = GroupScreeningTest(
                         score = 10.0,
-                        comprehensionLevel = ComprehensionLevel.FIVE
+//                        comprehensionLevel = ComprehensionLevel.FIVE
                     ),
-                    isGradingPassage = true,
                     oralReading = OralReading(
                         totalNumberOfWordsInSelection = 106.0,
                         numberOfMiscues = 10.0,
-                        percentage = 90.56,
-                        level = LearnerLevel.INSTRUCTIONAL
+//                        percentage = 90.56,
+//                        level = LearnerLevel.INSTRUCTIONAL
                     ),
                     readingComprehension = ReadingComprehension(
                         inputPercentage = 71.0,
-                        level = LearnerLevel.INSTRUCTIONAL
+//                        level = LearnerLevel.INSTRUCTIONAL
                     )
                 ),
             )
@@ -841,18 +807,17 @@ val dummyStudentListsEightDiamond = ClassSheet(
                 preTest = ReadingTest(
                     groupScreeningTest = GroupScreeningTest(
                         score = 10.0,
-                        comprehensionLevel = ComprehensionLevel.FIVE
+//                        comprehensionLevel = ComprehensionLevel.FIVE
                     ),
-                    isGradingPassage = true,
                     oralReading = OralReading(
                         totalNumberOfWordsInSelection = 106.0,
                         numberOfMiscues = 2.0,
-                        percentage = 98.11,
-                        level = LearnerLevel.INSTRUCTIONAL
+//                        percentage = 98.11,
+//                        level = LearnerLevel.INSTRUCTIONAL
                     ),
                     readingComprehension = ReadingComprehension(
                         inputPercentage = 63.0,
-                        level = LearnerLevel.INSTRUCTIONAL
+//                        level = LearnerLevel.INSTRUCTIONAL
                     )
                 ),
             )
@@ -866,18 +831,17 @@ val dummyStudentListsEightDiamond = ClassSheet(
                 preTest = ReadingTest(
                     groupScreeningTest = GroupScreeningTest(
                         score = 7.0,
-                        comprehensionLevel = ComprehensionLevel.FIVE
+//                        comprehensionLevel = ComprehensionLevel.FIVE
                     ),
-                    isGradingPassage = true,
                     oralReading = OralReading(
                         totalNumberOfWordsInSelection = 106.0,
                         numberOfMiscues = 2.0,
-                        percentage = 98.11,
-                        level = LearnerLevel.INDEPENDENT
+//                        percentage = 98.11,
+//                        level = LearnerLevel.INDEPENDENT
                     ),
                     readingComprehension = ReadingComprehension(
                         inputPercentage = 71.0,
-                        level = LearnerLevel.INSTRUCTIONAL
+//                        level = LearnerLevel.INSTRUCTIONAL
                     )
                 ),
             )
@@ -891,18 +855,17 @@ val dummyStudentListsEightDiamond = ClassSheet(
                 preTest = ReadingTest(
                     groupScreeningTest = GroupScreeningTest(
                         score = 13.0,
-                        comprehensionLevel = ComprehensionLevel.FIVE
+//                        comprehensionLevel = ComprehensionLevel.FIVE
                     ),
-                    isGradingPassage = true,
                     oralReading = OralReading(
                         totalNumberOfWordsInSelection = 106.0,
                         numberOfMiscues = 9.0,
-                        percentage = 91.51,
-                        level = LearnerLevel.INSTRUCTIONAL
+//                        percentage = 91.51,
+//                        level = LearnerLevel.INSTRUCTIONAL
                     ),
                     readingComprehension = ReadingComprehension(
                         inputPercentage = 71.0,
-                        level = LearnerLevel.INSTRUCTIONAL
+//                        level = LearnerLevel.INSTRUCTIONAL
                     )
                 ),
             )
@@ -916,18 +879,17 @@ val dummyStudentListsEightDiamond = ClassSheet(
                 preTest = ReadingTest(
                     groupScreeningTest = GroupScreeningTest(
                         score = 9.0,
-                        comprehensionLevel = ComprehensionLevel.FIVE
+//                        comprehensionLevel = ComprehensionLevel.FIVE
                     ),
-                    isGradingPassage = true,
                     oralReading = OralReading(
                         totalNumberOfWordsInSelection = 106.0,
                         numberOfMiscues = 2.0,
-                        percentage = 98.11,
-                        level = LearnerLevel.INDEPENDENT
+//                        percentage = 98.11,
+//                        level = LearnerLevel.INDEPENDENT
                     ),
                     readingComprehension = ReadingComprehension(
                         inputPercentage = 86.0,
-                        level = LearnerLevel.INDEPENDENT
+//                        level = LearnerLevel.INDEPENDENT
                     )
                 ),
             )
@@ -941,18 +903,17 @@ val dummyStudentListsEightDiamond = ClassSheet(
                 preTest = ReadingTest(
                     groupScreeningTest = GroupScreeningTest(
                         score = 13.0,
-                        comprehensionLevel = ComprehensionLevel.FIVE
+//                        comprehensionLevel = ComprehensionLevel.FIVE
                     ),
-                    isGradingPassage = true,
                     oralReading = OralReading(
                         totalNumberOfWordsInSelection = 106.0,
                         numberOfMiscues = 3.0,
-                        percentage = 97.17,
-                        level = LearnerLevel.INDEPENDENT
+//                        percentage = 97.17,
+//                        level = LearnerLevel.INDEPENDENT
                     ),
                     readingComprehension = ReadingComprehension(
                         inputPercentage = 63.0,
-                        level = LearnerLevel.INSTRUCTIONAL
+//                        level = LearnerLevel.INSTRUCTIONAL
                     )
                 ),
             )
@@ -966,18 +927,17 @@ val dummyStudentListsEightDiamond = ClassSheet(
                 preTest = ReadingTest(
                     groupScreeningTest = GroupScreeningTest(
                         score = 10.0,
-                        comprehensionLevel = ComprehensionLevel.FIVE
+//                        comprehensionLevel = ComprehensionLevel.FIVE
                     ),
-                    isGradingPassage = true,
                     oralReading = OralReading(
                         totalNumberOfWordsInSelection = 106.0,
                         numberOfMiscues = 9.0,
-                        percentage = 91.51,
-                        level = LearnerLevel.INSTRUCTIONAL
+//                        percentage = 91.51,
+//                        level = LearnerLevel.INSTRUCTIONAL
                     ),
                     readingComprehension = ReadingComprehension(
                         inputPercentage = 63.0,
-                        level = LearnerLevel.INSTRUCTIONAL
+//                        level = LearnerLevel.INSTRUCTIONAL
                     )
                 ),
             )
@@ -991,18 +951,17 @@ val dummyStudentListsEightDiamond = ClassSheet(
                 preTest = ReadingTest(
                     groupScreeningTest = GroupScreeningTest(
                         score = 18.0,
-                        comprehensionLevel = ComprehensionLevel.SIX
+//                        comprehensionLevel = ComprehensionLevel.SIX
                     ),
-                    isGradingPassage = true,
                     oralReading = OralReading(
                         totalNumberOfWordsInSelection = 106.0,
                         numberOfMiscues = 3.0,
-                        percentage = 97.17,
-                        level = LearnerLevel.INDEPENDENT
+//                        percentage = 97.17,
+//                        level = LearnerLevel.INDEPENDENT
                     ),
                     readingComprehension = ReadingComprehension(
                         inputPercentage = 63.0,
-                        level = LearnerLevel.INSTRUCTIONAL
+//                        level = LearnerLevel.INSTRUCTIONAL
                     )
                 ),
             )
@@ -1016,18 +975,17 @@ val dummyStudentListsEightDiamond = ClassSheet(
                 preTest = ReadingTest(
                     groupScreeningTest = GroupScreeningTest(
                         score = 8.0,
-                        comprehensionLevel = ComprehensionLevel.FIVE
+//                        comprehensionLevel = ComprehensionLevel.FIVE
                     ),
-                    isGradingPassage = true,
                     oralReading = OralReading(
                         totalNumberOfWordsInSelection = 106.0,
                         numberOfMiscues = 3.0,
-                        percentage = 97.17,
-                        level = LearnerLevel.INDEPENDENT
+//                        percentage = 97.17,
+//                        level = LearnerLevel.INDEPENDENT
                     ),
                     readingComprehension = ReadingComprehension(
                         inputPercentage = 86.0,
-                        level = LearnerLevel.INDEPENDENT
+//                        level = LearnerLevel.INDEPENDENT
                     )
                 ),
             )

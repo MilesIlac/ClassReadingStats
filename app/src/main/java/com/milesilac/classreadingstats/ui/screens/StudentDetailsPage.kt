@@ -35,11 +35,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.milesilac.classreadingstats.helpers.nonScaledSp
+import com.milesilac.classreadingstats.model.LearnerLevel
 import com.milesilac.classreadingstats.model.Student
 import com.milesilac.classreadingstats.model.StudentList
-import com.milesilac.classreadingstats.model.calculateLearnerOralReading
 import com.milesilac.classreadingstats.model.calculateLearnerOverallReadingProfile
-import com.milesilac.classreadingstats.model.calculateLearnerReadingComprehension
 import com.milesilac.classreadingstats.ui.dummyStudentListsEightAmethyst
 import com.milesilac.classreadingstats.ui.theme.ProjectColors
 import kotlinx.coroutines.launch
@@ -56,11 +55,8 @@ fun StudentDetailsPage(
     val scrollState = rememberScrollState()
     val hasPostTest = true //student.postTest != null
 
-    val oralReadingPercentage = student.preTest.oralReading?.percentage ?: -1.0
-    val oralReadingLearnerLevel = calculateLearnerOralReading(percentage = oralReadingPercentage)
-
-    val readingComprehensionPercentage = student.preTest.readingComprehension?.inputPercentage ?: -1.0
-    val readingComprehensionLearnerLevel = calculateLearnerReadingComprehension(percentage = readingComprehensionPercentage)
+    val oralReadingLearnerLevel = student.preTest.oralReading?.level ?: LearnerLevel.ERROR
+    val readingComprehensionLearnerLevel = student.preTest.readingComprehension?.level ?: LearnerLevel.ERROR
 
     Column(
         modifier = Modifier
