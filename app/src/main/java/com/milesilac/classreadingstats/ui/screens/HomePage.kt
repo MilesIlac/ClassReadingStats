@@ -1,26 +1,20 @@
 package com.milesilac.classreadingstats.ui.screens
 
-import android.content.ContentResolver
-import android.os.Build
-import androidx.annotation.RequiresApi
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ButtonColors
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -36,30 +30,30 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.milesilac.classreadingstats.model.ClassSection
+import com.milesilac.classreadingstats.model.ClassSheet
 import com.milesilac.classreadingstats.model.Student
 import com.milesilac.classreadingstats.model.toGradeLevelInt
-import com.milesilac.classreadingstats.service.exportNewFileToExcel
 import com.milesilac.classreadingstats.ui.components.BottomNavBar
 import com.milesilac.classreadingstats.ui.components.TopInfoBar
 import com.milesilac.classreadingstats.ui.dummySections
 import com.milesilac.classreadingstats.ui.dummyStudentListsEightAmethyst
 import com.milesilac.classreadingstats.ui.dummyStudentListsEightDiamond
+import com.milesilac.classreadingstats.ui.theme.ProjectColors
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
 
-@RequiresApi(Build.VERSION_CODES.Q)
 @Composable
 fun HomePage(
-    contentResolver: ContentResolver? = null,
+    currentSections: List<ClassSection> = listOf(),
+    currentSheets: List<ClassSheet> = listOf(),
     onStudentEntryClick: (Student) -> Unit = {},
-    onToast: (String) -> Unit = {}
+    onExportClick: (List<ClassSheet>) -> Unit = {},
 ) {
-    val currentSheetLists = listOf(dummyStudentListsEightAmethyst, dummyStudentListsEightDiamond)
-    val pagerState = rememberPagerState(pageCount = { currentSheetLists.size })
-
+    val pagerState = rememberPagerState(pageCount = { currentSheets.size })
     var currentSection by remember {
         mutableStateOf(
-            "${currentSheetLists[0].classSection.gradeLevel.toGradeLevelInt()} - ${currentSheetLists[0].classSection.sectionName}"
+            "${currentSheets[0].classSection.gradeLevel.toGradeLevelInt()} - ${currentSheets[0].classSection.sectionName}"
         )
     }
     val coroutineScope = rememberCoroutineScope()
@@ -71,7 +65,7 @@ fun HomePage(
             .collect { page ->
                 // Trigger your side-effect here
                 println("Pager settled at page: $page") // Replace with your action
-                currentSection = "${currentSheetLists[page].classSection.gradeLevel.toGradeLevelInt()} - ${currentSheetLists[page].classSection.sectionName}"
+                currentSection = "${currentSheets[page].classSection.gradeLevel.toGradeLevelInt()} - ${currentSheets[page].classSection.sectionName}"
             }
     }
 
@@ -82,15 +76,7 @@ fun HomePage(
     ) {
         TopInfoBar(
             section = currentSection,
-            onExportClick = {
-                contentResolver?.let {
-                    exportNewFileToExcel(
-                        contentResolver = it,
-                        classBook = currentSheetLists,
-                        onToast = onToast
-                    )
-                }
-            }
+            onExportClick = { onExportClick(currentSheets) }
         )
         HorizontalPager(
             state = pagerState,
@@ -100,7 +86,7 @@ fun HomePage(
             beyondViewportPageCount = 2
         ) { page ->
             // Our page content
-            val combinedList = currentSheetLists[page].maleStudents + currentSheetLists[page].femaleStudents
+            val combinedList = currentSheets[page].maleStudents + currentSheets[page].femaleStudents
             StudentListPage(
                 studentList = combinedList,
                 onStudentEntryClick = onStudentEntryClick
@@ -109,25 +95,30 @@ fun HomePage(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .background(color = Color.Green)
+                .background(color = ProjectColors.OffGreen1),
+            verticalAlignment = Alignment.CenterVertically
         ) {
-            Box(
+            OutlinedButton(
+                onClick = {},
                 modifier = Modifier
-                    .background(color = Color.Yellow)
-                    .padding(ButtonDefaults.ContentPadding)
-                    .align(Alignment.CenterVertically)
-                    .clickable {
-
-                    },
+                    .padding(horizontal = 6.dp),
+                shape = RoundedCornerShape(8.dp),
+                colors = ButtonColors(
+                    containerColor = Color.Yellow,
+                    contentColor = Color.Black,
+                    disabledContainerColor = Color.Yellow,
+                    disabledContentColor = Color.Black
+                ),
+                border = BorderStroke(
+                    width = 4.dp,
+                    color = ProjectColors.OffOrange1
+                )
             ) {
                 Text(
-                    text = "${dummySections[0].gradeLevel.toGradeLevelInt()}",
-                    modifier = Modifier
-                        .align(Alignment.Center),
-                    color = Color.Black,
+                    text = "${currentSections[0].gradeLevel.toGradeLevelInt()}",
+                    modifier = Modifier,
                 )
             }
-            Spacer(modifier = Modifier.width(6.dp))
             LazyRow(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -136,7 +127,7 @@ fun HomePage(
                 state = rememberLazyListState(),
                 horizontalArrangement = Arrangement.spacedBy(6.dp)
             ) {
-                itemsIndexed(items = dummySections) { index, section ->
+                itemsIndexed(items = currentSections) { index, section ->
                     //val selected = TODO
                     OutlinedButton(
                         onClick = {
@@ -165,9 +156,11 @@ fun HomePage(
     }
 }
 
-@RequiresApi(Build.VERSION_CODES.Q)
 @Preview
 @Composable
 fun HomePagePreview() {
-    HomePage()
+    HomePage(
+        currentSections = dummySections,
+        currentSheets = listOf(dummyStudentListsEightAmethyst, dummyStudentListsEightDiamond)
+    )
 }

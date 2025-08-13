@@ -45,7 +45,7 @@ fun StudentDetailEditPage(
     onSaveClick: () -> Unit = {},
     onBackClick: () -> Unit = {},
 ) {
-    val pagerState = rememberPagerState(pageCount = { 3 })
+    val pagerState = rememberPagerState(pageCount = { 2 })
     val coroutineScope = rememberCoroutineScope()
 
     Column(
@@ -88,7 +88,6 @@ fun StudentDetailEditPage(
         ) { page ->
             // Our page content
             when (page) {
-                2 -> StudentInfoPage()
                 1 -> {
                     StudentGradeEditPage(
                         modifier = Modifier,
@@ -161,36 +160,6 @@ fun StudentDetailEditPage(
                             .clickable {
                                 coroutineScope.launch {
                                     pagerState.animateScrollToPage(page = 1)
-                                }
-                            }
-                            .padding(vertical = 12.dp)
-                            .fillMaxWidth()
-                            .align(Alignment.Center),
-                        color = Color.Black,
-                        fontSize = 20.sp.nonScaledSp,
-                        textAlign = TextAlign.Center
-                    )
-                }
-                Box(
-                    modifier = Modifier
-                        .background(
-                            color = Color.DarkGray
-                        )
-                        .padding(horizontal = 2.dp, vertical = 4.dp)
-                        .fillMaxWidth()
-                        .weight(1F),
-                ) {
-                    Text(
-                        text = "Info",
-                        modifier = Modifier
-                            .background(
-                                color = ProjectColors.OffWhite4,
-                                shape = RoundedCornerShape(12.dp)
-                            )
-                            .clip(shape = RoundedCornerShape(12.dp))
-                            .clickable {
-                                coroutineScope.launch {
-                                    pagerState.animateScrollToPage(page = 2)
                                 }
                             }
                             .padding(vertical = 12.dp)
