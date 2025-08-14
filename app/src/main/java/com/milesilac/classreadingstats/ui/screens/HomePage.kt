@@ -60,12 +60,13 @@ fun HomePage(
 
     // Listen for page settling
     LaunchedEffect(pagerState) {
-        snapshotFlow { pagerState.settledPage }
+        snapshotFlow { pagerState.currentPage }
             .distinctUntilChanged()
             .collect { page ->
                 // Trigger your side-effect here
-                println("Pager settled at page: $page") // Replace with your action
-                currentSection = "${currentSheets[page].classSection.gradeLevel.toGradeLevelInt()} - ${currentSheets[page].classSection.sectionName}"
+                if (page == pagerState.targetPage) {
+                    currentSection = "${currentSheets[page].classSection.gradeLevel.toGradeLevelInt()} - ${currentSheets[page].classSection.sectionName}"
+                }
             }
     }
 
