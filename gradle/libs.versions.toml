@@ -1,10 +1,10 @@
 [versions]
 #Plugins
 agp = "8.11.1"
-kotlin = "2.2.0"
+kotlin = "2.2.10"
 
 # Core
-coreKtx = "1.16.0"
+coreKtx = "1.17.0"
 lifecycleRuntimeKtx = "2.9.2"
 activity-compose = "1.10.1"
 appcompat = "1.7.1"
@@ -17,10 +17,10 @@ navigationUiKtx = "2.9.3"
 serialization = "1.9.0"
 
 # Compose
-compose-bom = "2025.07.00"
+compose-bom = "2025.08.00"
 
 # Jetpack Navigation 3
-navigation3 = "1.0.0-alpha06"
+navigation3 = "1.0.0-alpha07"
 
 #Calvin-LL Reorderable
 calvin-reorderable = "2.5.1"
