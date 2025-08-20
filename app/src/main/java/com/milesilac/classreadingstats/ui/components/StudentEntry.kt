@@ -22,7 +22,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.milesilac.classreadingstats.model.Student
 import com.milesilac.classreadingstats.model.StudentList
 import com.milesilac.classreadingstats.ui.dummyStudentListsEightAmethyst
 import com.milesilac.classreadingstats.ui.theme.ProjectColors
@@ -32,7 +31,7 @@ import sh.calvin.reorderable.ReorderableCollectionItemScope
 fun StudentEntry(
     reorderableItemScope: ReorderableCollectionItemScope? = null,
     isDragging: Boolean = true,
-    student: Student,
+    textString: String,
     onClick: () -> Unit = {}
 ) {
     val elevation by animateDpAsState(if (isDragging) 4.dp else 0.dp)
@@ -63,7 +62,7 @@ fun StudentEntry(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text(
-                        text = "${student.orderId.toInt()} ${student.name}".trim(),
+                        text = textString,
                         modifier = Modifier
                             .weight(1F)
                             .padding(end = 8.dp),
@@ -96,7 +95,9 @@ fun StudentEntry(
 @Preview
 @Composable
 fun StudentEntryPreview() {
+    val student = (dummyStudentListsEightAmethyst.maleStudents[15] as StudentList.StudentDetails).student
+    val textString = "${student.orderId.toInt()} ${student.name}".trim()
     StudentEntry(
-        student = (dummyStudentListsEightAmethyst.maleStudents[15] as StudentList.StudentDetails).student
+        textString = textString
     )
 }

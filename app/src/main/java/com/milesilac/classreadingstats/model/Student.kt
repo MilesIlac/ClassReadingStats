@@ -1,11 +1,9 @@
 package com.milesilac.classreadingstats.model
 
 import kotlinx.serialization.Serializable
-import java.util.UUID
 
 @Serializable
 data class Student(
-    var listId: String = UUID.randomUUID().toString(),
     var orderId: Double = 0.0,
     var name: String,
     var section: String,

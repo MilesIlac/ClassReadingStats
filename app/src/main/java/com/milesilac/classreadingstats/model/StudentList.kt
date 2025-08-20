@@ -1,6 +1,14 @@
 package com.milesilac.classreadingstats.model
 
-sealed class StudentList {
-    data class Header(var sex: StudentSexOrient): StudentList()
-    data class StudentDetails(var student: Student) : StudentList()
+import java.util.UUID
+
+sealed class StudentList(open val listId: UUID) {
+    data class Header(
+        override var listId: UUID = UUID.randomUUID(),
+        var sex: StudentSexOrient
+    ) : StudentList(listId = listId)
+    data class StudentDetails(
+        override var listId: UUID = UUID.randomUUID(),
+        var student: Student
+    ) : StudentList(listId = listId)
 }
