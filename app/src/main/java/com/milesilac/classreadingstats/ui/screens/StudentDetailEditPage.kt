@@ -23,8 +23,12 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -34,9 +38,16 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.milesilac.classreadingstats.helpers.nonScaledSp
+import com.milesilac.classreadingstats.model.ClassSection
 import com.milesilac.classreadingstats.model.Student
 import com.milesilac.classreadingstats.model.StudentList
 import com.milesilac.classreadingstats.model.emptyReadingTest
+import com.milesilac.classreadingstats.model.toGradeLevelInt
+import com.milesilac.classreadingstats.model.toStudentSexOrient
+import com.milesilac.classreadingstats.model.toStudentSexOrientString
+import com.milesilac.classreadingstats.ui.components.EditStudentInfoDialog
+import com.milesilac.classreadingstats.ui.components.StudentInfoType
+import com.milesilac.classreadingstats.ui.dummySections
 import com.milesilac.classreadingstats.ui.dummyStudentListsEightAmethyst
 import com.milesilac.classreadingstats.ui.theme.ProjectColors
 import kotlinx.coroutines.launch
@@ -44,12 +55,15 @@ import kotlinx.coroutines.launch
 @Composable
 fun StudentDetailEditPage(
     student: Student,
+    classSections: List<ClassSection> = listOf(),
     onSaveClick: (Student) -> Unit = {},
     onBackClick: () -> Unit = {},
 ) {
     val pagerState = rememberPagerState(pageCount = { 2 })
     val coroutineScope = rememberCoroutineScope()
     val inputStudent = remember { student }
+    var showPickSectionDialog by rememberSaveable { mutableStateOf(false) }
+    var showMaleOrFemaleDialog by rememberSaveable { mutableStateOf(false) }
 
     Column(
         modifier = Modifier
@@ -80,6 +94,72 @@ fun StudentDetailEditPage(
                     fontSize = 28.sp,
                     textAlign = TextAlign.Center
                 )
+            }
+            Row(
+                modifier = Modifier
+                    .background(color = ProjectColors.OffWhite4)
+                    .padding(vertical = 1.dp)
+                    .fillMaxWidth()
+                    .align(Alignment.CenterHorizontally),
+                horizontalArrangement = Arrangement.spacedBy(1.dp)
+            ) {
+                Column(
+                    modifier = Modifier
+                        .background(color = ProjectColors.OffBlue2)
+                        .clickable {
+                            showPickSectionDialog = true
+                        }
+                        .padding(
+                            vertical = 12.dp
+                        )
+                        .weight(1F),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Text(
+                        text = inputStudent.section.trim(),
+                        modifier = Modifier,
+                        color = ProjectColors.OffWhite4,
+                        fontSize = 16.sp,
+                        textAlign = TextAlign.Center
+                    )
+                    Text(
+                        text = "Click to Edit",
+                        modifier = Modifier,
+                        color = ProjectColors.OffWhite4,
+                        fontSize = 12.sp,
+                        textAlign = TextAlign.Center
+                    )
+                }
+                Column(
+                    modifier = Modifier
+                        .background(color = ProjectColors.OffBlue2)
+                        .clickable {
+                            showMaleOrFemaleDialog = true
+                        }
+                        .padding(
+                            vertical = 12.dp
+                        )
+                        .weight(1F),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    val sex = if (inputStudent.sex == "F") {
+                        "Female"
+                    } else "Male"
+                    Text(
+                        text = sex,
+                        modifier = Modifier,
+                        color = ProjectColors.OffWhite4,
+                        fontSize = 16.sp,
+                        textAlign = TextAlign.Center
+                    )
+                    Text(
+                        text = "Click to Edit",
+                        modifier = Modifier,
+                        color = ProjectColors.OffWhite4,
+                        fontSize = 12.sp,
+                        textAlign = TextAlign.Center
+                    )
+                }
             }
         }
         HorizontalPager(
@@ -250,12 +330,45 @@ fun StudentDetailEditPage(
             }
         }
     }
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+    ) {
+        when {
+            showPickSectionDialog -> {
+                showMaleOrFemaleDialog = false
+                EditStudentInfoDialog(
+                    studentInfoType = StudentInfoType.SECTION,
+                    currentSection = inputStudent.section,
+                    sections = dummySections,
+                    onDismissDialog = { showPickSectionDialog = false },
+                    onSectionPick = { selected ->
+                        inputStudent.section = "${selected.gradeLevel.toGradeLevelInt()}-${selected.sectionName.uppercase()}"
+                        showPickSectionDialog = false
+                    },
+                )
+            }
+            showMaleOrFemaleDialog -> {
+                showPickSectionDialog = false
+                EditStudentInfoDialog(
+                    studentInfoType = StudentInfoType.SEX_ORIENT,
+                    currentSex = inputStudent.sex.toStudentSexOrient(),
+                    onDismissDialog = { showMaleOrFemaleDialog = false },
+                    onSexOrientPick = { selected ->
+                        inputStudent.sex = selected.toStudentSexOrientString()
+                        showMaleOrFemaleDialog = false
+                    },
+                )
+            }
+        }
+    }
 }
 
 @Preview
 @Composable
 fun StudentDetailEditPagePreview() {
     StudentDetailEditPage(
-        student = (dummyStudentListsEightAmethyst.maleStudents[15] as StudentList.StudentDetails).student
+        student = (dummyStudentListsEightAmethyst.maleStudents[15] as StudentList.StudentDetails).student,
+        classSections = dummySections
     )
 }
