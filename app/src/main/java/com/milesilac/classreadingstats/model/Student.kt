@@ -7,7 +7,7 @@ data class Student(
     var orderId: Double = 0.0,
     var name: String,
     var section: String,
-    var sex: String,
+    var sex: StudentSexOrient,
     var preTest: ReadingTest,
     var postTest: ReadingTest? = null
 )
@@ -19,7 +19,7 @@ enum class StudentSexOrient {
     MALE, FEMALE, ERROR
 }
 
-fun String.toStudentSexOrient(): StudentSexOrient {
+fun String.sexConvertCharToEnum(): StudentSexOrient {
     val value = this.uppercase()
     return when (value) {
         "M" -> StudentSexOrient.MALE
@@ -28,11 +28,47 @@ fun String.toStudentSexOrient(): StudentSexOrient {
     }
 }
 
-fun StudentSexOrient.toStudentSexOrientString(): String {
+fun StudentSexOrient.sexConvertEnumToChar(): String {
     val value = this
     return when (value) {
         StudentSexOrient.MALE -> "M"
         StudentSexOrient.FEMALE -> "F"
         StudentSexOrient.ERROR -> ""
+    }
+}
+
+fun String.sexConvertWordsToEnum(): StudentSexOrient {
+    val value = this.uppercase()
+    return when (value) {
+        "MALE" -> StudentSexOrient.MALE
+        "FEMALE" -> StudentSexOrient.FEMALE
+        else -> StudentSexOrient.ERROR
+    }
+}
+
+fun StudentSexOrient.sexConvertEnumToWords(): String {
+    val value = this
+    return when (value) {
+        StudentSexOrient.MALE -> "Male"
+        StudentSexOrient.FEMALE -> "Female"
+        StudentSexOrient.ERROR -> ""
+    }
+}
+
+fun String.sexConvertCharToWords(): String {
+    val value = this.uppercase()
+    return when (value) {
+        "M" -> "Male"
+        "F" -> "Female"
+        else -> ""
+    }
+}
+
+fun String.sexConvertWordsToChar(): String {
+    val value = this.uppercase()
+    return when (value) {
+        "MALE" -> "M"
+        "FEMALE" -> "F"
+        else -> ""
     }
 }

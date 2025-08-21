@@ -130,6 +130,7 @@ fun SectionDialog(
         Spacer(modifier = Modifier.height(12.dp))
         LazyColumn(
             modifier = Modifier
+                .height(252.dp)
                 .border(
                     width = 1.dp,
                     color = ProjectColors.OffWhite4,

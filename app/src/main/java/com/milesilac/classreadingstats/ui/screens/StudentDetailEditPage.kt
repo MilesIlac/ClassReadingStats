@@ -32,6 +32,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -42,9 +43,8 @@ import com.milesilac.classreadingstats.model.ClassSection
 import com.milesilac.classreadingstats.model.Student
 import com.milesilac.classreadingstats.model.StudentList
 import com.milesilac.classreadingstats.model.emptyReadingTest
+import com.milesilac.classreadingstats.model.sexConvertEnumToWords
 import com.milesilac.classreadingstats.model.toGradeLevelInt
-import com.milesilac.classreadingstats.model.toStudentSexOrient
-import com.milesilac.classreadingstats.model.toStudentSexOrientString
 import com.milesilac.classreadingstats.ui.components.EditStudentInfoDialog
 import com.milesilac.classreadingstats.ui.components.StudentInfoType
 import com.milesilac.classreadingstats.ui.dummySections
@@ -67,7 +67,11 @@ fun StudentDetailEditPage(
 
     Column(
         modifier = Modifier
-            .background(color = ProjectColors.OffWhite4)
+            .background(
+                brush = Brush.verticalGradient(
+                    colors = listOf(ProjectColors.OffBlue2, ProjectColors.OffWhite4)
+                )
+            )
             .systemBarsPadding()
             .fillMaxSize()
     ) {
@@ -142,11 +146,8 @@ fun StudentDetailEditPage(
                         .weight(1F),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    val sex = if (inputStudent.sex == "F") {
-                        "Female"
-                    } else "Male"
                     Text(
-                        text = sex,
+                        text = inputStudent.sex.sexConvertEnumToWords(),
                         modifier = Modifier,
                         color = ProjectColors.OffWhite4,
                         fontSize = 16.sp,
@@ -195,6 +196,7 @@ fun StudentDetailEditPage(
         }
         Column(
             modifier = Modifier
+                .background(color = ProjectColors.OffWhite4)
                 .fillMaxWidth(),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
@@ -352,10 +354,10 @@ fun StudentDetailEditPage(
                 showPickSectionDialog = false
                 EditStudentInfoDialog(
                     studentInfoType = StudentInfoType.SEX_ORIENT,
-                    currentSex = inputStudent.sex.toStudentSexOrient(),
+                    currentSex = inputStudent.sex,
                     onDismissDialog = { showMaleOrFemaleDialog = false },
                     onSexOrientPick = { selected ->
-                        inputStudent.sex = selected.toStudentSexOrientString()
+                        inputStudent.sex = selected
                         showMaleOrFemaleDialog = false
                     },
                 )

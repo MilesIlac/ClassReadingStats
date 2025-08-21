@@ -20,7 +20,7 @@ import androidx.compose.ui.unit.sp
 import com.milesilac.classreadingstats.model.Student
 import com.milesilac.classreadingstats.model.StudentList
 import com.milesilac.classreadingstats.model.StudentSexOrient
-import com.milesilac.classreadingstats.model.toStudentSexOrientString
+import com.milesilac.classreadingstats.model.sexConvertEnumToChar
 import com.milesilac.classreadingstats.ui.components.StudentEntry
 import com.milesilac.classreadingstats.ui.dummyStudentListsEightAmethyst
 import com.milesilac.classreadingstats.ui.theme.ProjectColors
@@ -36,8 +36,8 @@ fun StudentListPage(
 ) {
     var maleList by remember { mutableStateOf(maleStudents) }
     var femaleList by remember { mutableStateOf(femaleStudents) }
-    val maleCount = maleStudents.count { it is StudentList.StudentDetails && it.student.sex == StudentSexOrient.MALE.toStudentSexOrientString() }
-    val femaleCount = femaleStudents.count { it is StudentList.StudentDetails && it.student.sex == StudentSexOrient.FEMALE.toStudentSexOrientString() }
+    val maleCount = maleStudents.count { it is StudentList.StudentDetails && it.student.sex == StudentSexOrient.MALE }
+    val femaleCount = femaleStudents.count { it is StudentList.StudentDetails && it.student.sex == StudentSexOrient.FEMALE }
 
     val lazyListState = rememberLazyListState()
     val reorderableMaleLazyListState = rememberReorderableLazyListState(lazyListState) { from, to ->
@@ -144,7 +144,7 @@ private fun LazyListScope.manageItem(
 ) {
     when (studentItem) {
         is StudentList.Header -> {
-            val headerText = "${studentItem.sex.toStudentSexOrientString()} - $headerCount"
+            val headerText = "${studentItem.sex.sexConvertEnumToChar()} - $headerCount"
             stickyHeader {
                 Text(
                     text = headerText,

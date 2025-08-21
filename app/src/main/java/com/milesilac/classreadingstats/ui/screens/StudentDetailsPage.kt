@@ -15,7 +15,6 @@ import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.twotone.Close
@@ -29,6 +28,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -39,6 +39,7 @@ import com.milesilac.classreadingstats.model.LearnerLevel
 import com.milesilac.classreadingstats.model.Student
 import com.milesilac.classreadingstats.model.StudentList
 import com.milesilac.classreadingstats.model.calculateLearnerOverallReadingProfile
+import com.milesilac.classreadingstats.model.sexConvertEnumToWords
 import com.milesilac.classreadingstats.ui.dummyStudentListsEightAmethyst
 import com.milesilac.classreadingstats.ui.theme.ProjectColors
 import kotlinx.coroutines.launch
@@ -52,7 +53,6 @@ fun StudentDetailsPage(
     val pagerState = rememberPagerState(pageCount = { 2 })
     val coroutineScope = rememberCoroutineScope()
 
-    val scrollState = rememberScrollState()
     val hasPostTest = true //student.postTest != null
 
     val oralReadingLearnerLevel = student.preTest.oralReading?.level ?: LearnerLevel.ERROR
@@ -60,7 +60,11 @@ fun StudentDetailsPage(
 
     Column(
         modifier = Modifier
-            .background(color = ProjectColors.OffWhite4)
+            .background(
+                brush = Brush.verticalGradient(
+                    colors = listOf(ProjectColors.OffBlue2, ProjectColors.OffWhite4)
+                )
+            )
             .systemBarsPadding()
             .fillMaxSize()
     ) {
@@ -110,11 +114,8 @@ fun StudentDetailsPage(
                         textAlign = TextAlign.Center
                     )
                     Spacer(modifier = Modifier.width(8.dp))
-                    val sex = if (student.sex == "F") {
-                        "Female"
-                    } else "Male"
                     Text(
-                        text = sex,
+                        text = student.sex.sexConvertEnumToWords(),
                         modifier = Modifier,
                         color = ProjectColors.OffWhite4,
                         fontSize = 16.sp,
@@ -216,6 +217,7 @@ fun StudentDetailsPage(
         }
         Column(
             modifier = Modifier
+                .background(color = ProjectColors.OffWhite4)
                 .fillMaxWidth(),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {

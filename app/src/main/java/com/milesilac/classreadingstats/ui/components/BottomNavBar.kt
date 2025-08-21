@@ -1,7 +1,7 @@
 package com.milesilac.classreadingstats.ui.components
 
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.twotone.Add
+import androidx.compose.material.icons.twotone.Edit
 import androidx.compose.material.icons.twotone.Home
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
@@ -13,17 +13,16 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
+import com.milesilac.classreadingstats.ui.theme.ProjectColors
 
 @Composable
 fun BottomNavBar(
-    isAllSelected: Boolean = true,
-    onSelectAllButtonClick: () -> Unit = {},
+    onHomeButtonClick: () -> Unit = {},
     onGroupButtonClick: () -> Unit = {},
-    onDeleteButtonClick: () -> Unit = {}
 ) {
     NavigationBar(
         modifier = Modifier,
-        containerColor = Color.White,
+        containerColor = ProjectColors.OffWhite4,
         contentColor = Color.White,
         tonalElevation = NavigationBarDefaults.Elevation,
         windowInsets = NavigationBarDefaults.windowInsets
@@ -31,7 +30,7 @@ fun BottomNavBar(
         NavigationBarItem(
             selected = false,
             onClick = {
-                onDeleteButtonClick()
+                onHomeButtonClick()
             },
             icon = {
                 Icon(
@@ -55,14 +54,14 @@ fun BottomNavBar(
             },
             icon = {
                 Icon(
-                    imageVector = Icons.TwoTone.Add,
-                    contentDescription = "Add",
+                    imageVector = Icons.TwoTone.Edit,
+                    contentDescription = "Manage",
                     tint = Color.Black
                 )
             },
             label = {
                 Text(
-                    text = "Add",
+                    text = "Manage",
                     color = Color.Black,
                     textAlign = TextAlign.Center
                 )
