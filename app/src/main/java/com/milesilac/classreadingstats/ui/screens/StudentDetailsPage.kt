@@ -18,9 +18,11 @@ import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.twotone.Close
+import androidx.compose.material.icons.twotone.Delete
 import androidx.compose.material.icons.twotone.Edit
 import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -48,8 +50,11 @@ import kotlinx.coroutines.launch
 fun StudentDetailsPage(
     student: Student,
     onEditClick: () -> Unit = {},
-    onBackClick: () -> Unit = {}
+    onBackClick: () -> Unit = {},
+    onDelete: (Student) -> Unit = {},
+    onVisible: () -> Unit = {}
 ) {
+    onVisible()
     val pagerState = rememberPagerState(pageCount = { 2 })
     val coroutineScope = rememberCoroutineScope()
 
@@ -73,53 +78,72 @@ fun StudentDetailsPage(
                 .fillMaxWidth(),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Column(
+            Box(
                 modifier = Modifier
-                    .background(color = ProjectColors.OffBlue2)
-                    .padding(
-                        start = 12.dp,
-                        end = 12.dp,
-                        top = 28.dp,
-                        bottom = 28.dp
-                    )
-                    .fillMaxWidth()
-                    .align(Alignment.CenterHorizontally),
-                horizontalAlignment = Alignment.CenterHorizontally
+                    .align(Alignment.CenterHorizontally)
             ) {
-                Text(
-                    text = student.name.trim(),
-                    modifier = Modifier,
-                    color = ProjectColors.OffWhite4,
-                    fontSize = 28.sp,
-                    textAlign = TextAlign.Center
-                )
-                Spacer(modifier = Modifier.height(8.dp))
-                Row(
-                    modifier = Modifier,
-                    verticalAlignment = Alignment.CenterVertically
+                Column(
+                    modifier = Modifier
+                        .background(color = ProjectColors.OffBlue2)
+                        .padding(
+                            start = 12.dp,
+                            end = 12.dp,
+                            top = 28.dp,
+                            bottom = 28.dp
+                        )
+                        .fillMaxWidth()
+                        .align(Alignment.Center),
+//                        .align(Alignment.CenterHorizontally),
+                    horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Text(
-                        text = student.section.trim(),
+                        text = student.name.trim(),
                         modifier = Modifier,
                         color = ProjectColors.OffWhite4,
-                        fontSize = 16.sp,
+                        fontSize = 28.sp,
                         textAlign = TextAlign.Center
                     )
-                    Spacer(modifier = Modifier.width(8.dp))
-                    Text(
-                        text = "|",
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Row(
                         modifier = Modifier,
-                        color = ProjectColors.OffWhite4,
-                        fontSize = 16.sp,
-                        textAlign = TextAlign.Center
-                    )
-                    Spacer(modifier = Modifier.width(8.dp))
-                    Text(
-                        text = student.sex.sexConvertEnumToWords(),
-                        modifier = Modifier,
-                        color = ProjectColors.OffWhite4,
-                        fontSize = 16.sp,
-                        textAlign = TextAlign.Center
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text(
+                            text = student.section.trim(),
+                            modifier = Modifier,
+                            color = ProjectColors.OffWhite4,
+                            fontSize = 16.sp,
+                            textAlign = TextAlign.Center
+                        )
+                        Spacer(modifier = Modifier.width(8.dp))
+                        Text(
+                            text = "|",
+                            modifier = Modifier,
+                            color = ProjectColors.OffWhite4,
+                            fontSize = 16.sp,
+                            textAlign = TextAlign.Center
+                        )
+                        Spacer(modifier = Modifier.width(8.dp))
+                        Text(
+                            text = student.sex.sexConvertEnumToWords(),
+                            modifier = Modifier,
+                            color = ProjectColors.OffWhite4,
+                            fontSize = 16.sp,
+                            textAlign = TextAlign.Center
+                        )
+                    }
+                }
+                IconButton(
+                    modifier = Modifier
+                        .align(Alignment.BottomEnd),
+                    onClick = {
+                        onDelete(student)
+                    },
+                ) {
+                    Icon(
+                        imageVector = Icons.TwoTone.Delete,
+                        contentDescription = "More",
+                        tint = ProjectColors.OffWhite4
                     )
                 }
             }

@@ -47,7 +47,6 @@ import com.milesilac.classreadingstats.model.sexConvertEnumToWords
 import com.milesilac.classreadingstats.model.toGradeLevelInt
 import com.milesilac.classreadingstats.ui.components.EditStudentInfoDialog
 import com.milesilac.classreadingstats.ui.components.StudentInfoType
-import com.milesilac.classreadingstats.ui.dummySections
 import com.milesilac.classreadingstats.ui.dummyStudentListsEightAmethyst
 import com.milesilac.classreadingstats.ui.theme.ProjectColors
 import kotlinx.coroutines.launch
@@ -58,7 +57,9 @@ fun StudentDetailEditPage(
     classSections: List<ClassSection> = listOf(),
     onSaveClick: (Student) -> Unit = {},
     onBackClick: () -> Unit = {},
+    onVisible: () -> Unit = {}
 ) {
+    onVisible()
     val pagerState = rememberPagerState(pageCount = { 2 })
     val coroutineScope = rememberCoroutineScope()
     val inputStudent = remember { student }
@@ -342,7 +343,7 @@ fun StudentDetailEditPage(
                 EditStudentInfoDialog(
                     studentInfoType = StudentInfoType.SECTION,
                     currentSection = inputStudent.section,
-                    sections = dummySections,
+                    sections = classSections,
                     onDismissDialog = { showPickSectionDialog = false },
                     onSectionPick = { selected ->
                         inputStudent.section = "${selected.gradeLevel.toGradeLevelInt()}-${selected.sectionName.uppercase()}"
@@ -371,6 +372,5 @@ fun StudentDetailEditPage(
 fun StudentDetailEditPagePreview() {
     StudentDetailEditPage(
         student = (dummyStudentListsEightAmethyst.maleStudents[15] as StudentList.StudentDetails).student,
-        classSections = dummySections
     )
 }

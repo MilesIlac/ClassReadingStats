@@ -7,6 +7,7 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.core.view.WindowCompat
 import androidx.navigation3.runtime.NavKey
 import androidx.navigation3.runtime.entry
@@ -24,6 +25,7 @@ import com.milesilac.classreadingstats.ui.screens.StudentDetailsPage
 
 class MainActivity : AppCompatActivity() {
 
+    @OptIn(ExperimentalMaterial3Api::class)
     @RequiresApi(Build.VERSION_CODES.Q)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -57,6 +59,11 @@ class MainActivity : AppCompatActivity() {
                                         }
                                     }
                                 )
+                            },
+                            onVisible = {
+                                if (WindowCompat.getInsetsController(window, window.decorView).isAppearanceLightNavigationBars) {
+                                    WindowCompat.getInsetsController(window, window.decorView).isAppearanceLightNavigationBars = false
+                                }
                             }
                         )
                     }
@@ -64,16 +71,30 @@ class MainActivity : AppCompatActivity() {
                         StudentDetailsPage(
                             student = key.student,
                             onEditClick = { backStack.add(RouteStudentDetailEdit(key.student)) },
-                            onBackClick = { backStack.removeLastOrNull() }
+                            onBackClick = { backStack.removeLastOrNull() },
+                            onDelete = { student ->
+
+                            },
+                            onVisible = {
+                                if (WindowCompat.getInsetsController(window, window.decorView).isAppearanceLightNavigationBars.not()) {
+                                    WindowCompat.getInsetsController(window, window.decorView).isAppearanceLightNavigationBars = true
+                                }
+                            }
                         )
                     }
                     entry<RouteStudentDetailEdit> { key ->
                         StudentDetailEditPage(
                             student = key.student,
+                            classSections = currentSections,
                             onSaveClick = { editedStudent ->
 
                             },
-                            onBackClick = { backStack.removeLastOrNull() }
+                            onBackClick = { backStack.removeLastOrNull() },
+                            onVisible = {
+                                if (WindowCompat.getInsetsController(window, window.decorView).isAppearanceLightNavigationBars.not()) {
+                                    WindowCompat.getInsetsController(window, window.decorView).isAppearanceLightNavigationBars = true
+                                }
+                            }
                         )
                     }
                 }
