@@ -49,7 +49,6 @@ import androidx.compose.ui.unit.dp
 import com.milesilac.classreadingstats.model.ClassSection
 import com.milesilac.classreadingstats.model.ClassSheet
 import com.milesilac.classreadingstats.model.Student
-import com.milesilac.classreadingstats.model.toGradeLevelInt
 import com.milesilac.classreadingstats.ui.components.HomePageBottomSheet
 import com.milesilac.classreadingstats.ui.components.TopInfoBar
 import com.milesilac.classreadingstats.ui.dummySections
@@ -64,6 +63,7 @@ import kotlinx.coroutines.launch
 fun HomePage(
     currentSections: List<ClassSection> = listOf(),
     currentSheets: List<ClassSheet> = listOf(),
+    onAddSectionClick: () -> Unit = {},
     onStudentEntryClick: (Student) -> Unit = {},
     onExportClick: (List<ClassSheet>) -> Unit = {},
     bottomSheetState: SheetState = rememberModalBottomSheetState(
@@ -75,7 +75,7 @@ fun HomePage(
     val pagerState = rememberPagerState(pageCount = { currentSheets.size })
     var currentSection by remember {
         mutableStateOf(
-            "${currentSheets[0].classSection.gradeLevel.toGradeLevelInt()} - ${currentSheets[0].classSection.sectionName}"
+            "${currentSheets[0].classSection.gradeLevel.grade} - ${currentSheets[0].classSection.sectionName}"
         )
     }
     var showBottomSheet by remember { mutableStateOf(false) }
@@ -88,7 +88,7 @@ fun HomePage(
             .collect { page ->
                 // Trigger your side-effect here
                 if (page == pagerState.targetPage) {
-                    currentSection = "${currentSheets[page].classSection.gradeLevel.toGradeLevelInt()} - ${currentSheets[page].classSection.sectionName}"
+                    currentSection = "${currentSheets[page].classSection.gradeLevel.grade} - ${currentSheets[page].classSection.sectionName}"
                 }
             }
     }
@@ -144,7 +144,7 @@ fun HomePage(
                 )
             ) {
                 Text(
-                    text = "${currentSections[0].gradeLevel.toGradeLevelInt()}",
+                    text = "${currentSections[0].gradeLevel.grade}",
                     modifier = Modifier,
                 )
             }
@@ -210,7 +210,11 @@ fun HomePage(
     if (showBottomSheet) {
         HomePageBottomSheet(
             bottomSheetState = bottomSheetState,
-            onDismiss = { showBottomSheet = false }
+            onDismiss = { showBottomSheet = false },
+            onAddSectionClick = {
+                showBottomSheet = false
+                onAddSectionClick()
+            }
         )
     }
 }

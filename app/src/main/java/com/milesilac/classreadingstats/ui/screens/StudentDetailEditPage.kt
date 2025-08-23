@@ -43,8 +43,6 @@ import com.milesilac.classreadingstats.model.ClassSection
 import com.milesilac.classreadingstats.model.Student
 import com.milesilac.classreadingstats.model.StudentList
 import com.milesilac.classreadingstats.model.emptyReadingTest
-import com.milesilac.classreadingstats.model.sexConvertEnumToWords
-import com.milesilac.classreadingstats.model.toGradeLevelInt
 import com.milesilac.classreadingstats.ui.components.EditStudentInfoDialog
 import com.milesilac.classreadingstats.ui.components.StudentInfoType
 import com.milesilac.classreadingstats.ui.dummyStudentListsEightAmethyst
@@ -148,7 +146,7 @@ fun StudentDetailEditPage(
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Text(
-                        text = inputStudent.sex.sexConvertEnumToWords(),
+                        text = inputStudent.sex.wordedLabel,
                         modifier = Modifier,
                         color = ProjectColors.OffWhite4,
                         fontSize = 16.sp,
@@ -346,7 +344,7 @@ fun StudentDetailEditPage(
                     sections = classSections,
                     onDismissDialog = { showPickSectionDialog = false },
                     onSectionPick = { selected ->
-                        inputStudent.section = "${selected.gradeLevel.toGradeLevelInt()}-${selected.sectionName.uppercase()}"
+                        inputStudent.section = "${selected.gradeLevel.grade}-${selected.sectionName.uppercase()}"
                         showPickSectionDialog = false
                     },
                 )

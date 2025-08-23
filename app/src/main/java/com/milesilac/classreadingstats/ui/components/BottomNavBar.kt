@@ -72,6 +72,6 @@ fun BottomNavBar(
 
 @Preview
 @Composable
-fun PreviewBottomNavBar() {
+fun BottomNavBarPreview() {
     BottomNavBar()
 }

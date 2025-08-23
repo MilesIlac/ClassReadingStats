@@ -10,8 +10,6 @@ import com.milesilac.classreadingstats.model.ClassSheet
 import com.milesilac.classreadingstats.model.LearnerLevel
 import com.milesilac.classreadingstats.model.StudentList
 import com.milesilac.classreadingstats.model.calculateLearnerOverallReadingProfile
-import com.milesilac.classreadingstats.model.toComprehensionLevelString
-import com.milesilac.classreadingstats.model.toGradeLevelInt
 import com.milesilac.classreadingstats.model.toLearnerLevelString
 import org.apache.poi.ss.usermodel.CellStyle
 import org.apache.poi.ss.usermodel.HorizontalAlignment
@@ -49,7 +47,7 @@ fun exportNewFileToExcel(
         val hasPostTest = false //redo model for this
         var lastRowIndex = 0
 
-        val classSheet = newBook.createSheet("${it.classSection.gradeLevel.toGradeLevelInt()}-${it.classSection.sectionName}")
+        val classSheet = newBook.createSheet("${it.classSection.gradeLevel.grade}-${it.classSection.sectionName}")
 
         classSheet.createInfoTable(
             rowStartIndex = lastRowIndex,
@@ -87,7 +85,7 @@ fun exportNewFileToExcel(
                     rcPercentCellStyle = rcPercentCellStyle,
                     hasPostTest = hasPostTest,
                     studentGSTScore = student.student.preTest.groupScreeningTest.score,
-                    studentGSTComprehensionLevel = student.student.preTest.groupScreeningTest.comprehensionLevel.toComprehensionLevelString(),
+                    studentGSTComprehensionLevel = student.student.preTest.groupScreeningTest.comprehensionLevel.level,
                     studentORNumberOfMiscues = pretestNumberOfMiscues,
                     studentORTotalNumberOfWords = pretestTotalNumberOfWords,
                     studentORPercentage = pretestORPercentage,
@@ -137,7 +135,7 @@ fun exportNewFileToExcel(
                     rcPercentCellStyle = rcPercentCellStyle,
                     hasPostTest = hasPostTest,
                     studentGSTScore = student.student.preTest.groupScreeningTest.score,
-                    studentGSTComprehensionLevel = student.student.preTest.groupScreeningTest.comprehensionLevel.toComprehensionLevelString(),
+                    studentGSTComprehensionLevel = student.student.preTest.groupScreeningTest.comprehensionLevel.level,
                     studentORNumberOfMiscues = pretestNumberOfMiscues,
                     studentORTotalNumberOfWords = pretestTotalNumberOfWords,
                     studentORPercentage = pretestORPercentage,

@@ -1,6 +1,7 @@
 package com.milesilac.classreadingstats.model
 
 import kotlinx.serialization.Serializable
+import kotlin.enums.enumEntries
 
 @Serializable
 data class Student(
@@ -15,60 +16,25 @@ data class Student(
 // in the scenario of reading values from excel file,
 // possibly calculate isGradingPassage by checking if all succeeding cells are empty
 
-enum class StudentSexOrient {
-    MALE, FEMALE, ERROR
+enum class StudentSexOrient(
+    val sex: String,
+    val wordedLabel: String
+) {
+    MALE("M", "Male"),
+    FEMALE("F", "Female"),
+    ERROR("", "")
 }
 
 fun String.sexConvertCharToEnum(): StudentSexOrient {
     val value = this.uppercase()
-    return when (value) {
-        "M" -> StudentSexOrient.MALE
-        "F" -> StudentSexOrient.FEMALE
-        else -> StudentSexOrient.ERROR
-    }
-}
-
-fun StudentSexOrient.sexConvertEnumToChar(): String {
-    val value = this
-    return when (value) {
-        StudentSexOrient.MALE -> "M"
-        StudentSexOrient.FEMALE -> "F"
-        StudentSexOrient.ERROR -> ""
-    }
+    return enumEntries<StudentSexOrient>().find {
+        it.sex == value
+    } ?: StudentSexOrient.ERROR
 }
 
 fun String.sexConvertWordsToEnum(): StudentSexOrient {
     val value = this.uppercase()
-    return when (value) {
-        "MALE" -> StudentSexOrient.MALE
-        "FEMALE" -> StudentSexOrient.FEMALE
-        else -> StudentSexOrient.ERROR
-    }
-}
-
-fun StudentSexOrient.sexConvertEnumToWords(): String {
-    val value = this
-    return when (value) {
-        StudentSexOrient.MALE -> "Male"
-        StudentSexOrient.FEMALE -> "Female"
-        StudentSexOrient.ERROR -> ""
-    }
-}
-
-fun String.sexConvertCharToWords(): String {
-    val value = this.uppercase()
-    return when (value) {
-        "M" -> "Male"
-        "F" -> "Female"
-        else -> ""
-    }
-}
-
-fun String.sexConvertWordsToChar(): String {
-    val value = this.uppercase()
-    return when (value) {
-        "MALE" -> "M"
-        "FEMALE" -> "F"
-        else -> ""
-    }
+    return enumEntries<StudentSexOrient>().find {
+        it.wordedLabel.uppercase() == value
+    } ?: StudentSexOrient.ERROR
 }

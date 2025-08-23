@@ -1,7 +1,11 @@
 package com.milesilac.classreadingstats.model
 
-enum class GradeLevel {
-    SEVEN, EIGHT, NINE, TEN, ERROR
+enum class GradeLevel(val grade: Int) {
+    SEVEN(7),
+    EIGHT(8),
+    NINE(9),
+    TEN(10),
+    ERROR(0)
 }
 
 fun Int.toGradeLevel(): GradeLevel {
@@ -12,17 +16,6 @@ fun Int.toGradeLevel(): GradeLevel {
         9 -> GradeLevel.NINE
         10 -> GradeLevel.TEN
         else -> GradeLevel.ERROR
-    }
-}
-
-fun GradeLevel.toGradeLevelInt(): Int {
-    val level = this
-    return when (level) {
-        GradeLevel.SEVEN -> 7
-        GradeLevel.EIGHT -> 8
-        GradeLevel.NINE -> 9
-        GradeLevel.TEN -> 10
-        else -> 0
     }
 }
 

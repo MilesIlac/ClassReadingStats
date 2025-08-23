@@ -19,7 +19,6 @@ import androidx.compose.ui.unit.sp
 import com.milesilac.classreadingstats.model.LearnerLevel
 import com.milesilac.classreadingstats.model.ReadingTest
 import com.milesilac.classreadingstats.model.StudentList
-import com.milesilac.classreadingstats.model.toComprehensionLevelString
 import com.milesilac.classreadingstats.model.toLearnerLevelString
 import com.milesilac.classreadingstats.ui.dummyStudentListsEightAmethyst
 import com.milesilac.classreadingstats.ui.theme.ProjectColors
@@ -65,7 +64,7 @@ fun StudentGradeDetailPage(
         val gstScore = studentTest.groupScreeningTest.score
         val gstComprehensionLevel = studentTest.groupScreeningTest.comprehensionLevel
         Text(
-            text = "${gstScore.toInt()} (Level - ${gstComprehensionLevel.toComprehensionLevelString()})",
+            text = "${gstScore.toInt()} (Level - ${gstComprehensionLevel.level})",
             modifier = Modifier
                 .padding(
                     horizontal = 12.dp,

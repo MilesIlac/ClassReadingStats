@@ -33,7 +33,6 @@ import androidx.compose.ui.unit.dp
 import com.milesilac.classreadingstats.model.ClassSection
 import com.milesilac.classreadingstats.model.GradeLevel
 import com.milesilac.classreadingstats.model.StudentSexOrient
-import com.milesilac.classreadingstats.model.toGradeLevelInt
 import com.milesilac.classreadingstats.ui.dummySections
 import com.milesilac.classreadingstats.ui.theme.ProjectColors
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -76,7 +75,7 @@ fun EditStudentInfoDialog(
 
 @Preview
 @Composable
-fun PreviewEditStudentInfoDialog() {
+fun EditStudentInfoDialogPreview() {
     EditStudentInfoDialog(
         studentInfoType = StudentInfoType.SECTION,
         sections = dummySections
@@ -142,7 +141,7 @@ fun SectionDialog(
             sections.forEach { section ->
                 item {
                     Text(
-                        text = "${section.gradeLevel.toGradeLevelInt()} - ${section.sectionName}",
+                        text = "${section.gradeLevel.grade} - ${section.sectionName}",
                         Modifier
                             .background(
                                 color = when {
@@ -171,7 +170,7 @@ fun SectionDialog(
 
 @Preview
 @Composable
-fun PreviewSectionDialog() {
+fun SectionDialogPreview() {
     SectionDialog(
         sections = dummySections
     )
@@ -274,7 +273,7 @@ fun SexOrientDialog(
 
 @Preview
 @Composable
-fun PreviewSexOrientDialog() {
+fun SexOrientDialogPreview() {
     SexOrientDialog(
         currentSex = StudentSexOrient.MALE
     )

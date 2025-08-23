@@ -21,6 +21,7 @@ class ProjectColors {
         val OffYellow2 = Color(0xFFFFDF00)
 
         val OffViolet1 = Color(0xFFC879FF)
+        val OffViolet2 = Color(0xFF7814D2)
 
         val OffGreen1 = Color(0xFF008A6B)
         val OffGreen2 = Color(0xFF004B3C)

@@ -70,12 +70,12 @@ fun HomePageBottomSheetLayout(
     onBackClick: () -> Unit = {},
 ) {
     val buttonOptions = setOf(
-        "Add Section" to onAddSectionClick(),
-        "Add Student" to onAddStudentClick(),
-        "Delete Sections" to onDeleteSectionsClick(),
-        "Delete Students" to onDeleteStudentsClick(),
-        "Edit Students' Information" to onEditStudentInfoClick(),
-        "Edit Input Grades" to onEditGradesClick(),
+        "Add Section" to onAddSectionClick,
+        "Add Student" to onAddStudentClick,
+        "Delete Sections" to onDeleteSectionsClick,
+        "Delete Students" to onDeleteStudentsClick,
+        "Edit Students' Information" to onEditStudentInfoClick,
+        "Edit Input Grades" to onEditGradesClick,
     )
     val buttonColors = ButtonColors(
         containerColor = ProjectColors.OffGreen2,
@@ -98,7 +98,7 @@ fun HomePageBottomSheetLayout(
         ) {
             buttonOptions.forEach { buttonOption ->
                 Button(
-                    onClick = { buttonOption.second },
+                    onClick = { buttonOption.second() },
                     modifier = Modifier
                         .fillMaxWidth(),
                     colors = buttonColors
@@ -121,6 +121,6 @@ fun HomePageBottomSheetLayout(
 
 @Preview
 @Composable
-fun PreviewHomePageBottomSheet() {
+fun HomePageBottomSheetPreview() {
     HomePageBottomSheetLayout()
 }

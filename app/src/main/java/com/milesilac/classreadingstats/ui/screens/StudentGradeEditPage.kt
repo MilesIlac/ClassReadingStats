@@ -45,7 +45,6 @@ import com.milesilac.classreadingstats.model.OralReading
 import com.milesilac.classreadingstats.model.ReadingComprehension
 import com.milesilac.classreadingstats.model.ReadingTest
 import com.milesilac.classreadingstats.model.StudentList
-import com.milesilac.classreadingstats.model.toComprehensionLevelString
 import com.milesilac.classreadingstats.model.toLearnerLevelString
 import com.milesilac.classreadingstats.ui.dummyStudentListsEightAmethyst
 import com.milesilac.classreadingstats.ui.theme.ProjectColors
@@ -195,7 +194,7 @@ fun StudentGradeEditPage(
                 }
             }
             Text(
-                text = "Comprehension Level: ${newReadingTest.groupScreeningTest.comprehensionLevel.toComprehensionLevelString()}",
+                text = "Comprehension Level: ${newReadingTest.groupScreeningTest.comprehensionLevel.level}",
                 modifier = Modifier
                     .padding(top = 12.dp)
                     .fillMaxWidth()

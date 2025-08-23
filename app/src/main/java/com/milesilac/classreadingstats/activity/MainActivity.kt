@@ -19,6 +19,7 @@ import com.milesilac.classreadingstats.service.exportNewFileToExcel
 import com.milesilac.classreadingstats.ui.dummySections
 import com.milesilac.classreadingstats.ui.dummyStudentListsEightAmethyst
 import com.milesilac.classreadingstats.ui.dummyStudentListsEightDiamond
+import com.milesilac.classreadingstats.ui.screens.AddSectionPage
 import com.milesilac.classreadingstats.ui.screens.HomePage
 import com.milesilac.classreadingstats.ui.screens.StudentDetailEditPage
 import com.milesilac.classreadingstats.ui.screens.StudentDetailsPage
@@ -46,6 +47,9 @@ class MainActivity : AppCompatActivity() {
                         HomePage(
                             currentSections = currentSections,
                             currentSheets = currentSheets,
+                            onAddSectionClick = {
+                                backStack.add(RouteAddSection)
+                            },
                             onStudentEntryClick = { student ->
                                 backStack.add(RouteStudentDetails(student))
                             },
@@ -63,6 +67,21 @@ class MainActivity : AppCompatActivity() {
                             onVisible = {
                                 if (WindowCompat.getInsetsController(window, window.decorView).isAppearanceLightNavigationBars) {
                                     WindowCompat.getInsetsController(window, window.decorView).isAppearanceLightNavigationBars = false
+                                }
+                            }
+                        )
+                    }
+                    entry<RouteAddSection> {
+                        AddSectionPage(
+//                            student = key.student,
+//                            classSections = currentSections,
+//                            onSaveClick = { editedStudent ->
+//
+//                            },
+                            onBackClick = { backStack.removeLastOrNull() },
+                            onVisible = {
+                                if (WindowCompat.getInsetsController(window, window.decorView).isAppearanceLightNavigationBars.not()) {
+                                    WindowCompat.getInsetsController(window, window.decorView).isAppearanceLightNavigationBars = true
                                 }
                             }
                         )
@@ -106,6 +125,9 @@ class MainActivity : AppCompatActivity() {
 
 @kotlinx.serialization.Serializable
 private data object RouteHome : NavKey
+
+@kotlinx.serialization.Serializable
+private data object RouteAddSection : NavKey
 
 @kotlinx.serialization.Serializable
 private data class RouteStudentDetails(val student: Student) : NavKey

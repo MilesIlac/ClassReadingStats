@@ -9,7 +9,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.milesilac.classreadingstats.model.toGradeLevelInt
 import com.milesilac.classreadingstats.ui.dummyStudentListsEightAmethyst
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -52,8 +51,8 @@ fun TopInfoBar(
 
 @Preview
 @Composable
-fun PreviewTopInfoBar() {
-    val gradeLevel = dummyStudentListsEightAmethyst.classSection.gradeLevel.toGradeLevelInt()
+fun TopInfoBarPreview() {
+    val gradeLevel = dummyStudentListsEightAmethyst.classSection.gradeLevel.grade
     val sectionName = dummyStudentListsEightAmethyst.classSection.sectionName
     val section = "${gradeLevel}-${sectionName.uppercase()}"
     TopInfoBar(section = section)

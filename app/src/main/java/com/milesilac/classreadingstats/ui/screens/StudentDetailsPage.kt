@@ -41,7 +41,6 @@ import com.milesilac.classreadingstats.model.LearnerLevel
 import com.milesilac.classreadingstats.model.Student
 import com.milesilac.classreadingstats.model.StudentList
 import com.milesilac.classreadingstats.model.calculateLearnerOverallReadingProfile
-import com.milesilac.classreadingstats.model.sexConvertEnumToWords
 import com.milesilac.classreadingstats.ui.dummyStudentListsEightAmethyst
 import com.milesilac.classreadingstats.ui.theme.ProjectColors
 import kotlinx.coroutines.launch
@@ -125,7 +124,7 @@ fun StudentDetailsPage(
                         )
                         Spacer(modifier = Modifier.width(8.dp))
                         Text(
-                            text = student.sex.sexConvertEnumToWords(),
+                            text = student.sex.wordedLabel,
                             modifier = Modifier,
                             color = ProjectColors.OffWhite4,
                             fontSize = 16.sp,
