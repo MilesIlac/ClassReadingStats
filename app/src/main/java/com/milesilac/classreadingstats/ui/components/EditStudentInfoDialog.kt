@@ -6,6 +6,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -123,7 +124,7 @@ fun SectionDialog(
         Spacer(modifier = Modifier.height(12.dp))
         LazyColumn(
             modifier = Modifier
-                .height(252.dp)
+                .defaultMinSize(minHeight = 252.dp)
                 .border(
                     width = 1.dp,
                     color = ProjectColors.OffWhite4,

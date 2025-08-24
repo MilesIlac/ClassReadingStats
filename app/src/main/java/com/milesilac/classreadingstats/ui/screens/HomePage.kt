@@ -4,6 +4,7 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -50,6 +51,7 @@ import com.milesilac.classreadingstats.model.ClassSection
 import com.milesilac.classreadingstats.model.ClassSheet
 import com.milesilac.classreadingstats.model.Student
 import com.milesilac.classreadingstats.model.toSectionString
+import com.milesilac.classreadingstats.ui.components.DeleteSectionsDialog
 import com.milesilac.classreadingstats.ui.components.HomePageBottomSheet
 import com.milesilac.classreadingstats.ui.components.TopInfoBar
 import com.milesilac.classreadingstats.ui.dummySections
@@ -84,6 +86,7 @@ fun HomePage(
         )
     }
     var showBottomSheet by remember { mutableStateOf(false) }
+    var showDeleteSectionsDialog by remember { mutableStateOf(false) }
     val coroutineScope = rememberCoroutineScope()
 
     // Listen for page settling
@@ -226,8 +229,29 @@ fun HomePage(
             onAddStudentClick = {
                 showBottomSheet = false
                 onAddStudentClick()
+            },
+            onDeleteSectionsClick = {
+                showBottomSheet = false
+                showDeleteSectionsDialog = true
             }
         )
+    }
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+    ) {
+        when {
+            showDeleteSectionsDialog -> {
+                DeleteSectionsDialog(
+                    currentSheets = currentSheets,
+                    onDismissDialog = { showDeleteSectionsDialog = false },
+                    onSaveClick = { newSheets ->
+//                        inputStudentName = newInputName //TODO
+                        showDeleteSectionsDialog = false
+                    }
+                )
+            }
+        }
     }
 }
 
