@@ -15,6 +15,7 @@ import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.runtime.rememberNavBackStack
 import androidx.navigation3.ui.NavDisplay
 import com.milesilac.classreadingstats.model.Student
+import com.milesilac.classreadingstats.model.emptyStudent
 import com.milesilac.classreadingstats.service.exportNewFileToExcel
 import com.milesilac.classreadingstats.ui.dummySections
 import com.milesilac.classreadingstats.ui.dummyStudentListsEightAmethyst
@@ -23,6 +24,7 @@ import com.milesilac.classreadingstats.ui.screens.AddSectionPage
 import com.milesilac.classreadingstats.ui.screens.HomePage
 import com.milesilac.classreadingstats.ui.screens.StudentDetailEditPage
 import com.milesilac.classreadingstats.ui.screens.StudentDetailsPage
+import com.milesilac.classreadingstats.ui.screens.StudentEditType
 
 class MainActivity : AppCompatActivity() {
 
@@ -50,6 +52,15 @@ class MainActivity : AppCompatActivity() {
                             onAddSectionClick = {
                                 backStack.add(RouteAddSection)
                             },
+                            onAddStudentClick = {
+                                backStack.add(
+                                    RouteStudentDetailEdit(
+                                        student = emptyStudent(),
+                                        studentEditType = StudentEditType.ADD,
+                                        isFromAddSectionPage = false
+                                    )
+                                )
+                            },
                             onStudentEntryClick = { student ->
                                 backStack.add(RouteStudentDetails(student))
                             },
@@ -73,12 +84,16 @@ class MainActivity : AppCompatActivity() {
                     }
                     entry<RouteAddSection> {
                         AddSectionPage(
-//                            student = key.student,
-//                            classSections = currentSections,
-//                            onSaveClick = { editedStudent ->
-//
-//                            },
                             onBackClick = { backStack.removeLastOrNull() },
+                            onAddStudentClick = { inputSection ->
+                                backStack.add(
+                                    RouteStudentDetailEdit(
+                                        student = emptyStudent(section = inputSection),
+                                        studentEditType = StudentEditType.ADD,
+                                        isFromAddSectionPage = true
+                                    )
+                                )
+                            },
                             onVisible = {
                                 if (WindowCompat.getInsetsController(window, window.decorView).isAppearanceLightNavigationBars.not()) {
                                     WindowCompat.getInsetsController(window, window.decorView).isAppearanceLightNavigationBars = true
@@ -89,7 +104,15 @@ class MainActivity : AppCompatActivity() {
                     entry<RouteStudentDetails> { key ->
                         StudentDetailsPage(
                             student = key.student,
-                            onEditClick = { backStack.add(RouteStudentDetailEdit(key.student)) },
+                            onEditClick = {
+                                backStack.add(
+                                    RouteStudentDetailEdit(
+                                        student = key.student,
+                                        studentEditType = StudentEditType.EDIT,
+                                        isFromAddSectionPage = false
+                                    )
+                                )
+                            },
                             onBackClick = { backStack.removeLastOrNull() },
                             onDelete = { student ->
 
@@ -103,7 +126,9 @@ class MainActivity : AppCompatActivity() {
                     }
                     entry<RouteStudentDetailEdit> { key ->
                         StudentDetailEditPage(
+                            studentEditType = key.studentEditType,
                             student = key.student,
+                            isFromAddSectionPage = key.isFromAddSectionPage,
                             classSections = currentSections,
                             onSaveClick = { editedStudent ->
 
@@ -133,4 +158,8 @@ private data object RouteAddSection : NavKey
 private data class RouteStudentDetails(val student: Student) : NavKey
 
 @kotlinx.serialization.Serializable
-private data class RouteStudentDetailEdit(val student: Student) : NavKey
+private data class RouteStudentDetailEdit(
+    val student: Student,
+    val studentEditType: StudentEditType,
+    val isFromAddSectionPage: Boolean
+) : NavKey

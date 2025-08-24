@@ -31,8 +31,8 @@ import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.milesilac.classreadingstats.model.ClassSection
-import com.milesilac.classreadingstats.model.GradeLevel
 import com.milesilac.classreadingstats.model.StudentSexOrient
+import com.milesilac.classreadingstats.model.initClassSection
 import com.milesilac.classreadingstats.model.toSectionString
 import com.milesilac.classreadingstats.ui.dummySections
 import com.milesilac.classreadingstats.ui.theme.ProjectColors
@@ -44,10 +44,7 @@ import kotlinx.coroutines.flow.drop
 fun EditStudentInfoDialog(
     studentInfoType: StudentInfoType,
     sections: List<ClassSection> = listOf(),
-    currentSection: ClassSection = ClassSection(
-        gradeLevel = GradeLevel.ERROR,
-        sectionName = ""
-    ),
+    currentSection: ClassSection = initClassSection(),
     currentSex: StudentSexOrient = StudentSexOrient.ERROR,
     onDismissDialog: () -> Unit = {},
     onSectionPick: (ClassSection) -> Unit = {},
@@ -92,10 +89,7 @@ enum class StudentInfoType {
 
 @Composable
 fun SectionDialog(
-    currentSection: ClassSection = ClassSection(
-        gradeLevel = GradeLevel.ERROR,
-        sectionName = ""
-    ),
+    currentSection: ClassSection = initClassSection(),
     sections: List<ClassSection> = listOf(),
     onPick: (ClassSection) -> Unit = {}
 ) {

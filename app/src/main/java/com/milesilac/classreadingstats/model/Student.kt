@@ -13,6 +13,18 @@ data class Student(
     var postTest: ReadingTest? = null
 )
 
+fun emptyStudent(
+    name: String = "",
+    section: ClassSection = initClassSection(),
+    sex: StudentSexOrient = StudentSexOrient.ERROR,
+    preTest: ReadingTest = emptyReadingTest()
+) = Student(
+    name = name,
+    section = section,
+    sex = sex,
+    preTest = preTest
+)
+
 // in the scenario of reading values from excel file,
 // possibly calculate isGradingPassage by checking if all succeeding cells are empty
 

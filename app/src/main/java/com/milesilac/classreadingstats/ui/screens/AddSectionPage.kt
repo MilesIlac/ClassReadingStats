@@ -46,6 +46,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.milesilac.classreadingstats.helpers.nonScaledSp
+import com.milesilac.classreadingstats.model.ClassSection
 import com.milesilac.classreadingstats.model.GradeLevel
 import com.milesilac.classreadingstats.model.StudentList
 import com.milesilac.classreadingstats.ui.components.EditSectionNameDialog
@@ -56,12 +57,13 @@ import kotlin.enums.enumEntries
 @Composable
 fun AddSectionPage(
     onBackClick: () -> Unit = {},
+    onAddStudentClick: (ClassSection) -> Unit = {},
     onVisible: () -> Unit = {}
 ) {
     onVisible()
     var selectedGradeLevel by remember { mutableStateOf(GradeLevel.ERROR) }
     var inputSectionName by remember { mutableStateOf("") }
-    val hasGradeAndSection = selectedGradeLevel != GradeLevel.ERROR && inputSectionName.isNotEmpty() //TODO
+    val hasGradeAndSection = selectedGradeLevel != GradeLevel.ERROR && inputSectionName.isNotEmpty()
     var showEditDialog by rememberSaveable { mutableStateOf(false) }
 
 //    val students = mutableListOf<Student>()//TODO
@@ -373,7 +375,14 @@ fun AddSectionPage(
                         }
                     }
                     OutlinedButton(
-                        onClick = {  },
+                        onClick = {
+                            onAddStudentClick(
+                                ClassSection(
+                                    gradeLevel = selectedGradeLevel,
+                                    sectionName = inputSectionName
+                                )
+                            )
+                        },
                         modifier = Modifier
                             .background(color = ProjectColors.OffViolet1)
                             .padding(

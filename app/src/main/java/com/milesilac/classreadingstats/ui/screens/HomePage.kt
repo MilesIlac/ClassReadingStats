@@ -65,6 +65,7 @@ fun HomePage(
     currentSections: List<ClassSection> = listOf(),
     currentSheets: List<ClassSheet> = listOf(),
     onAddSectionClick: () -> Unit = {},
+    onAddStudentClick: () -> Unit = {},
     onStudentEntryClick: (Student) -> Unit = {},
     onExportClick: (List<ClassSheet>) -> Unit = {},
     bottomSheetState: SheetState = rememberModalBottomSheetState(
@@ -221,6 +222,10 @@ fun HomePage(
             onAddSectionClick = {
                 showBottomSheet = false
                 onAddSectionClick()
+            },
+            onAddStudentClick = {
+                showBottomSheet = false
+                onAddStudentClick()
             }
         )
     }

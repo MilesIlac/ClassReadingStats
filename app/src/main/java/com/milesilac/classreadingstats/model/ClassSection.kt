@@ -10,6 +10,11 @@ data class ClassSection(
     var sectionName: String
 )
 
+fun initClassSection() = ClassSection(
+    gradeLevel = GradeLevel.ERROR,
+    sectionName = ""
+)
+
 fun ClassSection.toSectionString(
     isSpaced: Boolean = false,
     isSectionNameUpperCased: Boolean = true
