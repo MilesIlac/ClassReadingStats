@@ -7,7 +7,7 @@ import kotlin.enums.enumEntries
 data class Student(
     var orderId: Double = 0.0,
     var name: String,
-    var section: String,
+    var section: ClassSection,
     var sex: StudentSexOrient,
     var preTest: ReadingTest,
     var postTest: ReadingTest? = null

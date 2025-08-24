@@ -41,6 +41,7 @@ import com.milesilac.classreadingstats.model.LearnerLevel
 import com.milesilac.classreadingstats.model.Student
 import com.milesilac.classreadingstats.model.StudentList
 import com.milesilac.classreadingstats.model.calculateLearnerOverallReadingProfile
+import com.milesilac.classreadingstats.model.toSectionString
 import com.milesilac.classreadingstats.ui.dummyStudentListsEightAmethyst
 import com.milesilac.classreadingstats.ui.theme.ProjectColors
 import kotlinx.coroutines.launch
@@ -108,7 +109,7 @@ fun StudentDetailsPage(
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         Text(
-                            text = student.section.trim(),
+                            text = student.section.toSectionString(),
                             modifier = Modifier,
                             color = ProjectColors.OffWhite4,
                             fontSize = 16.sp,

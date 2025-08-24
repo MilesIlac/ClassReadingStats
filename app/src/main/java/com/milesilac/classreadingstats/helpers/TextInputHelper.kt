@@ -1,5 +1,7 @@
 package com.milesilac.classreadingstats.helpers
 
+import java.util.Locale.getDefault
+
 fun String.isPositiveInteger() = this.all { it.isDigit() }
 
 fun String.removeExtraZeroes() = runCatching { this.toInt().toString() }.getOrElse { this }
@@ -13,3 +15,7 @@ fun String.removeExtraZeroesForDecimal() = when {
         "${numbers.removeExtraZeroes()}.${decimals}"
     }
 }
+
+fun String.isAllLetters() = this.all { it.isLetter() || it.isWhitespace() }
+
+fun String.capitalizeMaybe() = replaceFirstChar { if (it.isLowerCase()) it.titlecase(getDefault()) else it.toString() }

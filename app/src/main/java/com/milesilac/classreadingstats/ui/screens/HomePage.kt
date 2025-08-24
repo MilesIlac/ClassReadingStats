@@ -49,6 +49,7 @@ import androidx.compose.ui.unit.dp
 import com.milesilac.classreadingstats.model.ClassSection
 import com.milesilac.classreadingstats.model.ClassSheet
 import com.milesilac.classreadingstats.model.Student
+import com.milesilac.classreadingstats.model.toSectionString
 import com.milesilac.classreadingstats.ui.components.HomePageBottomSheet
 import com.milesilac.classreadingstats.ui.components.TopInfoBar
 import com.milesilac.classreadingstats.ui.dummySections
@@ -75,7 +76,10 @@ fun HomePage(
     val pagerState = rememberPagerState(pageCount = { currentSheets.size })
     var currentSection by remember {
         mutableStateOf(
-            "${currentSheets[0].classSection.gradeLevel.grade} - ${currentSheets[0].classSection.sectionName}"
+            currentSheets[0].classSection.toSectionString(
+                isSpaced = true,
+                isSectionNameUpperCased = false
+            )
         )
     }
     var showBottomSheet by remember { mutableStateOf(false) }
@@ -88,7 +92,10 @@ fun HomePage(
             .collect { page ->
                 // Trigger your side-effect here
                 if (page == pagerState.targetPage) {
-                    currentSection = "${currentSheets[page].classSection.gradeLevel.grade} - ${currentSheets[page].classSection.sectionName}"
+                    currentSection = currentSheets[page].classSection.toSectionString(
+                        isSpaced = true,
+                        isSectionNameUpperCased = false
+                    )
                 }
             }
     }

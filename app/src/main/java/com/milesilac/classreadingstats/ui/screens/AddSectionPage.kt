@@ -6,6 +6,7 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -32,6 +33,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -46,6 +48,7 @@ import androidx.compose.ui.unit.sp
 import com.milesilac.classreadingstats.helpers.nonScaledSp
 import com.milesilac.classreadingstats.model.GradeLevel
 import com.milesilac.classreadingstats.model.StudentList
+import com.milesilac.classreadingstats.ui.components.EditSectionNameDialog
 import com.milesilac.classreadingstats.ui.dummyStudentListsEightAmethyst
 import com.milesilac.classreadingstats.ui.theme.ProjectColors
 import kotlin.enums.enumEntries
@@ -57,7 +60,10 @@ fun AddSectionPage(
 ) {
     onVisible()
     var selectedGradeLevel by remember { mutableStateOf(GradeLevel.ERROR) }
-    val hasGradeAndSection = selectedGradeLevel != GradeLevel.ERROR && true //TODO
+    var inputSectionName by remember { mutableStateOf("") }
+    val hasGradeAndSection = selectedGradeLevel != GradeLevel.ERROR && inputSectionName.isNotEmpty() //TODO
+    var showEditDialog by rememberSaveable { mutableStateOf(false) }
+
 //    val students = mutableListOf<Student>()//TODO
     val students = dummyStudentListsEightAmethyst.maleStudents.filter { it is StudentList.StudentDetails }.map {
         (it as StudentList.StudentDetails).student
@@ -113,7 +119,10 @@ fun AddSectionPage(
                     modifier = Modifier
                         .background(
                             brush = Brush.horizontalGradient(
-                                colors = listOf(ProjectColors.OffAquaGreen1, ProjectColors.OffAquaGreen1)
+                                colors = listOf(
+                                    ProjectColors.OffAquaGreen1,
+                                    ProjectColors.OffAquaGreen1
+                                )
                             ),
                             alpha = 0.5F
                         )
@@ -201,15 +210,17 @@ fun AddSectionPage(
                     )
                     Spacer(modifier = Modifier.width(16.dp))
                     Text(
-                        text = "Aquamarine",
+                        text = inputSectionName,
                         modifier = Modifier
                             .weight(1F),
                         color = ProjectColors.OffWhite4,
                         fontSize = 16.sp,
-                        textAlign = TextAlign.Center
                     )
+                    Spacer(modifier = Modifier.width(16.dp))
                     OutlinedButton(
-                        onClick = {  },
+                        onClick = {
+                            showEditDialog = true
+                        },
                         modifier = Modifier,
                         shape = RoundedCornerShape(12.dp),
                         colors = ButtonColors(
@@ -221,6 +232,10 @@ fun AddSectionPage(
                         border = BorderStroke(
                             width = 1.dp,
                             color = ProjectColors.OffWhite4
+                        ),
+                        contentPadding = PaddingValues(
+                            horizontal = 16.dp,
+                            vertical = 8.dp
                         )
                     ) {
                         Row(
@@ -466,6 +481,21 @@ fun AddSectionPage(
                     }
                 }
             }
+        }
+    }
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+    ) {
+        if (showEditDialog) {
+            EditSectionNameDialog(
+                currentSectionName = inputSectionName,
+                onDismissDialog = { showEditDialog = false },
+                onOkayClick = { newInputName ->
+                    inputSectionName = newInputName
+                    showEditDialog = false
+                }
+            )
         }
     }
 }

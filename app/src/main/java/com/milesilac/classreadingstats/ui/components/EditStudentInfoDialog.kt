@@ -33,6 +33,7 @@ import androidx.compose.ui.unit.dp
 import com.milesilac.classreadingstats.model.ClassSection
 import com.milesilac.classreadingstats.model.GradeLevel
 import com.milesilac.classreadingstats.model.StudentSexOrient
+import com.milesilac.classreadingstats.model.toSectionString
 import com.milesilac.classreadingstats.ui.dummySections
 import com.milesilac.classreadingstats.ui.theme.ProjectColors
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -43,7 +44,10 @@ import kotlinx.coroutines.flow.drop
 fun EditStudentInfoDialog(
     studentInfoType: StudentInfoType,
     sections: List<ClassSection> = listOf(),
-    currentSection: String = "",
+    currentSection: ClassSection = ClassSection(
+        gradeLevel = GradeLevel.ERROR,
+        sectionName = ""
+    ),
     currentSex: StudentSexOrient = StudentSexOrient.ERROR,
     onDismissDialog: () -> Unit = {},
     onSectionPick: (ClassSection) -> Unit = {},
@@ -88,19 +92,15 @@ enum class StudentInfoType {
 
 @Composable
 fun SectionDialog(
-    currentSection: String = "",
+    currentSection: ClassSection = ClassSection(
+        gradeLevel = GradeLevel.ERROR,
+        sectionName = ""
+    ),
     sections: List<ClassSection> = listOf(),
     onPick: (ClassSection) -> Unit = {}
 ) {
     val lazyListState = rememberLazyListState()
-    val sectionName = currentSection.trim().substring(
-        currentSection.indexOf('-') + 1,
-        currentSection.lastIndex + 1
-    )
-    val currentSectionActual = sections.find {
-        it.sectionName.uppercase() == sectionName.uppercase()
-    } ?: ClassSection(GradeLevel.ERROR, "")
-    var selectedOption by remember { mutableStateOf(currentSectionActual) }
+    var selectedOption by remember { mutableStateOf(currentSection) }
     // Listen for page settling
     LaunchedEffect(selectedOption) {
         snapshotFlow { selectedOption }
@@ -141,7 +141,7 @@ fun SectionDialog(
             sections.forEach { section ->
                 item {
                     Text(
-                        text = "${section.gradeLevel.grade} - ${section.sectionName}",
+                        text = section.toSectionString(isSpaced = true),
                         Modifier
                             .background(
                                 color = when {

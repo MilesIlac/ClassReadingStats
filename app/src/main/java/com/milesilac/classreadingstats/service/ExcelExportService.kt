@@ -11,6 +11,7 @@ import com.milesilac.classreadingstats.model.LearnerLevel
 import com.milesilac.classreadingstats.model.StudentList
 import com.milesilac.classreadingstats.model.calculateLearnerOverallReadingProfile
 import com.milesilac.classreadingstats.model.toLearnerLevelString
+import com.milesilac.classreadingstats.model.toSectionString
 import org.apache.poi.ss.usermodel.CellStyle
 import org.apache.poi.ss.usermodel.HorizontalAlignment
 import org.apache.poi.ss.usermodel.VerticalAlignment
@@ -47,7 +48,7 @@ fun exportNewFileToExcel(
         val hasPostTest = false //redo model for this
         var lastRowIndex = 0
 
-        val classSheet = newBook.createSheet("${it.classSection.gradeLevel.grade}-${it.classSection.sectionName}")
+        val classSheet = newBook.createSheet(it.classSection.toSectionString(isSectionNameUpperCased = false))
 
         classSheet.createInfoTable(
             rowStartIndex = lastRowIndex,

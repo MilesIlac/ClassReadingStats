@@ -24,7 +24,7 @@ val dummyStudentListsEightAmethyst = ClassSheet(
             student = Student(
                 orderId = 1.0,
                 name = "Alao, John Nathan",
-                section = "8-AMETHYST",
+                section = ClassSection(gradeLevel = GradeLevel.EIGHT, sectionName = "Amethyst"),
                 sex = StudentSexOrient.MALE,
                 preTest = ReadingTest(
                     groupScreeningTest = GroupScreeningTest(
@@ -48,7 +48,7 @@ val dummyStudentListsEightAmethyst = ClassSheet(
             student = Student(
                 orderId = 2.0,
                 name = "Alendro, Frellian",
-                section = "8-AMETHYST",
+                section = ClassSection(gradeLevel = GradeLevel.EIGHT, sectionName = "Amethyst"),
                 sex = StudentSexOrient.MALE,
                 preTest = ReadingTest(
                     groupScreeningTest = GroupScreeningTest(
@@ -72,7 +72,7 @@ val dummyStudentListsEightAmethyst = ClassSheet(
             student = Student(
                 orderId = 3.0,
                 name = "Bandong, John Paul Mariano",
-                section = "8-AMETHYST",
+                section = ClassSection(gradeLevel = GradeLevel.EIGHT, sectionName = "Amethyst"),
                 sex = StudentSexOrient.MALE,
                 preTest = ReadingTest(
                     groupScreeningTest = GroupScreeningTest(
@@ -96,7 +96,7 @@ val dummyStudentListsEightAmethyst = ClassSheet(
             student = Student(
                 orderId = 4.0,
                 name = "Bauca, Romel Ustare",
-                section = "8-AMETHYST",
+                section = ClassSection(gradeLevel = GradeLevel.EIGHT, sectionName = "Amethyst"),
                 sex = StudentSexOrient.MALE,
                 preTest = ReadingTest(
                     groupScreeningTest = GroupScreeningTest(
@@ -120,7 +120,7 @@ val dummyStudentListsEightAmethyst = ClassSheet(
             student = Student(
                 orderId = 5.0,
                 name = "Buscayno, Mark Deniel",
-                section = "8-AMETHYST",
+                section = ClassSection(gradeLevel = GradeLevel.EIGHT, sectionName = "Amethyst"),
                 sex = StudentSexOrient.MALE,
                 preTest = ReadingTest(
                     groupScreeningTest = GroupScreeningTest(
@@ -144,7 +144,7 @@ val dummyStudentListsEightAmethyst = ClassSheet(
             student = Student(
                 orderId = 6.0,
                 name = "Cabuquit, Raymart Sotto",
-                section = "8-AMETHYST",
+                section = ClassSection(gradeLevel = GradeLevel.EIGHT, sectionName = "Amethyst"),
                 sex = StudentSexOrient.MALE,
                 preTest = ReadingTest(
                     groupScreeningTest = GroupScreeningTest(
@@ -168,7 +168,7 @@ val dummyStudentListsEightAmethyst = ClassSheet(
             student = Student(
                 orderId = 7.0,
                 name = "Cuyno, Jhullian Jade",
-                section = "8-AMETHYST",
+                section = ClassSection(gradeLevel = GradeLevel.EIGHT, sectionName = "Amethyst"),
                 sex = StudentSexOrient.MALE,
                 preTest = ReadingTest(
                     groupScreeningTest = GroupScreeningTest(
@@ -192,7 +192,7 @@ val dummyStudentListsEightAmethyst = ClassSheet(
             student = Student(
                 orderId = 8.0,
                 name = "Daganato, Jerome Soon Jin Riῆos",
-                section = "8-AMETHYST",
+                section = ClassSection(gradeLevel = GradeLevel.EIGHT, sectionName = "Amethyst"),
                 sex = StudentSexOrient.MALE,
                 preTest = ReadingTest(
                     groupScreeningTest = GroupScreeningTest(
@@ -216,7 +216,7 @@ val dummyStudentListsEightAmethyst = ClassSheet(
             student = Student(
                 orderId = 9.0,
                 name = "Dela Cruz, Charlie",
-                section = "8-AMETHYST",
+                section = ClassSection(gradeLevel = GradeLevel.EIGHT, sectionName = "Amethyst"),
                 sex = StudentSexOrient.MALE,
                 preTest = ReadingTest(
                     groupScreeningTest = GroupScreeningTest(
@@ -240,7 +240,7 @@ val dummyStudentListsEightAmethyst = ClassSheet(
             student = Student(
                 orderId = 10.0,
                 name = "Dela cruz, Kurt Yuri Ignacio",
-                section = "8-AMETHYST",
+                section = ClassSection(gradeLevel = GradeLevel.EIGHT, sectionName = "Amethyst"),
                 sex = StudentSexOrient.MALE,
                 preTest = ReadingTest(
                     groupScreeningTest = GroupScreeningTest(
@@ -264,7 +264,7 @@ val dummyStudentListsEightAmethyst = ClassSheet(
             student = Student(
                 orderId = 11.0,
                 name = "De Otoy, Edwin Cagadas",
-                section = "8-AMETHYST",
+                section = ClassSection(gradeLevel = GradeLevel.EIGHT, sectionName = "Amethyst"),
                 sex = StudentSexOrient.MALE,
                 preTest = ReadingTest(
                     groupScreeningTest = GroupScreeningTest(
@@ -288,7 +288,7 @@ val dummyStudentListsEightAmethyst = ClassSheet(
             student = Student(
                 orderId = 12.0,
                 name = "Enano, Andrew John Apas",
-                section = "8-AMETHYST",
+                section = ClassSection(gradeLevel = GradeLevel.EIGHT, sectionName = "Amethyst"),
                 sex = StudentSexOrient.MALE,
                 preTest = ReadingTest(
                     groupScreeningTest = GroupScreeningTest(
@@ -312,7 +312,7 @@ val dummyStudentListsEightAmethyst = ClassSheet(
             student = Student(
                 orderId = 13.0,
                 name = "Estrella, Tristan Andrei Sulam",
-                section = "8-AMETHYST",
+                section = ClassSection(gradeLevel = GradeLevel.EIGHT, sectionName = "Amethyst"),
                 sex = StudentSexOrient.MALE,
                 preTest = ReadingTest(
                     groupScreeningTest = GroupScreeningTest(
@@ -336,7 +336,7 @@ val dummyStudentListsEightAmethyst = ClassSheet(
             student = Student(
                 orderId = 14.0,
                 name = "Galang, Gian Jaren Tamayo",
-                section = "8-AMETHYST",
+                section = ClassSection(gradeLevel = GradeLevel.EIGHT, sectionName = "Amethyst"),
                 sex = StudentSexOrient.MALE,
                 preTest = ReadingTest(
                     groupScreeningTest = GroupScreeningTest(
@@ -360,7 +360,7 @@ val dummyStudentListsEightAmethyst = ClassSheet(
             student = Student(
                 orderId = 15.0,
                 name = "Grijaldo, Sebastian Allen Quian Gutierrez",
-                section = "8-AMETHYST",
+                section = ClassSection(gradeLevel = GradeLevel.EIGHT, sectionName = "Amethyst"),
                 sex = StudentSexOrient.MALE,
                 preTest = ReadingTest(
                     groupScreeningTest = GroupScreeningTest(
@@ -384,7 +384,7 @@ val dummyStudentListsEightAmethyst = ClassSheet(
             student = Student(
                 orderId = 16.0,
                 name = "Ibaῆez, Prince Nathan",
-                section = "8-AMETHYST",
+                section = ClassSection(gradeLevel = GradeLevel.EIGHT, sectionName = "Amethyst"),
                 sex = StudentSexOrient.MALE,
                 preTest = ReadingTest(
                     groupScreeningTest = GroupScreeningTest(
@@ -408,7 +408,7 @@ val dummyStudentListsEightAmethyst = ClassSheet(
             student = Student(
                 orderId = 17.0,
                 name = "Lacson, Angel Mendoza",
-                section = "8-AMETHYST",
+                section = ClassSection(gradeLevel = GradeLevel.EIGHT, sectionName = "Amethyst"),
                 sex = StudentSexOrient.MALE,
                 preTest = ReadingTest(
                     groupScreeningTest = GroupScreeningTest(
@@ -432,7 +432,7 @@ val dummyStudentListsEightAmethyst = ClassSheet(
             student = Student(
                 orderId = 18.0,
                 name = "Nocom, Leeiel Briones",
-                section = "8-AMETHYST",
+                section = ClassSection(gradeLevel = GradeLevel.EIGHT, sectionName = "Amethyst"),
                 sex = StudentSexOrient.MALE,
                 preTest = ReadingTest(
                     groupScreeningTest = GroupScreeningTest(
@@ -456,7 +456,7 @@ val dummyStudentListsEightAmethyst = ClassSheet(
             student = Student(
                 orderId = 19.0,
                 name = "Ocampo, Brahne Niven Pandaan ",
-                section = "8-AMETHYST",
+                section = ClassSection(gradeLevel = GradeLevel.EIGHT, sectionName = "Amethyst"),
                 sex = StudentSexOrient.MALE,
                 preTest = ReadingTest(
                     groupScreeningTest = GroupScreeningTest(
@@ -480,7 +480,7 @@ val dummyStudentListsEightAmethyst = ClassSheet(
             student = Student(
                 orderId = 20.0,
                 name = "Pamintuan, Fervinson Massif Rosadeno",
-                section = "8-AMETHYST",
+                section = ClassSection(gradeLevel = GradeLevel.EIGHT, sectionName = "Amethyst"),
                 sex = StudentSexOrient.MALE,
                 preTest = ReadingTest(
                     groupScreeningTest = GroupScreeningTest(
@@ -504,7 +504,7 @@ val dummyStudentListsEightAmethyst = ClassSheet(
             student = Student(
                 orderId = 21.0,
                 name = "Pepito, Francis Johan Balaguer",
-                section = "8-AMETHYST",
+                section = ClassSection(gradeLevel = GradeLevel.EIGHT, sectionName = "Amethyst"),
                 sex = StudentSexOrient.MALE,
                 preTest = ReadingTest(
                     groupScreeningTest = GroupScreeningTest(
@@ -528,7 +528,7 @@ val dummyStudentListsEightAmethyst = ClassSheet(
             student = Student(
                 orderId = 22.0,
                 name = "Sabbun, Aries Leyva",
-                section = "8-AMETHYST",
+                section = ClassSection(gradeLevel = GradeLevel.EIGHT, sectionName = "Amethyst"),
                 sex = StudentSexOrient.MALE,
                 preTest = ReadingTest(
                     groupScreeningTest = GroupScreeningTest(
@@ -555,7 +555,7 @@ val dummyStudentListsEightAmethyst = ClassSheet(
             student = Student(
                 orderId = 1.0,
                 name = "Baldonado, Ameerah Faith Balisay",
-                section = "8-DIAMOND",
+                section = ClassSection(gradeLevel = GradeLevel.EIGHT, sectionName = "Diamond"),
                 sex = StudentSexOrient.FEMALE,
                 preTest = ReadingTest(
                     groupScreeningTest = GroupScreeningTest(
@@ -586,7 +586,7 @@ val dummyStudentListsEightDiamond = ClassSheet(
             student = Student(
                 orderId = 1.0,
                 name = "Baldonado, Ameerah Faith Balisay",
-                section = "8-DIAMOND",
+                section = ClassSection(gradeLevel = GradeLevel.EIGHT, sectionName = "Diamond"),
                 sex = StudentSexOrient.FEMALE,
                 preTest = ReadingTest(
                     groupScreeningTest = GroupScreeningTest(
@@ -610,7 +610,7 @@ val dummyStudentListsEightDiamond = ClassSheet(
             student = Student(
                 orderId = 2.0,
                 name = "Barcinas, Maria Angela Galang",
-                section = "8-DIAMOND",
+                section = ClassSection(gradeLevel = GradeLevel.EIGHT, sectionName = "Diamond"),
                 sex = StudentSexOrient.FEMALE,
                 preTest = ReadingTest(
                     groupScreeningTest = GroupScreeningTest(
@@ -634,7 +634,7 @@ val dummyStudentListsEightDiamond = ClassSheet(
             student = Student(
                 orderId = 3.0,
                 name = "Dayan- Dayan, Akiko Reign",
-                section = "8-DIAMOND",
+                section = ClassSection(gradeLevel = GradeLevel.EIGHT, sectionName = "Diamond"),
                 sex = StudentSexOrient.FEMALE,
                 preTest = ReadingTest(
                     groupScreeningTest = GroupScreeningTest(
@@ -658,7 +658,7 @@ val dummyStudentListsEightDiamond = ClassSheet(
             student = Student(
                 orderId = 4.0,
                 name = "Guiao, Cristine Bumatay",
-                section = "8-DIAMOND",
+                section = ClassSection(gradeLevel = GradeLevel.EIGHT, sectionName = "Diamond"),
                 sex = StudentSexOrient.FEMALE,
                 preTest = ReadingTest(
                     groupScreeningTest = GroupScreeningTest(
@@ -682,7 +682,7 @@ val dummyStudentListsEightDiamond = ClassSheet(
             student = Student(
                 orderId = 5.0,
                 name = "Loremas, Jermaine Fernando",
-                section = "8-DIAMOND",
+                section = ClassSection(gradeLevel = GradeLevel.EIGHT, sectionName = "Diamond"),
                 sex = StudentSexOrient.FEMALE,
                 preTest = ReadingTest(
                     groupScreeningTest = GroupScreeningTest(
@@ -706,7 +706,7 @@ val dummyStudentListsEightDiamond = ClassSheet(
             student = Student(
                 orderId = 6.0,
                 name = "Lugue, Rhian Joyce Payumo",
-                section = "8-DIAMOND",
+                section = ClassSection(gradeLevel = GradeLevel.EIGHT, sectionName = "Diamond"),
                 sex = StudentSexOrient.FEMALE,
                 preTest = ReadingTest(
                     groupScreeningTest = GroupScreeningTest(
@@ -730,7 +730,7 @@ val dummyStudentListsEightDiamond = ClassSheet(
             student = Student(
                 orderId = 7.0,
                 name = "Marzan, Kristina Joy Fernandez",
-                section = "8-DIAMOND",
+                section = ClassSection(gradeLevel = GradeLevel.EIGHT, sectionName = "Diamond"),
                 sex = StudentSexOrient.FEMALE,
                 preTest = ReadingTest(
                     groupScreeningTest = GroupScreeningTest(
@@ -754,7 +754,7 @@ val dummyStudentListsEightDiamond = ClassSheet(
             student = Student(
                 orderId = 8.0,
                 name = "Perez, Prynzes Nicole Tiglao",
-                section = "8-DIAMOND",
+                section = ClassSection(gradeLevel = GradeLevel.EIGHT, sectionName = "Diamond"),
                 sex = StudentSexOrient.FEMALE,
                 preTest = ReadingTest(
                     groupScreeningTest = GroupScreeningTest(
@@ -778,7 +778,7 @@ val dummyStudentListsEightDiamond = ClassSheet(
             student = Student(
                 orderId = 9.0,
                 name = "Recto, Rachelle Ann",
-                section = "8-DIAMOND",
+                section = ClassSection(gradeLevel = GradeLevel.EIGHT, sectionName = "Diamond"),
                 sex = StudentSexOrient.FEMALE,
                 preTest = ReadingTest(
                     groupScreeningTest = GroupScreeningTest(
@@ -802,7 +802,7 @@ val dummyStudentListsEightDiamond = ClassSheet(
             student = Student(
                 orderId = 10.0,
                 name = "Reyes, Amanda Faith Quiboloy",
-                section = "8-DIAMOND",
+                section = ClassSection(gradeLevel = GradeLevel.EIGHT, sectionName = "Diamond"),
                 sex = StudentSexOrient.FEMALE,
                 preTest = ReadingTest(
                     groupScreeningTest = GroupScreeningTest(
@@ -826,7 +826,7 @@ val dummyStudentListsEightDiamond = ClassSheet(
             student = Student(
                 orderId = 11.0,
                 name = "Reyes, Fiona Briel Bondoc",
-                section = "8-DIAMOND",
+                section = ClassSection(gradeLevel = GradeLevel.EIGHT, sectionName = "Diamond"),
                 sex = StudentSexOrient.FEMALE,
                 preTest = ReadingTest(
                     groupScreeningTest = GroupScreeningTest(
@@ -850,7 +850,7 @@ val dummyStudentListsEightDiamond = ClassSheet(
             student = Student(
                 orderId = 12.0,
                 name = "Rivamonte, Mary Juliet Barrientos",
-                section = "8-DIAMOND",
+                section = ClassSection(gradeLevel = GradeLevel.EIGHT, sectionName = "Diamond"),
                 sex = StudentSexOrient.FEMALE,
                 preTest = ReadingTest(
                     groupScreeningTest = GroupScreeningTest(
@@ -874,7 +874,7 @@ val dummyStudentListsEightDiamond = ClassSheet(
             student = Student(
                 orderId = 13.0,
                 name = "Sagad, Keona Zoe Wage",
-                section = "8-DIAMOND",
+                section = ClassSection(gradeLevel = GradeLevel.EIGHT, sectionName = "Diamond"),
                 sex = StudentSexOrient.FEMALE,
                 preTest = ReadingTest(
                     groupScreeningTest = GroupScreeningTest(
@@ -898,7 +898,7 @@ val dummyStudentListsEightDiamond = ClassSheet(
             student = Student(
                 orderId = 14.0,
                 name = "Saldivar, Leyarra Janel Basco",
-                section = "8-DIAMOND",
+                section = ClassSection(gradeLevel = GradeLevel.EIGHT, sectionName = "Diamond"),
                 sex = StudentSexOrient.FEMALE,
                 preTest = ReadingTest(
                     groupScreeningTest = GroupScreeningTest(
@@ -922,7 +922,7 @@ val dummyStudentListsEightDiamond = ClassSheet(
             student = Student(
                 orderId = 15.0,
                 name = "Sampana, Aira Joy Soliman",
-                section = "8-DIAMOND",
+                section = ClassSection(gradeLevel = GradeLevel.EIGHT, sectionName = "Diamond"),
                 sex = StudentSexOrient.FEMALE,
                 preTest = ReadingTest(
                     groupScreeningTest = GroupScreeningTest(
@@ -946,7 +946,7 @@ val dummyStudentListsEightDiamond = ClassSheet(
             student = Student(
                 orderId = 16.0,
                 name = "Tiamzon, Ruslyn Ghin Abahas",
-                section = "8-DIAMOND",
+                section = ClassSection(gradeLevel = GradeLevel.EIGHT, sectionName = "Diamond"),
                 sex = StudentSexOrient.FEMALE,
                 preTest = ReadingTest(
                     groupScreeningTest = GroupScreeningTest(
@@ -970,7 +970,7 @@ val dummyStudentListsEightDiamond = ClassSheet(
             student = Student(
                 orderId = 17.0,
                 name = "Villapana, Shanelle Cruz",
-                section = "8-DIAMOND",
+                section = ClassSection(gradeLevel = GradeLevel.EIGHT, sectionName = "Diamond"),
                 sex = StudentSexOrient.FEMALE,
                 preTest = ReadingTest(
                     groupScreeningTest = GroupScreeningTest(
