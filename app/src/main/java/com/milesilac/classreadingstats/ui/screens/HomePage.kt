@@ -51,7 +51,6 @@ import com.milesilac.classreadingstats.model.ClassSection
 import com.milesilac.classreadingstats.model.ClassSheet
 import com.milesilac.classreadingstats.model.Student
 import com.milesilac.classreadingstats.model.toSectionString
-import com.milesilac.classreadingstats.ui.components.DeleteSectionsDialog
 import com.milesilac.classreadingstats.ui.components.HomePageBottomSheet
 import com.milesilac.classreadingstats.ui.components.TopInfoBar
 import com.milesilac.classreadingstats.ui.dummySections
@@ -68,6 +67,7 @@ fun HomePage(
     currentSheets: List<ClassSheet> = listOf(),
     onAddSectionClick: () -> Unit = {},
     onAddStudentClick: () -> Unit = {},
+    onDeleteSectionsClick: () -> Unit = {},
     onStudentEntryClick: (Student) -> Unit = {},
     onExportClick: (List<ClassSheet>) -> Unit = {},
     bottomSheetState: SheetState = rememberModalBottomSheetState(
@@ -86,7 +86,6 @@ fun HomePage(
         )
     }
     var showBottomSheet by remember { mutableStateOf(false) }
-    var showDeleteSectionsDialog by remember { mutableStateOf(false) }
     val coroutineScope = rememberCoroutineScope()
 
     // Listen for page settling
@@ -232,7 +231,7 @@ fun HomePage(
             },
             onDeleteSectionsClick = {
                 showBottomSheet = false
-                showDeleteSectionsDialog = true
+                onDeleteSectionsClick()
             }
         )
     }
@@ -240,18 +239,7 @@ fun HomePage(
         modifier = Modifier
             .fillMaxSize()
     ) {
-        when {
-            showDeleteSectionsDialog -> {
-                DeleteSectionsDialog(
-                    currentSheets = currentSheets,
-                    onDismissDialog = { showDeleteSectionsDialog = false },
-                    onSaveClick = { newSheets ->
-//                        inputStudentName = newInputName //TODO
-                        showDeleteSectionsDialog = false
-                    }
-                )
-            }
-        }
+        //dialogs
     }
 }
 

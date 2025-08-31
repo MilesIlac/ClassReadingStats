@@ -21,6 +21,7 @@ import com.milesilac.classreadingstats.ui.dummySections
 import com.milesilac.classreadingstats.ui.dummyStudentListsEightAmethyst
 import com.milesilac.classreadingstats.ui.dummyStudentListsEightDiamond
 import com.milesilac.classreadingstats.ui.screens.AddSectionPage
+import com.milesilac.classreadingstats.ui.screens.DeleteSectionsPage
 import com.milesilac.classreadingstats.ui.screens.HomePage
 import com.milesilac.classreadingstats.ui.screens.StudentDetailEditPage
 import com.milesilac.classreadingstats.ui.screens.StudentDetailsPage
@@ -61,6 +62,9 @@ class MainActivity : AppCompatActivity() {
                                     )
                                 )
                             },
+                            onDeleteSectionsClick = {
+                                backStack.add(RouteDeleteSections)
+                            },
                             onStudentEntryClick = { student ->
                                 backStack.add(RouteStudentDetails(student))
                             },
@@ -94,6 +98,17 @@ class MainActivity : AppCompatActivity() {
                                     )
                                 )
                             },
+                            onVisible = {
+                                if (WindowCompat.getInsetsController(window, window.decorView).isAppearanceLightNavigationBars.not()) {
+                                    WindowCompat.getInsetsController(window, window.decorView).isAppearanceLightNavigationBars = true
+                                }
+                            }
+                        )
+                    }
+                    entry<RouteDeleteSections> {
+                        DeleteSectionsPage(
+                            sheets = currentSheets,
+                            onBackClick = { backStack.removeLastOrNull() },
                             onVisible = {
                                 if (WindowCompat.getInsetsController(window, window.decorView).isAppearanceLightNavigationBars.not()) {
                                     WindowCompat.getInsetsController(window, window.decorView).isAppearanceLightNavigationBars = true
@@ -153,6 +168,9 @@ private data object RouteHome : NavKey
 
 @kotlinx.serialization.Serializable
 private data object RouteAddSection : NavKey
+
+@kotlinx.serialization.Serializable
+private data object RouteDeleteSections : NavKey
 
 @kotlinx.serialization.Serializable
 private data class RouteStudentDetails(val student: Student) : NavKey
