@@ -2,14 +2,12 @@ package com.milesilac.classreadingstats.ui.screens
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
-import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.lazy.LazyRow
@@ -18,14 +16,10 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.twotone.Edit
 import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.SheetState
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
@@ -40,17 +34,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.RectangleShape
-import androidx.compose.ui.semantics.Role
-import androidx.compose.ui.semantics.role
-import androidx.compose.ui.semantics.semantics
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.milesilac.classreadingstats.model.ClassSection
 import com.milesilac.classreadingstats.model.ClassSheet
 import com.milesilac.classreadingstats.model.Student
 import com.milesilac.classreadingstats.model.toSectionString
+import com.milesilac.classreadingstats.ui.components.AnimatedBottomBar
+import com.milesilac.classreadingstats.ui.components.ConfirmDeleteStudentsBottomSheet
 import com.milesilac.classreadingstats.ui.components.HomePageBottomSheet
 import com.milesilac.classreadingstats.ui.components.TopInfoBar
 import com.milesilac.classreadingstats.ui.dummySections
@@ -86,6 +77,9 @@ fun HomePage(
         )
     }
     var showBottomSheet by remember { mutableStateOf(false) }
+    var isDeleteMode by remember { mutableStateOf(false) }
+    var showDeleteStudentsBottomSheet by remember { mutableStateOf(false) }
+    var studentsToDelete by remember { mutableStateOf(listOf<Student>()) }
     val coroutineScope = rememberCoroutineScope()
 
     // Listen for page settling
@@ -114,6 +108,7 @@ fun HomePage(
             .fillMaxSize()
     ) {
         TopInfoBar(
+            isDeleteMode = isDeleteMode,
             section = currentSection,
             onExportClick = { onExportClick(currentSheets) }
         )
@@ -126,9 +121,27 @@ fun HomePage(
         ) { page ->
             // Our page content
             StudentListPage(
+                isDeleteMode = isDeleteMode,
+                studentsToDelete = studentsToDelete,
                 maleStudents = currentSheets[page].maleStudents,
                 femaleStudents = currentSheets[page].femaleStudents,
-                onStudentEntryClick = onStudentEntryClick
+                onStudentEntryClick = onStudentEntryClick,
+                onCheckBoxClick = { student ->
+                    studentsToDelete = studentsToDelete.toMutableList().apply {
+                        when {
+                            student in this -> remove(student)
+                            else -> add(student)
+                        }
+                    }
+                },
+                onHeaderCheckBoxClick = { isChecked, students ->
+                    studentsToDelete = studentsToDelete.toMutableList().apply {
+                        when {
+                            isChecked -> addAll(students)
+                            else -> removeAll(students)
+                        }
+                    }
+                }
             )
         }
         Row(
@@ -191,31 +204,16 @@ fun HomePage(
                 }
             }
         }
-        Surface(
-            onClick = { showBottomSheet = true },
-            modifier = Modifier
-                .semantics { role = Role.Button }
-                .fillMaxWidth()
-                .height(80.dp),
-            shape = RectangleShape,
-            color = ProjectColors.OffGreen3,
-            contentColor = ProjectColors.OffWhite4, //Color.Black,
-            interactionSource = remember { MutableInteractionSource() }
-        ) {
-            Column(
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                Icon(
-                    imageVector = Icons.TwoTone.Edit,
-                    contentDescription = "Manage",
-                )
-                Text(
-                    text = "Manage",
-                    textAlign = TextAlign.Center
-                )
+        AnimatedBottomBar(
+            isDeleteMode = isDeleteMode,
+            isDeleteBtnEnabled = studentsToDelete.isNotEmpty(),
+            onManageClick = { showBottomSheet = true },
+            onDeleteClick = { showDeleteStudentsBottomSheet = true },
+            onBackClick = {
+                isDeleteMode = false
+                studentsToDelete = listOf()
             }
-        }
+        )
     }
     if (showBottomSheet) {
         HomePageBottomSheet(
@@ -232,6 +230,22 @@ fun HomePage(
             onDeleteSectionsClick = {
                 showBottomSheet = false
                 onDeleteSectionsClick()
+            },
+            onDeleteStudentsClick = {
+                showBottomSheet = false
+                isDeleteMode = true
+            }
+        )
+    }
+    if (showDeleteStudentsBottomSheet) {
+        ConfirmDeleteStudentsBottomSheet(
+            bottomSheetState = bottomSheetState,
+            studentsToDelete = studentsToDelete,
+            onDismiss = { showDeleteStudentsBottomSheet = false },
+            onDeleteClick = {
+                showDeleteStudentsBottomSheet = false
+                isDeleteMode = false
+              //TODO  studentsToDelete = listOf()
             }
         )
     }

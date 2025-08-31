@@ -1,11 +1,6 @@
 package com.milesilac.classreadingstats.helpers
 
-import androidx.compose.foundation.background
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.RectangleShape
-import androidx.compose.ui.graphics.Shape
 
 fun Modifier.checkIfAddOtherModifier(
     shouldAddOtherModifier: Boolean = false,
@@ -23,31 +18,15 @@ fun Modifier.checkIfAddOtherModifier(
     }
 }
 
-fun Modifier.advancedBackgroundColorChooser(
-    doBrushCondition: Boolean = false,
-    brush: Brush,
-    brushShape: Shape = RectangleShape,
-    brushAlpha: Float = 1F,
-    color: Color,
-    colorShape: Shape = RectangleShape,
+fun Modifier.chooseOneModifier(
+    chooseFirst: Boolean = false,
+    firstModifier: Modifier = Modifier,
+    secondModifier: Modifier = Modifier,
 ): Modifier {
-    return when {
-        doBrushCondition -> {
-            this.then(
-                Modifier.background(
-                    brush = brush,
-                    shape = brushShape,
-                    alpha = brushAlpha
-                )
-            )
+    return this.then(
+        when {
+            chooseFirst -> firstModifier
+            else -> secondModifier
         }
-        else -> {
-            this.then(
-                Modifier.background(
-                    color = color,
-                    shape = colorShape
-                )
-            )
-        }
-    }
+    )
 }

@@ -38,7 +38,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.milesilac.classreadingstats.helpers.advancedBackgroundColorChooser
+import com.milesilac.classreadingstats.helpers.chooseOneModifier
 import com.milesilac.classreadingstats.helpers.nonScaledSp
 import com.milesilac.classreadingstats.model.ClassSection
 import com.milesilac.classreadingstats.model.ClassSheet
@@ -170,13 +170,17 @@ fun DeleteSectionsPage(
                             item {
                                 Row(
                                     modifier = Modifier
-                                        .advancedBackgroundColorChooser(
-                                            doBrushCondition = itemSelected,
-                                            brush = Brush.horizontalGradient(
-                                                colors = listOf(ProjectColors.OffViolet1, ProjectColors.OffViolet1)
+                                        .chooseOneModifier(
+                                            chooseFirst = itemSelected,
+                                            firstModifier = Modifier.background(
+                                                brush = Brush.horizontalGradient(
+                                                    colors = listOf(ProjectColors.OffViolet1, ProjectColors.OffViolet1)
+                                                ),
+                                                alpha = 0.5F
                                             ),
-                                            brushAlpha = 0.5F,
-                                            color = ProjectColors.OffWhite4,
+                                            secondModifier = Modifier.background(
+                                                color = ProjectColors.OffWhite4
+                                            )
                                         )
                                         .clickable {
                                             selectedSheets = selectedSheets.toMutableSet().apply {

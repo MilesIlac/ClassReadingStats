@@ -14,6 +14,7 @@ import com.milesilac.classreadingstats.ui.dummyStudentListsEightAmethyst
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TopInfoBar(
+    isDeleteMode: Boolean = false,
     section: String,
     onExportClick: () -> Unit = {},
 ) {
@@ -25,14 +26,16 @@ fun TopInfoBar(
         },
         modifier = Modifier,
         actions = {
-            Text(
-                text = "EXPORT",
-                modifier = Modifier
-                    .clickable {
-                        onExportClick()
-                    }
-                    .padding(12.dp)
-            )
+            if (isDeleteMode.not()) {
+                Text(
+                    text = "EXPORT",
+                    modifier = Modifier
+                        .clickable {
+                            onExportClick()
+                        }
+                        .padding(12.dp)
+                )
+            }
 //            IconButton(
 //                modifier = Modifier,
 //                onClick = {

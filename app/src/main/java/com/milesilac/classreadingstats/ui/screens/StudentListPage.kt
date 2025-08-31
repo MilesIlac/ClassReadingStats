@@ -2,12 +2,9 @@ package com.milesilac.classreadingstats.ui.screens
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -15,11 +12,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.milesilac.classreadingstats.model.Student
 import com.milesilac.classreadingstats.model.StudentList
 import com.milesilac.classreadingstats.model.StudentSexOrient
+import com.milesilac.classreadingstats.ui.components.SectionHeader
 import com.milesilac.classreadingstats.ui.components.StudentEntry
 import com.milesilac.classreadingstats.ui.dummyStudentListsEightAmethyst
 import com.milesilac.classreadingstats.ui.theme.ProjectColors
@@ -29,14 +25,36 @@ import sh.calvin.reorderable.rememberReorderableLazyListState
 
 @Composable
 fun StudentListPage(
+    isDeleteMode: Boolean = false,
+    studentsToDelete: List<Student> = listOf(),
     maleStudents: List<StudentList>,
     femaleStudents: List<StudentList>,
-    onStudentEntryClick: (Student) -> Unit = {}
+    onStudentEntryClick: (Student) -> Unit = {},
+    onCheckBoxClick: (Student) -> Unit = {},
+    onHeaderCheckBoxClick: (Boolean, List<Student>) -> Unit = { _,_ -> },
 ) {
     var maleList by remember { mutableStateOf(maleStudents) }
     var femaleList by remember { mutableStateOf(femaleStudents) }
     val maleCount = maleStudents.count { it is StudentList.StudentDetails && it.student.sex == StudentSexOrient.MALE }
     val femaleCount = femaleStudents.count { it is StudentList.StudentDetails && it.student.sex == StudentSexOrient.FEMALE }
+    val mappedMaleStudents = maleStudents.filter {
+        it is StudentList.StudentDetails
+    }.map {
+        (it as StudentList.StudentDetails).student
+    }
+    val mappedFemaleStudents = femaleStudents.filter {
+        it is StudentList.StudentDetails
+    }.map {
+        (it as StudentList.StudentDetails).student
+    }
+    val maleHeaderCheckBoxChecked = when {
+        mappedMaleStudents.isEmpty() -> false
+        else -> studentsToDelete.containsAll(mappedMaleStudents)
+    }
+    val femaleHeaderCheckBoxChecked = when {
+        mappedFemaleStudents.isEmpty() -> false
+        else -> studentsToDelete.containsAll(mappedFemaleStudents)
+    }
 
     val lazyListState = rememberLazyListState()
     val reorderableMaleLazyListState = rememberReorderableLazyListState(lazyListState) { from, to ->
@@ -109,18 +127,46 @@ fun StudentListPage(
     ) {
         maleList.forEach { studentItem ->
             manageItem(
+                isDeleteMode = isDeleteMode,
+                isHeaderCheckBoxChecked = maleHeaderCheckBoxChecked,
+                studentsToDelete = studentsToDelete,
                 studentItem = studentItem,
                 headerCount = maleCount,
                 reorderableLazyListState = reorderableMaleLazyListState,
-                onStudentEntryClick = onStudentEntryClick
+                onStudentEntryClick = onStudentEntryClick,
+                onCheckBoxClick = onCheckBoxClick,
+                onHeaderCheckBoxClick = { isChecked ->
+                    onHeaderCheckBoxClick(
+                        isChecked,
+                        maleList.filter {
+                            it is StudentList.StudentDetails
+                        }.map {
+                            (it as StudentList.StudentDetails).student
+                        }
+                    )
+                }
             )
         }
         femaleList.forEach { studentItem ->
             manageItem(
+                isDeleteMode = isDeleteMode,
+                isHeaderCheckBoxChecked = femaleHeaderCheckBoxChecked,
+                studentsToDelete = studentsToDelete,
                 studentItem = studentItem,
                 headerCount = femaleCount,
                 reorderableLazyListState = reorderableFemaleLazyListState,
-                onStudentEntryClick = onStudentEntryClick
+                onStudentEntryClick = onStudentEntryClick,
+                onCheckBoxClick = onCheckBoxClick,
+                onHeaderCheckBoxClick = { isChecked ->
+                    onHeaderCheckBoxClick(
+                        isChecked,
+                        femaleList.filter {
+                            it is StudentList.StudentDetails
+                        }.map {
+                            (it as StudentList.StudentDetails).student
+                        }
+                    )
+                }
             )
         }
     }
@@ -136,27 +182,27 @@ fun StudentListPagePreview() {
 }
 
 private fun LazyListScope.manageItem(
+    isDeleteMode: Boolean = false,
+    isHeaderCheckBoxChecked: Boolean = false,
+    studentsToDelete: List<Student> = listOf(),
     studentItem: StudentList,
     headerCount: Int,
     reorderableLazyListState: ReorderableLazyListState,
-    onStudentEntryClick: (Student) -> Unit = {}
+    onStudentEntryClick: (Student) -> Unit = {},
+    onCheckBoxClick: (Student) -> Unit = {},
+    onHeaderCheckBoxClick: (Boolean) -> Unit = {},
 ) {
     when (studentItem) {
         is StudentList.Header -> {
             val headerText = "${studentItem.sex.sex} - $headerCount"
             stickyHeader {
-                Text(
-                    text = headerText,
-                    Modifier
-                        .animateItem()
-                        .fillMaxWidth()
-                        .background(color = ProjectColors.OffGreen1)
-                        .padding(
-                            horizontal = 8.dp,
-                            vertical = 16.dp
-                        ),
-                    color = ProjectColors.OffWhite4,
-                    fontSize = 16.sp
+                SectionHeader(
+                    modifier = Modifier
+                        .animateItem(),
+                    isDeleteMode = isDeleteMode,
+                    isChecked = isHeaderCheckBoxChecked,
+                    textString = headerText,
+                    onCheck = onHeaderCheckBoxClick
                 )
             }
         }
@@ -164,10 +210,13 @@ private fun LazyListScope.manageItem(
             item(key = studentItem.listId) {
                 ReorderableItem(reorderableLazyListState, key = studentItem.listId) { isDragging ->
                     StudentEntry(
+                        isDeleteMode = isDeleteMode,
+                        isChecked = studentItem.student in studentsToDelete,
                         reorderableItemScope = this,
                         isDragging = isDragging,
                         textString = "${studentItem.student.orderId.toInt()} ${studentItem.student.name}".trim(),
-                        onClick = { onStudentEntryClick(studentItem.student) },
+                        onStudentDetailsCheck = { onStudentEntryClick(studentItem.student) },
+                        onCheckBoxClick = { onCheckBoxClick(studentItem.student) }
                     )
                 }
             }
