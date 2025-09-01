@@ -38,6 +38,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -72,7 +73,7 @@ fun StudentDetailEditPage(
     val pagerState = rememberPagerState(pageCount = { 2 })
     val coroutineScope = rememberCoroutineScope()
     val inputStudent = remember { student }
-    var inputStudentName by remember { mutableStateOf("") }
+    var inputStudentName by remember { mutableStateOf(student.name) }
     var showStudentNameEditDialog by rememberSaveable { mutableStateOf(false) }
     var showPickSectionDialog by rememberSaveable { mutableStateOf(false) }
     var showMaleOrFemaleDialog by rememberSaveable { mutableStateOf(false) }
@@ -92,128 +93,107 @@ fun StudentDetailEditPage(
                 .fillMaxWidth(),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            when (studentEditType) {
-                StudentEditType.EDIT -> {
-                    Column(
-                        modifier = Modifier
-                            .background(color = ProjectColors.OffBlue2)
-                            .padding(
-                                horizontal = 12.dp,
-                                vertical = 28.dp
-                            )
-                            .fillMaxWidth()
-                            .align(Alignment.CenterHorizontally),
-                        horizontalAlignment = Alignment.CenterHorizontally
-                    ) {
-                        Text(
-                            text = inputStudent.name.trim(),
-                            modifier = Modifier,
-                            color = ProjectColors.OffWhite4,
-                            fontSize = 28.sp,
-                            textAlign = TextAlign.Center
+            Column(
+                modifier = Modifier
+                    .background(color = ProjectColors.OffBlue2)
+                    .padding(
+                        horizontal = 12.dp,
+                        vertical = 28.dp
+                    )
+                    .fillMaxWidth()
+                    .align(Alignment.CenterHorizontally),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Text(
+                    text = when (studentEditType) {
+                        StudentEditType.EDIT -> "EDIT STUDENT"
+                        StudentEditType.ADD -> "ADD STUDENT"
+                    },
+                    modifier = Modifier,
+                    color = ProjectColors.OffWhite4,
+                    fontSize = 28.sp,
+                    textAlign = TextAlign.Center
+                )
+            }
+            Column(
+                modifier = Modifier
+                    .background(color = ProjectColors.OffWhite4)
+                    .padding(
+                        vertical = 16.dp
+                    )
+                    .fillMaxWidth(),
+                verticalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                Row(
+                    modifier = Modifier
+                        .background(
+                            brush = Brush.horizontalGradient(
+                                colors = listOf(
+                                    ProjectColors.OffAquaGreen1,
+                                    ProjectColors.OffAquaGreen1
+                                )
+                            ),
+                            alpha = 0.5F
                         )
-                    }
-                }
-                StudentEditType.ADD -> {
-                    Column(
-                        modifier = Modifier
-                            .background(color = ProjectColors.OffBlue2)
-                            .padding(
-                                horizontal = 12.dp,
-                                vertical = 28.dp
-                            )
-                            .fillMaxWidth()
-                            .align(Alignment.CenterHorizontally),
-                        horizontalAlignment = Alignment.CenterHorizontally
-                    ) {
-                        Text(
-                            text = "ADD STUDENT",
-                            modifier = Modifier,
-                            color = ProjectColors.OffWhite4,
-                            fontSize = 28.sp,
-                            textAlign = TextAlign.Center
+                        .padding(
+                            horizontal = 12.dp,
+                            vertical = 12.dp
                         )
-                    }
-                    Column(
+                        .fillMaxWidth()
+                        .align(Alignment.CenterHorizontally),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        text = "Student Name:",
+                        modifier = Modifier,
+                        color = ProjectColors.OffWhite4,
+                        fontSize = 16.sp.nonScaledSp,
+                        textAlign = TextAlign.Center
+                    )
+                    Spacer(modifier = Modifier.width(16.dp))
+                    Text(
+                        text = inputStudentName,
                         modifier = Modifier
-                            .background(color = ProjectColors.OffWhite4)
-                            .padding(
-                                vertical = 16.dp
-                            )
-                            .fillMaxWidth(),
-                        verticalArrangement = Arrangement.spacedBy(8.dp)
+                            .weight(1F),
+                        color = ProjectColors.OffWhite4,
+                        fontSize = 16.sp,
+                        overflow = TextOverflow.Ellipsis
+                    )
+                    Spacer(modifier = Modifier.width(16.dp))
+                    OutlinedButton(
+                        onClick = {
+                            showStudentNameEditDialog = true
+                        },
+                        modifier = Modifier,
+                        shape = RoundedCornerShape(12.dp),
+                        colors = ButtonColors(
+                            containerColor = ProjectColors.OffGreen2,
+                            contentColor = ProjectColors.OffWhite4,
+                            disabledContainerColor = ProjectColors.OffGreen2,
+                            disabledContentColor = ProjectColors.OffWhite4
+                        ),
+                        border = BorderStroke(
+                            width = 1.dp,
+                            color = ProjectColors.OffWhite4
+                        ),
+                        contentPadding = PaddingValues(
+                            horizontal = 16.dp,
+                            vertical = 8.dp
+                        )
                     ) {
                         Row(
-                            modifier = Modifier
-                                .background(
-                                    brush = Brush.horizontalGradient(
-                                        colors = listOf(
-                                            ProjectColors.OffAquaGreen1,
-                                            ProjectColors.OffAquaGreen1
-                                        )
-                                    ),
-                                    alpha = 0.5F
-                                )
-                                .padding(
-                                    horizontal = 12.dp,
-                                    vertical = 12.dp
-                                )
-                                .fillMaxWidth()
-                                .align(Alignment.CenterHorizontally),
+                            modifier = Modifier,
                             verticalAlignment = Alignment.CenterVertically
                         ) {
-                            Text(
-                                text = "Student Name:",
-                                modifier = Modifier,
-                                color = ProjectColors.OffWhite4,
-                                fontSize = 16.sp.nonScaledSp,
-                                textAlign = TextAlign.Center
+                            Icon(
+                                imageVector = Icons.TwoTone.Edit,
+                                contentDescription = "Edit",
                             )
-                            Spacer(modifier = Modifier.width(16.dp))
+                            Spacer(modifier = Modifier.width(8.dp))
                             Text(
-                                text = inputStudentName,
-                                modifier = Modifier
-                                    .weight(1F),
-                                color = ProjectColors.OffWhite4,
-                                fontSize = 16.sp,
-                            )
-                            Spacer(modifier = Modifier.width(16.dp))
-                            OutlinedButton(
-                                onClick = {
-                                    showStudentNameEditDialog = true
-                                },
+                                text = "Edit",
                                 modifier = Modifier,
-                                shape = RoundedCornerShape(12.dp),
-                                colors = ButtonColors(
-                                    containerColor = ProjectColors.OffGreen2,
-                                    contentColor = ProjectColors.OffWhite4,
-                                    disabledContainerColor = ProjectColors.OffGreen2,
-                                    disabledContentColor = ProjectColors.OffWhite4
-                                ),
-                                border = BorderStroke(
-                                    width = 1.dp,
-                                    color = ProjectColors.OffWhite4
-                                ),
-                                contentPadding = PaddingValues(
-                                    horizontal = 16.dp,
-                                    vertical = 8.dp
-                                )
-                            ) {
-                                Row(
-                                    modifier = Modifier,
-                                    verticalAlignment = Alignment.CenterVertically
-                                ) {
-                                    Icon(
-                                        imageVector = Icons.TwoTone.Edit,
-                                        contentDescription = "Edit",
-                                    )
-                                    Spacer(modifier = Modifier.width(8.dp))
-                                    Text(
-                                        text = "Edit",
-                                        modifier = Modifier,
-                                    )
-                                }
-                            }
+                            )
                         }
                     }
                 }

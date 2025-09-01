@@ -9,3 +9,11 @@ data class ClassSheet(
         StudentList.Header(sex = StudentSexOrient.FEMALE)
     ),
 )
+
+fun List<ClassSheet>.hasStudents(): Boolean {
+    for (sheet in this) {
+        return sheet.maleStudents.any { it is StudentList.StudentDetails }
+                || sheet.femaleStudents.any { it is StudentList.StudentDetails }
+    }
+    return false
+}

@@ -14,6 +14,7 @@ import androidx.navigation3.runtime.entry
 import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.runtime.rememberNavBackStack
 import androidx.navigation3.ui.NavDisplay
+import com.milesilac.classreadingstats.model.ClassSection
 import com.milesilac.classreadingstats.model.Student
 import com.milesilac.classreadingstats.model.emptyStudent
 import com.milesilac.classreadingstats.service.exportNewFileToExcel
@@ -22,6 +23,7 @@ import com.milesilac.classreadingstats.ui.dummyStudentListsEightAmethyst
 import com.milesilac.classreadingstats.ui.dummyStudentListsEightDiamond
 import com.milesilac.classreadingstats.ui.screens.AddSectionPage
 import com.milesilac.classreadingstats.ui.screens.DeleteSectionsPage
+import com.milesilac.classreadingstats.ui.screens.EditStudentsGradesPage
 import com.milesilac.classreadingstats.ui.screens.HomePage
 import com.milesilac.classreadingstats.ui.screens.StudentDetailEditPage
 import com.milesilac.classreadingstats.ui.screens.StudentDetailsPage
@@ -64,6 +66,9 @@ class MainActivity : AppCompatActivity() {
                             },
                             onDeleteSectionsClick = {
                                 backStack.add(RouteDeleteSections)
+                            },
+                            onEditGradesClick = { currentSection ->
+                                backStack.add(RouteEditGrades(currentSection))
                             },
                             onStudentEntryClick = { student ->
                                 backStack.add(RouteStudentDetails(student))
@@ -108,6 +113,18 @@ class MainActivity : AppCompatActivity() {
                     entry<RouteDeleteSections> {
                         DeleteSectionsPage(
                             sheets = currentSheets,
+                            onBackClick = { backStack.removeLastOrNull() },
+                            onVisible = {
+                                if (WindowCompat.getInsetsController(window, window.decorView).isAppearanceLightNavigationBars) {
+                                    WindowCompat.getInsetsController(window, window.decorView).isAppearanceLightNavigationBars = false
+                                }
+                            }
+                        )
+                    }
+                    entry<RouteEditGrades> { key ->
+                        EditStudentsGradesPage(
+                            sheets = currentSheets,
+                            currentSection = key.currentSection,
                             onBackClick = { backStack.removeLastOrNull() },
                             onVisible = {
                                 if (WindowCompat.getInsetsController(window, window.decorView).isAppearanceLightNavigationBars.not()) {
@@ -160,7 +177,6 @@ class MainActivity : AppCompatActivity() {
             )
         }
     }
-
 }
 
 @kotlinx.serialization.Serializable
@@ -171,6 +187,9 @@ private data object RouteAddSection : NavKey
 
 @kotlinx.serialization.Serializable
 private data object RouteDeleteSections : NavKey
+
+@kotlinx.serialization.Serializable
+private data class RouteEditGrades(val currentSection: ClassSection) : NavKey
 
 @kotlinx.serialization.Serializable
 private data class RouteStudentDetails(val student: Student) : NavKey

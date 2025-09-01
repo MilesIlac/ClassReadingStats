@@ -39,6 +39,7 @@ import androidx.compose.ui.unit.dp
 import com.milesilac.classreadingstats.model.ClassSection
 import com.milesilac.classreadingstats.model.ClassSheet
 import com.milesilac.classreadingstats.model.Student
+import com.milesilac.classreadingstats.model.hasStudents
 import com.milesilac.classreadingstats.model.toSectionString
 import com.milesilac.classreadingstats.ui.components.AnimatedBottomBar
 import com.milesilac.classreadingstats.ui.components.ConfirmDeleteStudentsBottomSheet
@@ -59,6 +60,7 @@ fun HomePage(
     onAddSectionClick: () -> Unit = {},
     onAddStudentClick: () -> Unit = {},
     onDeleteSectionsClick: () -> Unit = {},
+    onEditGradesClick: (ClassSection) -> Unit = {},
     onStudentEntryClick: (Student) -> Unit = {},
     onExportClick: (List<ClassSheet>) -> Unit = {},
     bottomSheetState: SheetState = rememberModalBottomSheetState(
@@ -70,10 +72,7 @@ fun HomePage(
     val pagerState = rememberPagerState(pageCount = { currentSheets.size })
     var currentSection by remember {
         mutableStateOf(
-            currentSheets[0].classSection.toSectionString(
-                isSpaced = true,
-                isSectionNameUpperCased = false
-            )
+            currentSheets[0].classSection
         )
     }
     var showBottomSheet by remember { mutableStateOf(false) }
@@ -89,10 +88,7 @@ fun HomePage(
             .collect { page ->
                 // Trigger your side-effect here
                 if (page == pagerState.targetPage) {
-                    currentSection = currentSheets[page].classSection.toSectionString(
-                        isSpaced = true,
-                        isSectionNameUpperCased = false
-                    )
+                    currentSection = currentSheets[page].classSection
                 }
             }
     }
@@ -109,7 +105,10 @@ fun HomePage(
     ) {
         TopInfoBar(
             isDeleteMode = isDeleteMode,
-            section = currentSection,
+            section = currentSection.toSectionString(
+                isSpaced = true,
+                isSectionNameUpperCased = false
+            ),
             onExportClick = { onExportClick(currentSheets) }
         )
         HorizontalPager(
@@ -167,7 +166,10 @@ fun HomePage(
                 )
             ) {
                 Text(
-                    text = "${currentSections[0].gradeLevel.grade}",
+                    text = when {
+                        currentSections.isNotEmpty() -> "${currentSections[0].gradeLevel.grade}"
+                        else -> "-"
+                    },
                     modifier = Modifier,
                 )
             }
@@ -219,6 +221,8 @@ fun HomePage(
         HomePageBottomSheet(
             bottomSheetState = bottomSheetState,
             onDismiss = { showBottomSheet = false },
+            hasSections = currentSections.isNotEmpty(),
+            hasStudents = currentSheets.hasStudents(),
             onAddSectionClick = {
                 showBottomSheet = false
                 onAddSectionClick()
@@ -234,6 +238,10 @@ fun HomePage(
             onDeleteStudentsClick = {
                 showBottomSheet = false
                 isDeleteMode = true
+            },
+            onEditGradesClick = {
+                showBottomSheet = false
+                onEditGradesClick(currentSection)
             }
         )
     }

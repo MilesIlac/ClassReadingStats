@@ -30,6 +30,7 @@ class ProjectColors {
         val OffGreen1 = Color(0xFF008A6B)
         val OffGreen2 = Color(0xFF004B3C)
         val OffGreen3 = Color(0xFF14BEA0)
+        val OffGreen4 = Color(0xFF002D23)
 
         val OffAquaGreen1 = Color(0xFF008081)
         val OffAquaGreen2 = Color(0xFF009999)
@@ -39,5 +40,7 @@ class ProjectColors {
         val OffBrown3 = Color(0xFF9D8A64)
 
         val OffRed1 = Color(0xFF990000)
+        val OffRed2 = Color(0xFF5F0505)
+        val OffRed3 = Color(0xFFCD8282)
     }
 }

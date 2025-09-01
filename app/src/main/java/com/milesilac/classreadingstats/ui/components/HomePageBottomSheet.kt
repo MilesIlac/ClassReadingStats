@@ -22,6 +22,7 @@ import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.milesilac.classreadingstats.ui.theme.ProjectColors
@@ -31,11 +32,13 @@ import com.milesilac.classreadingstats.ui.theme.ProjectColors
 fun HomePageBottomSheet(
     bottomSheetState: SheetState = rememberModalBottomSheetState(),
     onDismiss: () -> Unit = {},
+    hasSections: Boolean = false,
+    hasStudents: Boolean = false,
     onAddSectionClick: () -> Unit = {},
     onAddStudentClick: () -> Unit = {},
     onDeleteSectionsClick: () -> Unit = {},
     onDeleteStudentsClick: () -> Unit = {},
-    onEditStudentInfoClick: () -> Unit = {},
+//    onEditStudentInfoClick: () -> Unit = {},
     onEditGradesClick: () -> Unit = {},
 ) {
     ModalBottomSheet(
@@ -48,11 +51,13 @@ fun HomePageBottomSheet(
     ) {
         // Sheet content
         HomePageBottomSheetLayout(
+            hasSections = hasSections,
+            hasStudents = hasStudents,
             onAddSectionClick = onAddSectionClick,
             onAddStudentClick = onAddStudentClick,
-            onDeleteSectionsClick =onDeleteSectionsClick,
+            onDeleteSectionsClick = onDeleteSectionsClick,
             onDeleteStudentsClick = onDeleteStudentsClick,
-            onEditStudentInfoClick = onEditStudentInfoClick,
+//            onEditStudentInfoClick = onEditStudentInfoClick,
             onEditGradesClick = onEditGradesClick,
             onBackClick = onDismiss
         )
@@ -61,11 +66,13 @@ fun HomePageBottomSheet(
 
 @Composable
 fun HomePageBottomSheetLayout(
+    hasSections: Boolean = false,
+    hasStudents: Boolean = false,
     onAddSectionClick: () -> Unit = {},
     onAddStudentClick: () -> Unit = {},
     onDeleteSectionsClick: () -> Unit = {},
     onDeleteStudentsClick: () -> Unit = {},
-    onEditStudentInfoClick: () -> Unit = {},
+//    onEditStudentInfoClick: () -> Unit = {},
     onEditGradesClick: () -> Unit = {},
     onBackClick: () -> Unit = {},
 ) {
@@ -74,14 +81,14 @@ fun HomePageBottomSheetLayout(
         "Add Student" to onAddStudentClick,
         "Delete Sections" to onDeleteSectionsClick,
         "Delete Students" to onDeleteStudentsClick,
-        "Edit Students' Information" to onEditStudentInfoClick,
+//        "Edit Students' Information" to onEditStudentInfoClick,
         "Edit Input Grades" to onEditGradesClick,
     )
     val buttonColors = ButtonColors(
         containerColor = ProjectColors.OffGreen2,
         contentColor = ProjectColors.OffWhite4,
-        disabledContainerColor = ProjectColors.OffGreen2,
-        disabledContentColor = ProjectColors.OffWhite4
+        disabledContainerColor = ProjectColors.OffGreen4,
+        disabledContentColor = Color.DarkGray
     )
 
     Column(
@@ -101,6 +108,11 @@ fun HomePageBottomSheetLayout(
                     onClick = { buttonOption.second() },
                     modifier = Modifier
                         .fillMaxWidth(),
+                    enabled = when (buttonOption.first) {
+                        "Delete Sections" -> hasSections
+                        "Delete Students", "Edit Input Grades" -> hasStudents
+                        else -> true
+                    },
                     colors = buttonColors
                 ) {
                     Text(text = buttonOption.first)
