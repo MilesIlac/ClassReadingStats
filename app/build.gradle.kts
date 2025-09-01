@@ -5,6 +5,7 @@ plugins {
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.compose.compiler)
     alias(libs.plugins.kotlin.serialization)
+    alias(libs.plugins.google.ksp)
 }
 
 android {
@@ -82,6 +83,13 @@ dependencies {
     // JETPACK NAVIGATION 3
     implementation(libs.androidx.navigation3.runtime)
     implementation(libs.androidx.navigation3.ui)
+
+    // ROOM
+    implementation(libs.androidx.room)
+    ksp(libs.androidx.room.compiler.ksp)
+    implementation(libs.androidx.room.ktx.coroutines)
+    implementation(libs.androidx.room.paging)
+    testImplementation(libs.androidx.room.testing)
 
     // CALVIN-LL REORDERABLE
     implementation(libs.reorderable.list.items)

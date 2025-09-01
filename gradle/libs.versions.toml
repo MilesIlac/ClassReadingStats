@@ -2,10 +2,11 @@
 #Plugins
 agp = "8.11.1"
 kotlin = "2.2.10"
+ksp = "2.2.10-2.0.2"
 
 # Core
 coreKtx = "1.17.0"
-lifecycleRuntimeKtx = "2.9.2"
+lifecycleRuntimeKtx = "2.9.3"
 activity-compose = "1.10.1"
 appcompat = "1.7.1"
 material = "1.14.0-alpha04"
@@ -17,13 +18,16 @@ navigationUiKtx = "2.9.3"
 serialization = "1.9.0"
 
 # Compose
-compose-bom = "2025.08.00"
+compose-bom = "2025.08.01"
 
 # Jetpack Navigation 3
-navigation3 = "1.0.0-alpha07"
+navigation3 = "1.0.0-alpha08"
+
+# Room
+room = "2.7.2"
 
 #Calvin-LL Reorderable
-calvin-reorderable = "2.5.1"
+calvin-reorderable = "3.0.0"
 
 #Apache POI
 poi-version = "5.4.1"
@@ -66,6 +70,13 @@ androidx-compose-material-icons-extended = { group = "androidx.compose.material"
 androidx-navigation3-runtime = { module = "androidx.navigation3:navigation3-runtime", version.ref = "navigation3" }
 androidx-navigation3-ui = { module = "androidx.navigation3:navigation3-ui", version.ref = "navigation3" }
 
+# Room
+androidx-room = { module = "androidx.room:room-runtime", version.ref = "room" }
+androidx-room-compiler-ksp = { module = "androidx.room:room-compiler", version.ref = "room" }
+androidx-room-ktx-coroutines = { module = "androidx.room:room-ktx", version.ref = "room" }
+androidx-room-paging = { module = "androidx.room:room-paging", version.ref = "room" }
+androidx-room-testing = { module = "androidx.room:room-testing", version.ref = "room" }
+
 #Calvin-LL Reorderable
 reorderable-list-items = { module = "sh.calvin.reorderable:reorderable", version.ref = "calvin-reorderable" }
 
@@ -85,6 +96,9 @@ android-application = { id = "com.android.application", version.ref = "agp" }
 # Kotlin plugin
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
+
+# KSP plugin
+google-ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 
 # Add the Compose Compiler Gradle plugin, the version matches the Kotlin plugin
 compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
