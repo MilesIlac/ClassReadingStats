@@ -10,6 +10,9 @@ import com.milesilac.classreadingstats.model.ReadingTest
 import com.milesilac.classreadingstats.model.Student
 import com.milesilac.classreadingstats.model.StudentList
 import com.milesilac.classreadingstats.model.StudentSexOrient
+import com.milesilac.classreadingstats.persistence.model.ClassSheetRelationship
+import com.milesilac.classreadingstats.persistence.model.SectionEntity
+import com.milesilac.classreadingstats.persistence.model.StudentEntity
 
 val dummySections = listOf(
     ClassSection(gradeLevel = GradeLevel.EIGHT, sectionName = "Amethyst"),
@@ -988,6 +991,33 @@ val dummyStudentListsEightDiamond = ClassSheet(
 //                        level = LearnerLevel.INDEPENDENT
                     )
                 ),
+            )
+        )
+    )
+)
+
+val dummyRoomList = listOf(
+    ClassSheetRelationship(
+        section = SectionEntity(
+            sectionRoomId = 111,
+            gradeLevel = GradeLevel.EIGHT,
+            sectionName = "Aquamarine"
+        ),
+        students = listOf(
+            StudentEntity(
+                studentRoomId = 2222,
+                sectionRoomId = 111,
+                orderId = 1.0,
+                studentName = "Villapana, Shanelle Cruz",
+                sex = StudentSexOrient.FEMALE,
+                preGSTScore = 8.0,
+                preORTotalNumberOfWords = 106.0,
+                preORNumberOfMiscues = 3.0,
+                preRCInputPercentage = 86.0,
+                postGSTScore = null,
+                postORTotalNumberOfWords = null,
+                postORNumberOfMiscues = null,
+                postRCInputPercentage = null
             )
         )
     )

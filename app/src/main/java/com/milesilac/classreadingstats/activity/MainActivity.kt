@@ -9,18 +9,14 @@ import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.core.view.WindowCompat
-import androidx.navigation3.runtime.NavKey
-import androidx.navigation3.runtime.entry
-import androidx.navigation3.runtime.entryProvider
-import androidx.navigation3.runtime.rememberNavBackStack
-import androidx.navigation3.ui.NavDisplay
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
+import androidx.navigation.toRoute
 import com.milesilac.classreadingstats.model.ClassSection
 import com.milesilac.classreadingstats.model.Student
 import com.milesilac.classreadingstats.model.emptyStudent
 import com.milesilac.classreadingstats.service.exportNewFileToExcel
-import com.milesilac.classreadingstats.ui.dummySections
-import com.milesilac.classreadingstats.ui.dummyStudentListsEightAmethyst
-import com.milesilac.classreadingstats.ui.dummyStudentListsEightDiamond
 import com.milesilac.classreadingstats.ui.screens.AddSectionPage
 import com.milesilac.classreadingstats.ui.screens.DeleteSectionsPage
 import com.milesilac.classreadingstats.ui.screens.EditStudentsGradesPage
@@ -28,6 +24,7 @@ import com.milesilac.classreadingstats.ui.screens.HomePage
 import com.milesilac.classreadingstats.ui.screens.StudentDetailEditPage
 import com.milesilac.classreadingstats.ui.screens.StudentDetailsPage
 import com.milesilac.classreadingstats.ui.screens.StudentEditType
+import kotlinx.serialization.json.Json
 
 class MainActivity : AppCompatActivity() {
 
@@ -40,163 +37,172 @@ class MainActivity : AppCompatActivity() {
         WindowCompat.getInsetsController(window, window.decorView).isAppearanceLightNavigationBars = true
         window.isNavigationBarContrastEnforced = false
         setContent {
-            val currentSections = dummySections
-            val currentSheets = listOf(dummyStudentListsEightAmethyst, dummyStudentListsEightDiamond)
-            val backStack = rememberNavBackStack(RouteHome)
+            val navController = rememberNavController()
 
-            NavDisplay(
-                backStack = backStack,
-                onBack = { backStack.removeLastOrNull() },
-                entryProvider = entryProvider {
-                    entry<RouteHome> {
-                        HomePage(
-                            currentSections = currentSections,
-                            currentSheets = currentSheets,
-                            onAddSectionClick = {
-                                backStack.add(RouteAddSection)
-                            },
-                            onAddStudentClick = {
-                                backStack.add(
-                                    RouteStudentDetailEdit(
-                                        student = emptyStudent(),
-                                        studentEditType = StudentEditType.ADD,
-                                        isFromAddSectionPage = false
-                                    )
+            NavHost(navController = navController, startDestination = Routes.RouteHome) {
+                composable<Routes.RouteHome> {
+                    HomePage(
+                        onAddSectionClick = {
+                            navController.navigate(Routes.RouteAddSection)
+                        },
+                        onAddStudentClick = {
+                            navController.navigate(
+                                Routes.RouteStudentDetailEdit(
+                                    studentString = emptyStudent().toJsonString(),
+                                    studentEditType = StudentEditType.ADD,
+                                    isFromAddSectionPage = false
                                 )
-                            },
-                            onDeleteSectionsClick = {
-                                backStack.add(RouteDeleteSections)
-                            },
-                            onEditGradesClick = { currentSection ->
-                                backStack.add(RouteEditGrades(currentSection))
-                            },
-                            onStudentEntryClick = { student ->
-                                backStack.add(RouteStudentDetails(student))
-                            },
-                            onExportClick = { currentSheetLists ->
-                                exportNewFileToExcel(
-                                    contentResolver = contentResolver,
-                                    classBook = currentSheetLists,
-                                    onToast = { toastText ->
-                                        this@MainActivity.run {
-                                            Toast.makeText(this, toastText, Toast.LENGTH_SHORT).show()
-                                        }
+                            )
+                        },
+                        onDeleteSectionsClick = {
+                            navController.navigate(Routes.RouteDeleteSections)
+                        },
+                        onEditGradesClick = { currentSection ->
+                            navController.navigate(
+                                Routes.RouteEditGrades(
+                                    currentSectionString = currentSection.toJsonString()
+                                )
+                            )
+                        },
+                        onStudentEntryClick = { student ->
+                            navController.navigate(
+                                Routes.RouteStudentDetails(
+                                    studentString = student.toJsonString()
+                                )
+                            )
+                        },
+                        onExportClick = { currentSheetLists ->
+                            exportNewFileToExcel(
+                                contentResolver = contentResolver,
+                                classBook = currentSheetLists,
+                                onToast = { toastText ->
+                                    this@MainActivity.run {
+                                        Toast.makeText(this, toastText, Toast.LENGTH_SHORT).show()
                                     }
-                                )
-                            },
-                            onVisible = {
-                                if (WindowCompat.getInsetsController(window, window.decorView).isAppearanceLightNavigationBars) {
-                                    WindowCompat.getInsetsController(window, window.decorView).isAppearanceLightNavigationBars = false
                                 }
+                            )
+                        },
+                        onVisible = {
+                            if (WindowCompat.getInsetsController(window, window.decorView).isAppearanceLightNavigationBars) {
+                                WindowCompat.getInsetsController(window, window.decorView).isAppearanceLightNavigationBars = false
                             }
-                        )
-                    }
-                    entry<RouteAddSection> {
-                        AddSectionPage(
-                            onBackClick = { backStack.removeLastOrNull() },
-                            onAddStudentClick = { inputSection ->
-                                backStack.add(
-                                    RouteStudentDetailEdit(
-                                        student = emptyStudent(section = inputSection),
-                                        studentEditType = StudentEditType.ADD,
-                                        isFromAddSectionPage = true
-                                    )
-                                )
-                            },
-                            onVisible = {
-                                if (WindowCompat.getInsetsController(window, window.decorView).isAppearanceLightNavigationBars.not()) {
-                                    WindowCompat.getInsetsController(window, window.decorView).isAppearanceLightNavigationBars = true
-                                }
-                            }
-                        )
-                    }
-                    entry<RouteDeleteSections> {
-                        DeleteSectionsPage(
-                            sheets = currentSheets,
-                            onBackClick = { backStack.removeLastOrNull() },
-                            onVisible = {
-                                if (WindowCompat.getInsetsController(window, window.decorView).isAppearanceLightNavigationBars) {
-                                    WindowCompat.getInsetsController(window, window.decorView).isAppearanceLightNavigationBars = false
-                                }
-                            }
-                        )
-                    }
-                    entry<RouteEditGrades> { key ->
-                        EditStudentsGradesPage(
-                            sheets = currentSheets,
-                            currentSection = key.currentSection,
-                            onBackClick = { backStack.removeLastOrNull() },
-                            onVisible = {
-                                if (WindowCompat.getInsetsController(window, window.decorView).isAppearanceLightNavigationBars.not()) {
-                                    WindowCompat.getInsetsController(window, window.decorView).isAppearanceLightNavigationBars = true
-                                }
-                            }
-                        )
-                    }
-                    entry<RouteStudentDetails> { key ->
-                        StudentDetailsPage(
-                            student = key.student,
-                            onEditClick = {
-                                backStack.add(
-                                    RouteStudentDetailEdit(
-                                        student = key.student,
-                                        studentEditType = StudentEditType.EDIT,
-                                        isFromAddSectionPage = false
-                                    )
-                                )
-                            },
-                            onBackClick = { backStack.removeLastOrNull() },
-                            onDelete = { student ->
-
-                            },
-                            onVisible = {
-                                if (WindowCompat.getInsetsController(window, window.decorView).isAppearanceLightNavigationBars.not()) {
-                                    WindowCompat.getInsetsController(window, window.decorView).isAppearanceLightNavigationBars = true
-                                }
-                            }
-                        )
-                    }
-                    entry<RouteStudentDetailEdit> { key ->
-                        StudentDetailEditPage(
-                            studentEditType = key.studentEditType,
-                            student = key.student,
-                            isFromAddSectionPage = key.isFromAddSectionPage,
-                            classSections = currentSections,
-                            onSaveClick = { editedStudent ->
-
-                            },
-                            onBackClick = { backStack.removeLastOrNull() },
-                            onVisible = {
-                                if (WindowCompat.getInsetsController(window, window.decorView).isAppearanceLightNavigationBars.not()) {
-                                    WindowCompat.getInsetsController(window, window.decorView).isAppearanceLightNavigationBars = true
-                                }
-                            }
-                        )
-                    }
+                        }
+                    )
                 }
-            )
+                composable<Routes.RouteAddSection> {
+                    AddSectionPage(
+                        onBackClick = { navController.navigateUp() },
+                        onAddStudentClick = { inputSection ->
+                            navController.navigate(
+                                Routes.RouteStudentDetailEdit(
+                                    studentString = emptyStudent(section = inputSection).toJsonString(),
+                                    studentEditType = StudentEditType.ADD,
+                                    isFromAddSectionPage = true
+                                )
+                            )
+                        },
+                        onVisible = {
+                            if (WindowCompat.getInsetsController(window, window.decorView).isAppearanceLightNavigationBars.not()) {
+                                WindowCompat.getInsetsController(window, window.decorView).isAppearanceLightNavigationBars = true
+                            }
+                        }
+                    )
+                }
+                composable<Routes.RouteDeleteSections> {
+                    DeleteSectionsPage(
+//                        sheets = currentSheets, TODO
+                        onBackClick = { navController.navigateUp() },
+                        onVisible = {
+                            if (WindowCompat.getInsetsController(window, window.decorView).isAppearanceLightNavigationBars) {
+                                WindowCompat.getInsetsController(window, window.decorView).isAppearanceLightNavigationBars = false
+                            }
+                        }
+                    )
+                }
+                composable<Routes.RouteEditGrades> { backStackEntry ->
+                    val routeEditGrades: Routes.RouteEditGrades = backStackEntry.toRoute()
+                    val currentSection = Json.decodeFromString<ClassSection>(routeEditGrades.currentSectionString)
+                    EditStudentsGradesPage(
+                        sheets = listOf(), //currentSheets TODO,
+                        currentSection = currentSection,
+                        onBackClick = { navController.navigateUp() },
+                        onVisible = {
+                            if (WindowCompat.getInsetsController(window, window.decorView).isAppearanceLightNavigationBars.not()) {
+                                WindowCompat.getInsetsController(window, window.decorView).isAppearanceLightNavigationBars = true
+                            }
+                        }
+                    )
+                }
+                composable<Routes.RouteStudentDetails> { backStackEntry ->
+                    val routeStudentDetails: Routes.RouteStudentDetails = backStackEntry.toRoute()
+                    val student = Json.decodeFromString<Student>(routeStudentDetails.studentString)
+                    StudentDetailsPage(
+                        student = student,
+                        onEditClick = {
+                            navController.navigate(
+                                Routes.RouteStudentDetailEdit(
+                                    studentString = student.toJsonString(),
+                                    studentEditType = StudentEditType.EDIT,
+                                    isFromAddSectionPage = false
+                                )
+                            )
+                        },
+                        onBackClick = { navController.navigateUp() },
+                        onDelete = { student ->
+
+                        },
+                        onVisible = {
+                            if (WindowCompat.getInsetsController(window, window.decorView).isAppearanceLightNavigationBars.not()) {
+                                WindowCompat.getInsetsController(window, window.decorView).isAppearanceLightNavigationBars = true
+                            }
+                        }
+                    )
+                }
+                composable<Routes.RouteStudentDetailEdit> { backStackEntry ->
+                    val routeStudentDetailEdit: Routes.RouteStudentDetailEdit = backStackEntry.toRoute()
+                    val student = Json.decodeFromString<Student>(routeStudentDetailEdit.studentString)
+                    StudentDetailEditPage(
+                        studentEditType = routeStudentDetailEdit.studentEditType,
+                        student = student,
+                        isFromAddSectionPage = routeStudentDetailEdit.isFromAddSectionPage,
+//                        classSections = currentSections, TODO
+                        onSaveClick = { editedStudent ->
+
+                        },
+                        onBackClick = { navController.navigateUp() },
+                        onVisible = {
+                            if (WindowCompat.getInsetsController(window, window.decorView).isAppearanceLightNavigationBars.not()) {
+                                WindowCompat.getInsetsController(window, window.decorView).isAppearanceLightNavigationBars = true
+                            }
+                        }
+                    )
+                }
+                // Add more destinations similarly.
+            }
         }
     }
 }
 
-@kotlinx.serialization.Serializable
-private data object RouteHome : NavKey
+private sealed class Routes {
+    @kotlinx.serialization.Serializable
+    data object RouteHome : Routes()
 
-@kotlinx.serialization.Serializable
-private data object RouteAddSection : NavKey
+    @kotlinx.serialization.Serializable
+    data object RouteAddSection : Routes()
 
-@kotlinx.serialization.Serializable
-private data object RouteDeleteSections : NavKey
+    @kotlinx.serialization.Serializable
+    data object RouteDeleteSections : Routes()
 
-@kotlinx.serialization.Serializable
-private data class RouteEditGrades(val currentSection: ClassSection) : NavKey
+    @kotlinx.serialization.Serializable
+    data class RouteEditGrades(val currentSectionString: String) : Routes() //complex classes crash NavGraph
 
-@kotlinx.serialization.Serializable
-private data class RouteStudentDetails(val student: Student) : NavKey
+    @kotlinx.serialization.Serializable
+    data class RouteStudentDetails(val studentString: String) : Routes() //complex classes crash NavGraph
 
-@kotlinx.serialization.Serializable
-private data class RouteStudentDetailEdit(
-    val student: Student,
-    val studentEditType: StudentEditType,
-    val isFromAddSectionPage: Boolean
-) : NavKey
+    @kotlinx.serialization.Serializable
+    data class RouteStudentDetailEdit(
+        val studentString: String,
+        val studentEditType: StudentEditType,
+        val isFromAddSectionPage: Boolean
+    ) : Routes() //complex classes crash NavGraph
+}
