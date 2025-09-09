@@ -18,12 +18,14 @@ class StudentsRepositoryImpl(): StudentsRepository {
         results.map { classSheet ->
             val (maleStudents, femaleStudents) = classSheet.students.mapPartitionForStudentList(
                 classSection = ClassSection(
+                    persistenceId = classSheet.section.sectionRoomId,
                     gradeLevel = classSheet.section.gradeLevel,
                     sectionName = classSheet.section.sectionName
                 )
             )
             ClassSheet(
                 classSection = ClassSection(
+                    persistenceId = classSheet.section.sectionRoomId,
                     gradeLevel = classSheet.section.gradeLevel,
                     sectionName = classSheet.section.sectionName
                 ),

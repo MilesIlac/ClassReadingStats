@@ -7,6 +7,7 @@ import kotlin.enums.enumEntries
 
 @Serializable
 data class ClassSection(
+    var persistenceId: Int = 0,
     var gradeLevel: GradeLevel = GradeLevel.EIGHT,
     var sectionName: String
 ) {

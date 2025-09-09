@@ -79,6 +79,8 @@ fun HomePage(
             }
         )
     }
+    println("classInits homePager currentSheets size preLaunchEffect ${currentSheets.size}")
+    println("classInits homePager currentSection $currentSection")
     var showBottomSheet by remember { mutableStateOf(false) }
     var isDeleteMode by remember { mutableStateOf(false) }
     var showDeleteStudentsBottomSheet by remember { mutableStateOf(false) }
@@ -86,17 +88,23 @@ fun HomePage(
     val coroutineScope = rememberCoroutineScope()
 
     // Listen for page settling
-    LaunchedEffect(pagerState) {
+    LaunchedEffect(currentSheets) {
         snapshotFlow { pagerState.currentPage }
             .distinctUntilChanged()
             .collect { page ->
                 // Trigger your side-effect here
+                println("classInits homePager currentSheets size ${currentSheets.size}")
+                println("classInits homePager page $page")
                 if (page == pagerState.targetPage) {
+                    println("classInits homePager got target $page")
                     currentSection = runCatching {
+                        println("classInits homePager section ${currentSheets[page].classSection}")
                         currentSheets[page].classSection
                     }.getOrElse {
+                        println("classInits homePager section reached else")
                         initClassSection()
                     }
+                    println("classInits homePager currentSection after flip $currentSection")
                 }
             }
     }

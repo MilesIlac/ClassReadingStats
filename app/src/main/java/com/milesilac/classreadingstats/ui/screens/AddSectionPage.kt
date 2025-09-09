@@ -523,8 +523,8 @@ fun AddSectionPagePreview() {
 }
 
 sealed class UpdateTempClassSheet {
-    data object EventDelete: UpdateTempClassSheet()
-    data class EventGradeLevel(val gradeLevel: GradeLevel): UpdateTempClassSheet()
-    data class EventSectionName(val sectionName: String): UpdateTempClassSheet()
-    data class EventSectionStudent(val student: Student): UpdateTempClassSheet()
+    data object EventDelete : UpdateTempClassSheet()
+    data class EventGradeLevel(val gradeLevel: GradeLevel) : UpdateTempClassSheet()
+    data class EventSectionName(val sectionName: String) : UpdateTempClassSheet()
+    data class EventSectionStudent(val student: Student) : UpdateTempClassSheet()
 }

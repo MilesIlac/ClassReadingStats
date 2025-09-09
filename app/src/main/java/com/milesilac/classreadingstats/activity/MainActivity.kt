@@ -48,6 +48,10 @@ class MainActivity : AppCompatActivity() {
             val currentSections = currentSheets.map { it.classSection }
 
             val tempClassSheet by viewModel.tempClassSheetState.collectAsStateWithLifecycle()
+            val tempRemainingClassSheets by viewModel.tempRemainingClassSheetState.collectAsStateWithLifecycle()
+            val tempDeletePendingClassSheets by viewModel.tempDeletePendingClassSheetState.collectAsStateWithLifecycle()
+            val tempSelectedRemainingSheets by viewModel.tempSelectedRemainingState.collectAsStateWithLifecycle()
+            val tempSelectedDeletePendingSheets by viewModel.tempSelectedDeletePendingState.collectAsStateWithLifecycle()
 
             NavHost(navController = navController, startDestination = Routes.RouteHome) {
                 composable<Routes.RouteHome> {
@@ -127,8 +131,15 @@ class MainActivity : AppCompatActivity() {
                 }
                 composable<Routes.RouteDeleteSections> {
                     DeleteSectionsPage(
-                        sheets = currentSheets,
-                        onBackClick = { navController.navigateUp() },
+                        currentSheets = tempRemainingClassSheets,
+                        currentDeletePendingSheets = tempDeletePendingClassSheets,
+                        selectedSheets = tempSelectedRemainingSheets,
+                        selectedDeletePendingSheets = tempSelectedDeletePendingSheets,
+                        onDeleteSectionEvent = { viewModel.manageDeleteSectionEvent(event = it) },
+                        onBackClick = {
+                            navController.navigateUp()
+                            viewModel.manageDeleteSectionEvent(event = it)
+                        },
                         onVisible = {
                             if (WindowCompat.getInsetsController(window, window.decorView).isAppearanceLightNavigationBars) {
                                 WindowCompat.getInsetsController(window, window.decorView).isAppearanceLightNavigationBars = false
