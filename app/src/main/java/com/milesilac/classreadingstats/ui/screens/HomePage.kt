@@ -36,9 +36,6 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.lifecycle.viewmodel.compose.viewModel
-import com.milesilac.classreadingstats.activity.MainViewModel
 import com.milesilac.classreadingstats.model.ClassSection
 import com.milesilac.classreadingstats.model.ClassSheet
 import com.milesilac.classreadingstats.model.Student
@@ -49,6 +46,8 @@ import com.milesilac.classreadingstats.ui.components.AnimatedBottomBar
 import com.milesilac.classreadingstats.ui.components.ConfirmDeleteStudentsBottomSheet
 import com.milesilac.classreadingstats.ui.components.HomePageBottomSheet
 import com.milesilac.classreadingstats.ui.components.TopInfoBar
+import com.milesilac.classreadingstats.ui.dummyStudentListsEightAmethyst
+import com.milesilac.classreadingstats.ui.dummyStudentListsEightDiamond
 import com.milesilac.classreadingstats.ui.theme.ProjectColors
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
@@ -56,7 +55,8 @@ import kotlinx.coroutines.launch
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomePage(
-    viewModel: MainViewModel = viewModel(),
+    currentSheets: List<ClassSheet> = listOf(),
+    currentSections: List<ClassSection> = listOf(),
     onAddSectionClick: () -> Unit = {},
     onAddStudentClick: () -> Unit = {},
     onDeleteSectionsClick: () -> Unit = {},
@@ -69,8 +69,6 @@ fun HomePage(
     onVisible: () -> Unit = {}
 ) {
     onVisible()
-    val currentSheets by viewModel.classSheetsState.collectAsStateWithLifecycle()
-    val currentSections = currentSheets.map { it.classSection }
     val pagerState = rememberPagerState(pageCount = { currentSheets.size })
     var currentSection by remember(currentSheets) {
         mutableStateOf(
@@ -279,5 +277,10 @@ fun HomePage(
 @Preview
 @Composable
 fun HomePagePreview() {
-    HomePage()
+    val currentSheets = listOf(dummyStudentListsEightAmethyst, dummyStudentListsEightDiamond)
+    val currentSections = currentSheets.map { it.classSection }
+    HomePage(
+        currentSheets = currentSheets,
+        currentSections = currentSections
+    )
 }

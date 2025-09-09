@@ -8,7 +8,10 @@ import androidx.activity.enableEdgeToEdge
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.runtime.getValue
 import androidx.core.view.WindowCompat
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -24,6 +27,7 @@ import com.milesilac.classreadingstats.ui.screens.HomePage
 import com.milesilac.classreadingstats.ui.screens.StudentDetailEditPage
 import com.milesilac.classreadingstats.ui.screens.StudentDetailsPage
 import com.milesilac.classreadingstats.ui.screens.StudentEditType
+import com.milesilac.classreadingstats.ui.screens.UpdateTempClassSheet
 import kotlinx.serialization.json.Json
 
 class MainActivity : AppCompatActivity() {
@@ -37,11 +41,19 @@ class MainActivity : AppCompatActivity() {
         WindowCompat.getInsetsController(window, window.decorView).isAppearanceLightNavigationBars = true
         window.isNavigationBarContrastEnforced = false
         setContent {
+            val viewModel: MainViewModel = viewModel()
             val navController = rememberNavController()
+
+            val currentSheets by viewModel.classSheetsState.collectAsStateWithLifecycle()
+            val currentSections = currentSheets.map { it.classSection }
+
+            val tempClassSheet by viewModel.tempClassSheetState.collectAsStateWithLifecycle()
 
             NavHost(navController = navController, startDestination = Routes.RouteHome) {
                 composable<Routes.RouteHome> {
                     HomePage(
+                        currentSheets = currentSheets,
+                        currentSections = currentSections,
                         onAddSectionClick = {
                             navController.navigate(Routes.RouteAddSection)
                         },
@@ -91,7 +103,12 @@ class MainActivity : AppCompatActivity() {
                 }
                 composable<Routes.RouteAddSection> {
                     AddSectionPage(
-                        onBackClick = { navController.navigateUp() },
+                        tempClassSheet = tempClassSheet,
+                        onUpdate = { viewModel.updateTempClassSheet(event = it) },
+                        onBackClick = {
+                            navController.navigateUp()
+                            viewModel.updateTempClassSheet(event = it)
+                        },
                         onAddStudentClick = { inputSection ->
                             navController.navigate(
                                 Routes.RouteStudentDetailEdit(
@@ -110,7 +127,7 @@ class MainActivity : AppCompatActivity() {
                 }
                 composable<Routes.RouteDeleteSections> {
                     DeleteSectionsPage(
-//                        sheets = currentSheets, TODO
+                        sheets = currentSheets,
                         onBackClick = { navController.navigateUp() },
                         onVisible = {
                             if (WindowCompat.getInsetsController(window, window.decorView).isAppearanceLightNavigationBars) {
@@ -123,7 +140,7 @@ class MainActivity : AppCompatActivity() {
                     val routeEditGrades: Routes.RouteEditGrades = backStackEntry.toRoute()
                     val currentSection = Json.decodeFromString<ClassSection>(routeEditGrades.currentSectionString)
                     EditStudentsGradesPage(
-                        sheets = listOf(), //currentSheets TODO,
+                        sheets = currentSheets,
                         currentSection = currentSection,
                         onBackClick = { navController.navigateUp() },
                         onVisible = {
@@ -165,9 +182,14 @@ class MainActivity : AppCompatActivity() {
                         studentEditType = routeStudentDetailEdit.studentEditType,
                         student = student,
                         isFromAddSectionPage = routeStudentDetailEdit.isFromAddSectionPage,
-//                        classSections = currentSections, TODO
+                        classSections = currentSections,
                         onSaveClick = { editedStudent ->
-
+                            if (routeStudentDetailEdit.isFromAddSectionPage) {
+                                viewModel.updateTempClassSheet(
+                                    event = UpdateTempClassSheet.EventSectionStudent(student = editedStudent)
+                                )
+                            }
+                            navController.navigateUp()
                         },
                         onBackClick = { navController.navigateUp() },
                         onVisible = {

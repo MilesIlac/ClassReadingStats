@@ -10,6 +10,10 @@ data class ClassSheet(
     ),
 )
 
+fun initClassSheet() = ClassSheet(
+    classSection = initClassSection()
+)
+
 fun List<ClassSheet>.hasStudents(): Boolean {
     for (sheet in this) {
         return sheet.maleStudents.any { it is StudentList.StudentDetails }

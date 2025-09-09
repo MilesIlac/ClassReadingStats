@@ -32,7 +32,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -47,31 +46,39 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.milesilac.classreadingstats.helpers.nonScaledSp
 import com.milesilac.classreadingstats.model.ClassSection
+import com.milesilac.classreadingstats.model.ClassSheet
 import com.milesilac.classreadingstats.model.GradeLevel
+import com.milesilac.classreadingstats.model.Student
 import com.milesilac.classreadingstats.model.StudentList
+import com.milesilac.classreadingstats.model.initClassSheet
 import com.milesilac.classreadingstats.ui.components.EditSectionNameDialog
-import com.milesilac.classreadingstats.ui.dummyStudentListsEightAmethyst
 import com.milesilac.classreadingstats.ui.theme.ProjectColors
 import kotlin.enums.enumEntries
 
 @Composable
 fun AddSectionPage(
-    onBackClick: () -> Unit = {},
+    tempClassSheet: ClassSheet = initClassSheet(),
+    onUpdate: (UpdateTempClassSheet) -> Unit = {},
+    onSaveClick: () -> Unit = {},
+    onBackClick: (UpdateTempClassSheet) -> Unit = {},
     onAddStudentClick: (ClassSection) -> Unit = {},
     onVisible: () -> Unit = {}
 ) {
     onVisible()
-    var selectedGradeLevel by remember { mutableStateOf(GradeLevel.ERROR) }
-    var inputSectionName by remember { mutableStateOf("") }
+    val selectedGradeLevel = tempClassSheet.classSection.gradeLevel
+    val inputSectionName = tempClassSheet.classSection.sectionName
     val hasGradeAndSection = selectedGradeLevel != GradeLevel.ERROR && inputSectionName.isNotEmpty()
     var showEditDialog by rememberSaveable { mutableStateOf(false) }
 
-//    val students = mutableListOf<Student>()//TODO
-    val students = dummyStudentListsEightAmethyst.maleStudents.filter { it is StudentList.StudentDetails }.map {
-        (it as StudentList.StudentDetails).student
-    } + dummyStudentListsEightAmethyst.femaleStudents.filter { it is StudentList.StudentDetails }.map {
-        (it as StudentList.StudentDetails).student
-    }//TODO
+//    val students = dummyStudentListsEightAmethyst.maleStudents.filter { it is StudentList.StudentDetails }.map {
+//        (it as StudentList.StudentDetails).student
+//    } + dummyStudentListsEightAmethyst.femaleStudents.filter { it is StudentList.StudentDetails }.map {
+//        (it as StudentList.StudentDetails).student
+//    } //test
+
+    val students = (tempClassSheet.maleStudents + tempClassSheet.femaleStudents).mapNotNull {
+        if (it is StudentList.StudentDetails) it.student else null
+    }
     Column(
         modifier = Modifier
             .background(
@@ -169,7 +176,7 @@ fun AddSectionPage(
                                     )
                                     .selectable(
                                         selected = selectedGradeLevel == gradeLevel,
-                                        onClick = { selectedGradeLevel = gradeLevel },
+                                        onClick = { onUpdate(UpdateTempClassSheet.EventGradeLevel(gradeLevel = gradeLevel)) },
                                         role = Role.RadioButton
                                     ),
                                 contentAlignment = Alignment.Center
@@ -463,7 +470,7 @@ fun AddSectionPage(
                 }
                 Spacer(modifier = Modifier.width(12.dp))
                 OutlinedButton(
-                    onClick = { onBackClick() },
+                    onClick = { onBackClick(UpdateTempClassSheet.EventDelete) },
                     modifier = Modifier,
                     colors = ButtonColors(
                         containerColor = Color.White,
@@ -501,7 +508,7 @@ fun AddSectionPage(
                 currentSectionName = inputSectionName,
                 onDismissDialog = { showEditDialog = false },
                 onOkayClick = { newInputName ->
-                    inputSectionName = newInputName
+                    onUpdate(UpdateTempClassSheet.EventSectionName(sectionName = newInputName))
                     showEditDialog = false
                 }
             )
@@ -513,4 +520,11 @@ fun AddSectionPage(
 @Composable
 fun AddSectionPagePreview() {
     AddSectionPage()
+}
+
+sealed class UpdateTempClassSheet {
+    data object EventDelete: UpdateTempClassSheet()
+    data class EventGradeLevel(val gradeLevel: GradeLevel): UpdateTempClassSheet()
+    data class EventSectionName(val sectionName: String): UpdateTempClassSheet()
+    data class EventSectionStudent(val student: Student): UpdateTempClassSheet()
 }
