@@ -2,8 +2,8 @@ package com.milesilac.classreadingstats.activity
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.milesilac.classreadingstats.StudentsRepository
 import com.milesilac.classreadingstats.model.ClassSheet
+import com.milesilac.classreadingstats.repository.StudentsRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -27,7 +27,7 @@ class MainViewModel(): ViewModel() {
         )
     }
 
-    private val repository = StudentsRepository()
+    private val repository = StudentsRepository.getInstance()
 
     private val _classSheetsState = MutableStateFlow(listOf<ClassSheet>())
     val classSheetsState = _classSheetsState
