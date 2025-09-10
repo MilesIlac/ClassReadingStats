@@ -6,6 +6,7 @@ import kotlin.enums.enumEntries
 
 @Serializable
 data class Student(
+    var persistenceId: Long = 0,
     var orderId: Double = 0.0,
     var name: String,
     var section: ClassSection,

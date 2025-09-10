@@ -53,7 +53,7 @@ import com.milesilac.classreadingstats.ui.theme.ProjectColors
 @Composable
 fun EditStudentsGradesPage(
     sheets: List<ClassSheet>,
-    currentSectionId: Int,
+    currentSectionId: Long,
     onScanClick: () -> Unit = {},
     onSaveClick: () -> Unit = {},
     onBackClick: () -> Unit = {},

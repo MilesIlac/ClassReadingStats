@@ -60,7 +60,7 @@ fun HomePage(
     onAddSectionClick: () -> Unit = {},
     onAddStudentClick: () -> Unit = {},
     onDeleteSectionsClick: () -> Unit = {},
-    onEditGradesClick: (Int) -> Unit = {},
+    onEditGradesClick: (Long) -> Unit = {},
     onStudentEntryClick: (Student) -> Unit = {},
     onExportClick: (List<ClassSheet>) -> Unit = {},
     bottomSheetState: SheetState = rememberModalBottomSheetState(
@@ -127,36 +127,44 @@ fun HomePage(
             ),
             onExportClick = { onExportClick(currentSheets) }
         )
-        HorizontalPager(
-            state = pagerState,
-            modifier = Modifier
-                .fillMaxSize()
-                .weight(1F),
-            beyondViewportPageCount = 2
-        ) { page ->
-            // Our page content
-            StudentListPage(
-                isDeleteMode = isDeleteMode,
-                studentsToDelete = studentsToDelete,
-                maleStudents = currentSheets[page].maleStudents,
-                femaleStudents = currentSheets[page].femaleStudents,
-                onStudentEntryClick = onStudentEntryClick,
-                onCheckBoxClick = { student ->
-                    studentsToDelete = studentsToDelete.toMutableList().apply {
-                        when {
-                            student in this -> remove(student)
-                            else -> add(student)
+        if (currentSheets.isNotEmpty()) {
+            HorizontalPager(
+                state = pagerState,
+                modifier = Modifier
+                    .fillMaxSize()
+                    .weight(1F),
+                beyondViewportPageCount = 2
+            ) { page ->
+                // Our page content
+                StudentListPage(
+                    isDeleteMode = isDeleteMode,
+                    studentsToDelete = studentsToDelete,
+                    maleStudents = currentSheets[page].maleStudents,
+                    femaleStudents = currentSheets[page].femaleStudents,
+                    onStudentEntryClick = onStudentEntryClick,
+                    onCheckBoxClick = { student ->
+                        studentsToDelete = studentsToDelete.toMutableList().apply {
+                            when {
+                                student in this -> remove(student)
+                                else -> add(student)
+                            }
+                        }
+                    },
+                    onHeaderCheckBoxClick = { isChecked, students ->
+                        studentsToDelete = studentsToDelete.toMutableList().apply {
+                            when {
+                                isChecked -> addAll(students)
+                                else -> removeAll(students)
+                            }
                         }
                     }
-                },
-                onHeaderCheckBoxClick = { isChecked, students ->
-                    studentsToDelete = studentsToDelete.toMutableList().apply {
-                        when {
-                            isChecked -> addAll(students)
-                            else -> removeAll(students)
-                        }
-                    }
-                }
+                )
+            }
+        } else {
+            EmptyWorkbookPage(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .weight(1F)
             )
         }
         Row(
@@ -169,6 +177,7 @@ fun HomePage(
                 onClick = {},
                 modifier = Modifier
                     .padding(horizontal = 6.dp),
+                enabled = currentSections.isNotEmpty(),
                 shape = RoundedCornerShape(8.dp),
                 colors = ButtonColors(
                     containerColor = Color.Yellow,

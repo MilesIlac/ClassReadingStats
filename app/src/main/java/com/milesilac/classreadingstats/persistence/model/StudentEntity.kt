@@ -14,8 +14,8 @@ import com.milesilac.classreadingstats.model.StudentSexOrient
 
 @Entity(tableName = "students")
 data class StudentEntity(
-    @PrimaryKey(autoGenerate = true) @ColumnInfo(name = "student_room_id") val studentRoomId: Int = 0,
-    @ColumnInfo(name = "section_room_id") val sectionRoomId: Int,
+    @PrimaryKey(autoGenerate = true) @ColumnInfo(name = "student_room_id") val studentRoomId: Long = 0,
+    @ColumnInfo(name = "section_room_id") val sectionRoomId: Long,
     @ColumnInfo(name = "order_id") val orderId: Double,
     @ColumnInfo(name = "student_name") val studentName: String,
     val sex: StudentSexOrient,
@@ -36,41 +36,7 @@ fun List<StudentEntity>.mapPartitionForStudentList(
     val b = mutableListOf<StudentList>(StudentList.Header(sex = StudentSexOrient.FEMALE))
     for (student in this) {
         val mapped = StudentList.StudentDetails(
-            student = Student(
-                orderId = student.orderId,
-                name = student.studentName,
-                section = classSection,
-                sex = student.sex,
-                preTest = ReadingTest(
-                    groupScreeningTest = GroupScreeningTest(
-                        score = student.preGSTScore
-                    ),
-                    oralReading = OralReading(
-                        totalNumberOfWordsInSelection = student.preORTotalNumberOfWords,
-                        numberOfMiscues = student.preORNumberOfMiscues
-                    ),
-                    readingComprehension = ReadingComprehension(
-                        inputPercentage = student.preRCInputPercentage
-                    )
-                ),
-                postTest = when {
-                    student.postGSTScore != null -> {
-                        ReadingTest(
-                            groupScreeningTest = GroupScreeningTest(
-                                score = student.postGSTScore
-                            ),
-                            oralReading = OralReading(
-                                totalNumberOfWordsInSelection = student.postORTotalNumberOfWords ?: -1.0,
-                                numberOfMiscues = student.postORNumberOfMiscues ?: -1.0
-                            ),
-                            readingComprehension = ReadingComprehension(
-                                inputPercentage = student.postRCInputPercentage ?: -1.0
-                            )
-                        )
-                    }
-                    else -> null
-                }
-            )
+            student = student.mapStudentEntity(classSection = classSection)
         )
         when (mapped.student.sex) {
             StudentSexOrient.MALE -> a.add(mapped)
@@ -80,3 +46,66 @@ fun List<StudentEntity>.mapPartitionForStudentList(
     }
     return Pair(a, b)
 }
+
+fun StudentEntity.mapStudentEntity(classSection: ClassSection) = Student(
+    persistenceId = this.studentRoomId,
+    orderId = this.orderId,
+    name = this.studentName,
+    section = classSection,
+    sex = this.sex,
+    preTest = ReadingTest(
+        groupScreeningTest = GroupScreeningTest(
+            score = this.preGSTScore
+        ),
+        oralReading = OralReading(
+            totalNumberOfWordsInSelection = this.preORTotalNumberOfWords,
+            numberOfMiscues = this.preORNumberOfMiscues
+        ),
+        readingComprehension = ReadingComprehension(
+            inputPercentage = this.preRCInputPercentage
+        )
+    ),
+    postTest = when {
+        this.postGSTScore != null -> {
+            ReadingTest(
+                groupScreeningTest = GroupScreeningTest(
+                    score = this.postGSTScore
+                ),
+                oralReading = OralReading(
+                    totalNumberOfWordsInSelection = this.postORTotalNumberOfWords ?: -1.0,
+                    numberOfMiscues = this.postORNumberOfMiscues ?: -1.0
+                ),
+                readingComprehension = ReadingComprehension(
+                    inputPercentage = this.postRCInputPercentage ?: -1.0
+                )
+            )
+        }
+        else -> null
+    }
+)
+
+fun List<StudentList>.mapStudentListToEntity(sectionId: Long): List<StudentEntity> {
+    val studentEntities = mutableListOf<StudentEntity>()
+    for (student in this) {
+        if (student is StudentList.StudentDetails) {
+            studentEntities.add(student.student.mapStudent(sectionId = sectionId))
+        }
+    }
+    return studentEntities
+}
+
+fun Student.mapStudent(sectionId: Long) = StudentEntity(
+    studentRoomId = this.persistenceId,
+    sectionRoomId = sectionId,
+    orderId = this.orderId,
+    studentName = this.name,
+    sex = this.sex,
+    preGSTScore = this.preTest.groupScreeningTest.score,
+    preORTotalNumberOfWords = this.preTest.oralReading?.totalNumberOfWordsInSelection ?: -1.0,
+    preORNumberOfMiscues = this.preTest.oralReading?.numberOfMiscues ?: -1.0,
+    preRCInputPercentage = this.preTest.readingComprehension?.inputPercentage ?: -1.0,
+    postGSTScore = this.postTest?.groupScreeningTest?.score,
+    postORTotalNumberOfWords = this.postTest?.oralReading?.totalNumberOfWordsInSelection,
+    postORNumberOfMiscues = this.postTest?.oralReading?.numberOfMiscues,
+    postRCInputPercentage = this.postTest?.readingComprehension?.inputPercentage
+)

@@ -73,7 +73,6 @@ fun StudentDetailEditPage(
     val pagerState = rememberPagerState(pageCount = { 2 })
     val coroutineScope = rememberCoroutineScope()
     val inputStudent = remember { student }
-    var inputStudentName by remember { mutableStateOf(student.name) }
     var showStudentNameEditDialog by rememberSaveable { mutableStateOf(false) }
     var showPickSectionDialog by rememberSaveable { mutableStateOf(false) }
     var showMaleOrFemaleDialog by rememberSaveable { mutableStateOf(false) }
@@ -152,7 +151,7 @@ fun StudentDetailEditPage(
                     )
                     Spacer(modifier = Modifier.width(16.dp))
                     Text(
-                        text = inputStudentName,
+                        text = inputStudent.name,
                         modifier = Modifier
                             .weight(1F),
                         color = ProjectColors.OffWhite4,
@@ -286,7 +285,7 @@ fun StudentDetailEditPage(
                 1 -> {
                     StudentGradeEditPage(
                         modifier = Modifier,
-                        studentName = inputStudent.name,
+                        studentPersistenceId = inputStudent.persistenceId,
                         studentTest = inputStudent.postTest ?: emptyReadingTest(),
                         onUpdateGrade = { readingTest ->
                             inputStudent.postTest = readingTest
@@ -296,7 +295,7 @@ fun StudentDetailEditPage(
                 }
                 else -> StudentGradeEditPage(
                     modifier = Modifier,
-                    studentName = inputStudent.name,
+                    studentPersistenceId = inputStudent.persistenceId,
                     studentTest = inputStudent.preTest,
                     onUpdateGrade = { readingTest ->
                         inputStudent.preTest = readingTest
@@ -450,10 +449,10 @@ fun StudentDetailEditPage(
         when {
             showStudentNameEditDialog -> {
                 EditStudentNameDialog(
-                    currentStudentName = inputStudentName,
+                    currentStudentName = inputStudent.name,
                     onDismissDialog = { showStudentNameEditDialog = false },
                     onOkayClick = { newInputName ->
-                        inputStudentName = newInputName
+                        inputStudent.name = newInputName
                         showStudentNameEditDialog = false
                     }
                 )

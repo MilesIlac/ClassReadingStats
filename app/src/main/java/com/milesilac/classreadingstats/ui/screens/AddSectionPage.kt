@@ -442,7 +442,7 @@ fun AddSectionPage(
                 horizontalArrangement = Arrangement.SpaceEvenly
             ) {
                 OutlinedButton(
-                    onClick = {  },
+                    onClick = { onSaveClick() },
                     modifier = Modifier,
                     colors = ButtonColors(
                         containerColor = Color.White,

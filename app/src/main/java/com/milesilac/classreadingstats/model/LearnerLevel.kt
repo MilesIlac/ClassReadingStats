@@ -1,30 +1,19 @@
 package com.milesilac.classreadingstats.model
 
-enum class LearnerLevel {
-    FRUSTRATION,
-    INDEPENDENT,
-    INSTRUCTIONAL,
-    ERROR
+import kotlin.enums.enumEntries
+
+enum class LearnerLevel(val level: String) {
+    FRUSTRATION("Frustration"),
+    INDEPENDENT("Independent"),
+    INSTRUCTIONAL("Instructional"),
+    ERROR("")
 }
 
 fun String.toLearnerLevel(): LearnerLevel {
     val value = this.uppercase()
-    return when (value) {
-        "FRUSTRATION" -> LearnerLevel.FRUSTRATION
-        "INDEPENDENT" -> LearnerLevel.INDEPENDENT
-        "INSTRUCTIONAL" -> LearnerLevel.INSTRUCTIONAL
-        else -> LearnerLevel.ERROR
-    }
-}
-
-fun LearnerLevel.toLearnerLevelString(): String {
-    val level = this
-    return when (level) {
-        LearnerLevel.FRUSTRATION -> "Frustration"
-        LearnerLevel.INDEPENDENT -> "Independent"
-        LearnerLevel.INSTRUCTIONAL -> "Instructional"
-        else -> ""
-    }
+    return enumEntries<LearnerLevel>().find {
+        it.level.uppercase() == value
+    } ?: LearnerLevel.ERROR
 }
 
 fun calculateLearnerOralReading(

@@ -15,7 +15,7 @@ enum class ComprehensionLevel(val level: String) {
 fun String.toComprehensionLevel(): ComprehensionLevel {
     val value = this.uppercase()
     return enumEntries<ComprehensionLevel>().find {
-        it.level == value
+        it.level.uppercase() == value
     } ?: ComprehensionLevel.ERROR
 }
 

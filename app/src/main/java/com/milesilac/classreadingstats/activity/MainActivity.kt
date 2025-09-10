@@ -16,7 +16,6 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
-import com.milesilac.classreadingstats.model.Student
 import com.milesilac.classreadingstats.model.emptyStudent
 import com.milesilac.classreadingstats.service.exportNewFileToExcel
 import com.milesilac.classreadingstats.ui.screens.AddSectionPage
@@ -27,7 +26,6 @@ import com.milesilac.classreadingstats.ui.screens.StudentDetailEditPage
 import com.milesilac.classreadingstats.ui.screens.StudentDetailsPage
 import com.milesilac.classreadingstats.ui.screens.StudentEditType
 import com.milesilac.classreadingstats.ui.screens.UpdateTempClassSheet
-import kotlinx.serialization.json.Json
 
 class MainActivity : AppCompatActivity() {
 
@@ -52,6 +50,9 @@ class MainActivity : AppCompatActivity() {
             val tempSelectedRemainingSheets by viewModel.tempSelectedRemainingState.collectAsStateWithLifecycle()
             val tempSelectedDeletePendingSheets by viewModel.tempSelectedDeletePendingState.collectAsStateWithLifecycle()
 
+            val tempStudentState by viewModel.tempStudentState.collectAsStateWithLifecycle()
+            val localStudent by viewModel.localStudentState.collectAsStateWithLifecycle()
+
             NavHost(navController = navController, startDestination = Routes.RouteHome) {
                 composable<Routes.RouteHome> {
                     HomePage(
@@ -61,9 +62,9 @@ class MainActivity : AppCompatActivity() {
                             navController.navigate(Routes.RouteAddSection)
                         },
                         onAddStudentClick = {
+                            viewModel.updateTempStudent(student = emptyStudent())
                             navController.navigate(
                                 Routes.RouteStudentDetailEdit(
-                                    studentString = emptyStudent().toJsonString(),
                                     studentEditType = StudentEditType.ADD,
                                     isFromAddSectionPage = false
                                 )
@@ -80,11 +81,8 @@ class MainActivity : AppCompatActivity() {
                             )
                         },
                         onStudentEntryClick = { student ->
-                            navController.navigate(
-                                Routes.RouteStudentDetails(
-                                    studentString = student.toJsonString()
-                                )
-                            )
+                            viewModel.getLocalSourceStudent(studentPersistenceId = student.persistenceId)
+                            navController.navigate(Routes.RouteStudentDetails)
                         },
                         onExportClick = { currentSheetLists ->
                             exportNewFileToExcel(
@@ -108,14 +106,18 @@ class MainActivity : AppCompatActivity() {
                     AddSectionPage(
                         tempClassSheet = tempClassSheet,
                         onUpdate = { viewModel.updateTempClassSheet(event = it) },
+                        onSaveClick = {
+                            viewModel.saveClassSheet()
+                            navController.navigateUp()
+                        },
                         onBackClick = {
                             navController.navigateUp()
                             viewModel.updateTempClassSheet(event = it)
                         },
                         onAddStudentClick = { inputSection ->
+                            viewModel.updateTempStudent(student = emptyStudent(section = inputSection))
                             navController.navigate(
                                 Routes.RouteStudentDetailEdit(
-                                    studentString = emptyStudent(section = inputSection).toJsonString(),
                                     studentEditType = StudentEditType.ADD,
                                     isFromAddSectionPage = true
                                 )
@@ -160,14 +162,12 @@ class MainActivity : AppCompatActivity() {
                     )
                 }
                 composable<Routes.RouteStudentDetails> { backStackEntry ->
-                    val routeStudentDetails: Routes.RouteStudentDetails = backStackEntry.toRoute()
-                    val student = Json.decodeFromString<Student>(routeStudentDetails.studentString)
                     StudentDetailsPage(
-                        student = student,
+                        student = localStudent,
                         onEditClick = {
+                            viewModel.updateTempStudent(student = localStudent)
                             navController.navigate(
                                 Routes.RouteStudentDetailEdit(
-                                    studentString = student.toJsonString(),
                                     studentEditType = StudentEditType.EDIT,
                                     isFromAddSectionPage = false
                                 )
@@ -186,10 +186,9 @@ class MainActivity : AppCompatActivity() {
                 }
                 composable<Routes.RouteStudentDetailEdit> { backStackEntry ->
                     val routeStudentDetailEdit: Routes.RouteStudentDetailEdit = backStackEntry.toRoute()
-                    val student = Json.decodeFromString<Student>(routeStudentDetailEdit.studentString)
                     StudentDetailEditPage(
                         studentEditType = routeStudentDetailEdit.studentEditType,
-                        student = student,
+                        student = tempStudentState,
                         isFromAddSectionPage = routeStudentDetailEdit.isFromAddSectionPage,
                         classSections = currentSections,
                         onSaveClick = { editedStudent ->
@@ -197,7 +196,7 @@ class MainActivity : AppCompatActivity() {
                                 viewModel.updateTempClassSheet(
                                     event = UpdateTempClassSheet.EventSectionStudent(student = editedStudent)
                                 )
-                            }
+                            } else viewModel.updateLocalSourceStudent(student = editedStudent)
                             navController.navigateUp()
                         },
                         onBackClick = { navController.navigateUp() },
@@ -225,14 +224,13 @@ private sealed class Routes {
     data object RouteDeleteSections : Routes()
 
     @kotlinx.serialization.Serializable
-    data class RouteEditGrades(val currentSectionId: Int) : Routes()
+    data class RouteEditGrades(val currentSectionId: Long) : Routes()
 
     @kotlinx.serialization.Serializable
-    data class RouteStudentDetails(val studentString: String) : Routes() //complex classes crash NavGraph
+    data object RouteStudentDetails : Routes()
 
     @kotlinx.serialization.Serializable
     data class RouteStudentDetailEdit(
-        val studentString: String,
         val studentEditType: StudentEditType,
         val isFromAddSectionPage: Boolean
     ) : Routes() //complex classes crash NavGraph

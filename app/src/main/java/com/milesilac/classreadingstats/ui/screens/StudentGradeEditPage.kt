@@ -45,7 +45,6 @@ import com.milesilac.classreadingstats.model.OralReading
 import com.milesilac.classreadingstats.model.ReadingComprehension
 import com.milesilac.classreadingstats.model.ReadingTest
 import com.milesilac.classreadingstats.model.StudentList
-import com.milesilac.classreadingstats.model.toLearnerLevelString
 import com.milesilac.classreadingstats.ui.dummyStudentListsEightAmethyst
 import com.milesilac.classreadingstats.ui.theme.ProjectColors
 import kotlinx.coroutines.flow.debounce
@@ -54,7 +53,7 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 @Composable
 fun StudentGradeEditPage(
     modifier: Modifier = Modifier,
-    studentName: String = "", // for key
+    studentPersistenceId: Long = 0, // for key
     studentTest: ReadingTest,
     onUpdateGrade: (ReadingTest) -> Unit = {}
 ) {
@@ -87,7 +86,7 @@ fun StudentGradeEditPage(
     val readingComprehensionLearnerLevel = newReadingTest.readingComprehension?.level ?: LearnerLevel.ERROR
 
     // Listen for readingTest input change
-    LaunchedEffect(studentName) {
+    LaunchedEffect(studentPersistenceId) {
         snapshotFlow { newReadingTest }
             .distinctUntilChanged()
             .debounce(800L)
@@ -360,7 +359,7 @@ fun StudentGradeEditPage(
                     textAlign = TextAlign.Center
                 )
                 Text(
-                    text = "Learner Level: ${oralReadingLearnerLevel.toLearnerLevelString()}",
+                    text = "Learner Level: ${oralReadingLearnerLevel.level}",
                     modifier = Modifier
                         .fillMaxWidth(),
                     color = Color.Black,
@@ -459,7 +458,7 @@ fun StudentGradeEditPage(
                     }
                 }
                 Text(
-                    text = "Learner Level: ${readingComprehensionLearnerLevel.toLearnerLevelString()}",
+                    text = "Learner Level: ${readingComprehensionLearnerLevel.level}",
                     modifier = Modifier
                         .padding(top = 12.dp)
                         .fillMaxWidth(),

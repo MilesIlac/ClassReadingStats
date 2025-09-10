@@ -1,24 +1,32 @@
 package com.milesilac.classreadingstats.persistence.dao
 
 import androidx.room.Dao
-import androidx.room.Insert
-import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import com.milesilac.classreadingstats.persistence.model.ClassSheetRelationship
+import androidx.room.Transaction
+import androidx.room.Upsert
+import com.milesilac.classreadingstats.persistence.model.SectionEntity
 import com.milesilac.classreadingstats.persistence.model.StudentEntity
+import com.milesilac.classreadingstats.persistence.model.StudentRelationship
 import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface RoomDAO {
 
     @Query("SELECT * FROM sections")
-    fun getClassSheets(): Flow<List<ClassSheetRelationship>>
+    fun getAllSections(): Flow<List<SectionEntity>>
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertStudent(student: StudentEntity)
+    @Query("SELECT * FROM students")
+    fun getAllStudents(): Flow<List<StudentEntity>>
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertStudents(students: List<StudentEntity>)
+    @Transaction
+    @Query("SELECT * FROM students WHERE student_room_id = :studentId")
+    fun getStudent(studentId: Long): Flow<StudentRelationship>
+
+    @Upsert
+    suspend fun saveSection(section: SectionEntity): Long
+
+    @Upsert
+    suspend fun updateStudents(students: List<StudentEntity>)
 
     @Query("DELETE FROM students WHERE student_room_id IN (:studentIds)")
     suspend fun deleteStudents(studentIds: List<Int>)

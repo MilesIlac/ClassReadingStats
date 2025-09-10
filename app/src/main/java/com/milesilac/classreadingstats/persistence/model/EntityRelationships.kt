@@ -11,3 +11,12 @@ data class ClassSheetRelationship(
     )
     val students: List<StudentEntity>
 )
+
+data class StudentRelationship(
+    @Embedded val student: StudentEntity,
+    @Relation(
+        parentColumn = "section_room_id",
+        entityColumn = "section_room_id"
+    )
+    val section: SectionEntity
+)

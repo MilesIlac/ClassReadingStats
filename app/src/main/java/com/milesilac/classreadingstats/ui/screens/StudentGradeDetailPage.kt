@@ -19,7 +19,6 @@ import androidx.compose.ui.unit.sp
 import com.milesilac.classreadingstats.model.LearnerLevel
 import com.milesilac.classreadingstats.model.ReadingTest
 import com.milesilac.classreadingstats.model.StudentList
-import com.milesilac.classreadingstats.model.toLearnerLevelString
 import com.milesilac.classreadingstats.ui.dummyStudentListsEightAmethyst
 import com.milesilac.classreadingstats.ui.theme.ProjectColors
 
@@ -121,7 +120,7 @@ fun StudentGradeDetailPage(
                     textAlign = TextAlign.Center
                 )
                 Text(
-                    text = "Learner Level: ${oralReadingLearnerLevel.toLearnerLevelString()}",
+                    text = "Learner Level: ${oralReadingLearnerLevel.level}",
                     modifier = Modifier,
                     color = Color.Black,
                     fontSize = 20.sp,
@@ -165,7 +164,7 @@ fun StudentGradeDetailPage(
                     textAlign = TextAlign.Center
                 )
                 Text(
-                    text = "Learner Level: ${readingComprehensionLearnerLevel.toLearnerLevelString()}",
+                    text = "Learner Level: ${readingComprehensionLearnerLevel.level}",
                     modifier = Modifier,
                     color = Color.Black,
                     fontSize = 20.sp,

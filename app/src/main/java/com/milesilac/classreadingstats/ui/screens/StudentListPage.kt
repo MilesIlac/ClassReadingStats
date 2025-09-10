@@ -1,17 +1,25 @@
 package com.milesilac.classreadingstats.ui.screens
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import com.milesilac.classreadingstats.helpers.nonScaledSp
 import com.milesilac.classreadingstats.model.Student
 import com.milesilac.classreadingstats.model.StudentList
 import com.milesilac.classreadingstats.model.StudentSexOrient
@@ -33,8 +41,8 @@ fun StudentListPage(
     onCheckBoxClick: (Student) -> Unit = {},
     onHeaderCheckBoxClick: (Boolean, List<Student>) -> Unit = { _,_ -> },
 ) {
-    var maleList by remember { mutableStateOf(maleStudents) }
-    var femaleList by remember { mutableStateOf(femaleStudents) }
+    var maleList by remember(maleStudents) { mutableStateOf(maleStudents) }
+    var femaleList by remember(femaleStudents) { mutableStateOf(femaleStudents) }
     val maleCount = maleStudents.count { it is StudentList.StudentDetails && it.student.sex == StudentSexOrient.MALE }
     val femaleCount = femaleStudents.count { it is StudentList.StudentDetails && it.student.sex == StudentSexOrient.FEMALE }
     val mappedMaleStudents = maleStudents.filter {
@@ -222,4 +230,29 @@ private fun LazyListScope.manageItem(
             }
         }
     }
+}
+
+@Composable
+fun EmptyWorkbookPage(modifier: Modifier = Modifier) {
+    Box(
+        modifier = modifier
+            .background(color = ProjectColors.OffGreen1)
+            .fillMaxSize(),
+        contentAlignment = Alignment.Center
+    ) {
+        Text(
+            text = "Click the 3-dots above to add or import an Excel workbook\nor\nStart a new one by adding a section using the Manage button below",
+            modifier = Modifier
+                .padding(32.dp),
+            color = ProjectColors.OffWhite4,
+            fontSize = 24.sp.nonScaledSp,
+            textAlign = TextAlign.Center
+        )
+    }
+}
+
+@Preview
+@Composable
+fun EmptyWorkbookPagePreview() {
+    EmptyWorkbookPage()
 }

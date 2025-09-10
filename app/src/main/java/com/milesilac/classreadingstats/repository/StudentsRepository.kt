@@ -1,10 +1,17 @@
 package com.milesilac.classreadingstats.repository
 
 import com.milesilac.classreadingstats.model.ClassSheet
+import com.milesilac.classreadingstats.model.Student
 import kotlinx.coroutines.flow.Flow
 
 interface StudentsRepository {
     fun getClassSheets(): Flow<List<ClassSheet>>
+
+    suspend fun saveClassSheet(classSheet: ClassSheet)
+
+    fun getStudent(studentId: Long): Flow<Student>
+
+    suspend fun updateStudent(student: Student)
 
     companion object {
         @Volatile

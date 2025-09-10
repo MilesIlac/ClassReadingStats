@@ -4,8 +4,10 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.milesilac.classreadingstats.model.ClassSection
 import com.milesilac.classreadingstats.model.ClassSheet
+import com.milesilac.classreadingstats.model.Student
 import com.milesilac.classreadingstats.model.StudentList
 import com.milesilac.classreadingstats.model.StudentSexOrient
+import com.milesilac.classreadingstats.model.emptyStudent
 import com.milesilac.classreadingstats.model.initClassSheet
 import com.milesilac.classreadingstats.repository.StudentsRepository
 import com.milesilac.classreadingstats.ui.screens.DeleteClassSheet
@@ -14,6 +16,8 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
@@ -87,6 +91,12 @@ class MainViewModel(): ViewModel() {
                     StudentSexOrient.ERROR -> {}
                 }
             }
+        }
+    }
+
+    fun saveClassSheet() {
+        viewModelScope.launch {
+            repository.saveClassSheet(classSheet = _tempClassSheetState.value)
         }
     }
 
@@ -178,4 +188,34 @@ class MainViewModel(): ViewModel() {
             }
         }
     }
+
+    private val _localStudentState = MutableStateFlow(emptyStudent())
+    val localStudentState = _localStudentState
+        .stateInWhileSubscribed(
+            initialValue = emptyStudent()
+        )
+
+    fun getLocalSourceStudent(studentPersistenceId: Long) {
+        repository.getStudent(studentId = studentPersistenceId)
+        .onEach { student ->
+            _localStudentState.update { student }
+        }
+        .launchIn(viewModelScope)
+    }
+
+    fun updateLocalSourceStudent(student: Student) {
+        viewModelScope.launch {
+            repository.updateStudent(student = student)
+        }.invokeOnCompletion {
+            getLocalSourceStudent(studentPersistenceId = student.persistenceId)
+        }
+    }
+
+    private val _tempStudentState = MutableStateFlow(emptyStudent())
+    val tempStudentState = _tempStudentState
+        .stateInWhileSubscribed(
+            initialValue = emptyStudent()
+        )
+
+    fun updateTempStudent(student: Student) = _tempStudentState.update { student }
 }

@@ -7,7 +7,7 @@ import kotlin.enums.enumEntries
 
 @Serializable
 data class ClassSection(
-    var persistenceId: Int = 0,
+    var persistenceId: Long = 0,
     var gradeLevel: GradeLevel = GradeLevel.EIGHT,
     var sectionName: String
 ) {
@@ -35,7 +35,7 @@ fun ClassSection.toSectionString(
 
 fun String.toClassSection(): ClassSection {
     val (gradeLevelString, sectionNameString) = this.split("-", limit = 2)
-    val gradeLevels =  enumEntries<GradeLevel>()
+    val gradeLevels = enumEntries<GradeLevel>()
     val gradeLevel = gradeLevels.find { it.name == gradeLevelString.trim() }
         ?: gradeLevels.find { it.grade.toString() == gradeLevelString.trim() }
         ?: GradeLevel.ERROR
