@@ -55,13 +55,18 @@ fun StudentDetailsPage(
     onVisible: () -> Unit = {}
 ) {
     onVisible()
-    val pagerState = rememberPagerState(pageCount = { 2 })
+    val hasPostTest = student.postTest != null
+    val pagerState = rememberPagerState(pageCount = { if (hasPostTest) 2 else 1 })
     val coroutineScope = rememberCoroutineScope()
 
-    val hasPostTest = true //student.postTest != null
-
-    val oralReadingLearnerLevel = student.preTest.oralReading?.level ?: LearnerLevel.ERROR
-    val readingComprehensionLearnerLevel = student.preTest.readingComprehension?.level ?: LearnerLevel.ERROR
+    val readingProfilePreTest = calculateLearnerOverallReadingProfile(
+        orLevel = student.preTest.oralReading?.level ?: LearnerLevel.ERROR,
+        rcLevel = student.preTest.readingComprehension?.level ?: LearnerLevel.ERROR
+    )
+    val readingProfilePostTest = calculateLearnerOverallReadingProfile(
+        orLevel = student.postTest?.oralReading?.level ?: LearnerLevel.ERROR,
+        rcLevel = student.postTest?.readingComprehension?.level ?: LearnerLevel.ERROR
+    )
 
     Column(
         modifier = Modifier
@@ -93,7 +98,6 @@ fun StudentDetailsPage(
                         )
                         .fillMaxWidth()
                         .align(Alignment.Center),
-//                        .align(Alignment.CenterHorizontally),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Text(
@@ -167,75 +171,77 @@ fun StudentDetailsPage(
                 )
             }
         }
-        Column(
-            modifier = Modifier
-                .fillMaxWidth(),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Row(
+        if (hasPostTest) {
+            Column(
                 modifier = Modifier
                     .fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Box(
+                Row(
                     modifier = Modifier
-                        .background(
-                            color = Color.DarkGray
-                        )
-                        .padding(horizontal = 2.dp, vertical = 4.dp)
-                        .fillMaxWidth()
-                        .weight(1F),
+                        .fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Text(
-                        text = "PreTest",
+                    Box(
                         modifier = Modifier
                             .background(
-                                color = ProjectColors.OffWhite4,
-                                shape = RoundedCornerShape(12.dp)
+                                color = Color.DarkGray
                             )
-                            .clip(shape = RoundedCornerShape(12.dp))
-                            .clickable {
-                                coroutineScope.launch {
-                                    pagerState.animateScrollToPage(page = 0)
-                                }
-                            }
-                            .padding(vertical = 12.dp)
+                            .padding(horizontal = 2.dp, vertical = 4.dp)
                             .fillMaxWidth()
-                            .align(Alignment.Center),
-                        color = Color.Black,
-                        fontSize = 20.sp.nonScaledSp,
-                        textAlign = TextAlign.Center
-                    )
-                }
-                Box(
-                    modifier = Modifier
-                        .background(
-                            color = Color.DarkGray
+                            .weight(1F),
+                    ) {
+                        Text(
+                            text = "PreTest",
+                            modifier = Modifier
+                                .background(
+                                    color = ProjectColors.OffWhite4,
+                                    shape = RoundedCornerShape(12.dp)
+                                )
+                                .clip(shape = RoundedCornerShape(12.dp))
+                                .clickable {
+                                    coroutineScope.launch {
+                                        pagerState.animateScrollToPage(page = 0)
+                                    }
+                                }
+                                .padding(vertical = 12.dp)
+                                .fillMaxWidth()
+                                .align(Alignment.Center),
+                            color = Color.Black,
+                            fontSize = 20.sp.nonScaledSp,
+                            textAlign = TextAlign.Center
                         )
-                        .padding(horizontal = 2.dp, vertical = 4.dp)
-                        .fillMaxWidth()
-                        .weight(1F),
-                ) {
-                    Text(
-                        text = "PostTest",
+                    }
+                    Box(
                         modifier = Modifier
                             .background(
-                                color = ProjectColors.OffWhite4,
-                                shape = RoundedCornerShape(12.dp)
+                                color = Color.DarkGray
                             )
-                            .clip(shape = RoundedCornerShape(12.dp))
-                            .clickable {
-                                coroutineScope.launch {
-                                    pagerState.animateScrollToPage(page = 1)
-                                }
-                            }
-                            .padding(vertical = 12.dp)
+                            .padding(horizontal = 2.dp, vertical = 4.dp)
                             .fillMaxWidth()
-                            .align(Alignment.Center),
-                        color = Color.Black,
-                        fontSize = 20.sp.nonScaledSp,
-                        textAlign = TextAlign.Center
-                    )
+                            .weight(1F),
+                    ) {
+                        Text(
+                            text = "PostTest",
+                            modifier = Modifier
+                                .background(
+                                    color = ProjectColors.OffWhite4,
+                                    shape = RoundedCornerShape(12.dp)
+                                )
+                                .clip(shape = RoundedCornerShape(12.dp))
+                                .clickable {
+                                    coroutineScope.launch {
+                                        pagerState.animateScrollToPage(page = 1)
+                                    }
+                                }
+                                .padding(vertical = 12.dp)
+                                .fillMaxWidth()
+                                .align(Alignment.Center),
+                            color = Color.Black,
+                            fontSize = 20.sp.nonScaledSp,
+                            textAlign = TextAlign.Center
+                        )
+                    }
                 }
             }
         }
@@ -261,7 +267,7 @@ fun StudentDetailsPage(
                     textAlign = TextAlign.Center
                 )
                 Text(
-                    text = "${calculateLearnerOverallReadingProfile(orLevel = oralReadingLearnerLevel, rcLevel = readingComprehensionLearnerLevel)}",
+                    text = "$readingProfilePreTest",
                     modifier = Modifier,
                     color = Color.Black,
                     fontSize = 24.sp,
@@ -285,7 +291,7 @@ fun StudentDetailsPage(
                         textAlign = TextAlign.Center
                     )
                     Text(
-                        text = "${calculateLearnerOverallReadingProfile(orLevel = oralReadingLearnerLevel, rcLevel = readingComprehensionLearnerLevel)}",
+                        text = "$readingProfilePostTest",
                         modifier = Modifier,
                         color = ProjectColors.OffWhite4,
                         fontSize = 24.sp,

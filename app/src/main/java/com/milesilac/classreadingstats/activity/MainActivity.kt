@@ -16,7 +16,6 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
-import com.milesilac.classreadingstats.model.ClassSection
 import com.milesilac.classreadingstats.model.Student
 import com.milesilac.classreadingstats.model.emptyStudent
 import com.milesilac.classreadingstats.service.exportNewFileToExcel
@@ -73,10 +72,10 @@ class MainActivity : AppCompatActivity() {
                         onDeleteSectionsClick = {
                             navController.navigate(Routes.RouteDeleteSections)
                         },
-                        onEditGradesClick = { currentSection ->
+                        onEditGradesClick = { currentSectionId ->
                             navController.navigate(
                                 Routes.RouteEditGrades(
-                                    currentSectionString = currentSection.toJsonString()
+                                    currentSectionId = currentSectionId
                                 )
                             )
                         },
@@ -149,10 +148,9 @@ class MainActivity : AppCompatActivity() {
                 }
                 composable<Routes.RouteEditGrades> { backStackEntry ->
                     val routeEditGrades: Routes.RouteEditGrades = backStackEntry.toRoute()
-                    val currentSection = Json.decodeFromString<ClassSection>(routeEditGrades.currentSectionString)
                     EditStudentsGradesPage(
                         sheets = currentSheets,
-                        currentSection = currentSection,
+                        currentSectionId = routeEditGrades.currentSectionId,
                         onBackClick = { navController.navigateUp() },
                         onVisible = {
                             if (WindowCompat.getInsetsController(window, window.decorView).isAppearanceLightNavigationBars.not()) {
@@ -227,7 +225,7 @@ private sealed class Routes {
     data object RouteDeleteSections : Routes()
 
     @kotlinx.serialization.Serializable
-    data class RouteEditGrades(val currentSectionString: String) : Routes() //complex classes crash NavGraph
+    data class RouteEditGrades(val currentSectionId: Int) : Routes()
 
     @kotlinx.serialization.Serializable
     data class RouteStudentDetails(val studentString: String) : Routes() //complex classes crash NavGraph

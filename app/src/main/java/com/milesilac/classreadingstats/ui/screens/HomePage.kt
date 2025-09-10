@@ -60,7 +60,7 @@ fun HomePage(
     onAddSectionClick: () -> Unit = {},
     onAddStudentClick: () -> Unit = {},
     onDeleteSectionsClick: () -> Unit = {},
-    onEditGradesClick: (ClassSection) -> Unit = {},
+    onEditGradesClick: (Int) -> Unit = {},
     onStudentEntryClick: (Student) -> Unit = {},
     onExportClick: (List<ClassSheet>) -> Unit = {},
     bottomSheetState: SheetState = rememberModalBottomSheetState(
@@ -257,7 +257,7 @@ fun HomePage(
             },
             onEditGradesClick = {
                 showBottomSheet = false
-                onEditGradesClick(currentSection)
+                onEditGradesClick(currentSection.persistenceId)
             }
         )
     }

@@ -38,7 +38,6 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.milesilac.classreadingstats.model.ClassSection
 import com.milesilac.classreadingstats.model.ClassSheet
 import com.milesilac.classreadingstats.model.StudentList
 import com.milesilac.classreadingstats.model.toSectionString
@@ -54,16 +53,16 @@ import com.milesilac.classreadingstats.ui.theme.ProjectColors
 @Composable
 fun EditStudentsGradesPage(
     sheets: List<ClassSheet>,
-    currentSection: ClassSection,
+    currentSectionId: Int,
     onScanClick: () -> Unit = {},
     onSaveClick: () -> Unit = {},
     onBackClick: () -> Unit = {},
     onVisible: () -> Unit = {}
 ) {
     onVisible()
-    var currentSheet by remember { mutableStateOf(sheets.find { it.classSection == currentSection } ?: sheets[0]) }
-    var currentTest by remember { mutableStateOf(TestEditType.PRETEST) }
-    var currentGradeEditType by remember { mutableStateOf(GradeEditType.GST) }
+    var currentSheet by remember { mutableStateOf(sheets.find { it.classSection.persistenceId == currentSectionId } ?: sheets[0]) }
+    var currentTest by rememberSaveable { mutableStateOf(TestEditType.PRETEST) }
+    var currentGradeEditType by rememberSaveable { mutableStateOf(GradeEditType.GST) }
     var showPickSectionDialog by rememberSaveable { mutableStateOf(false) }
     var showPickGradeTypeDialog by rememberSaveable { mutableStateOf(false) }
 
@@ -413,6 +412,6 @@ enum class TestEditType(val test: String) {
 fun EditStudentsGradesPagePreview() {
     EditStudentsGradesPage(
         sheets = listOf(dummyStudentListsEightAmethyst, dummyStudentListsEightDiamond),
-        currentSection = dummyStudentListsEightAmethyst.classSection
+        currentSectionId = 111
     )
 }
