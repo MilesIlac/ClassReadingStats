@@ -26,6 +26,10 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
@@ -48,14 +52,14 @@ import com.milesilac.classreadingstats.ui.theme.ProjectColors
 fun DeleteSectionsPage(
     currentSheets: List<ClassSheet> = listOf(),
     currentDeletePendingSheets: List<ClassSheet> = listOf(),
-    selectedSheets: Set<ClassSection> = setOf(),
-    selectedDeletePendingSheets: Set<ClassSection> = setOf(),
     onDeleteSectionEvent: (DeleteClassSheet) -> Unit = {},
-    onSaveClick: (List<ClassSheet>) -> Unit = {},
+    onSaveClick: () -> Unit = {},
     onBackClick: (DeleteClassSheet) -> Unit = {},
     onVisible: () -> Unit = {}
 ) {
     onVisible()
+    var selectedSheets by rememberSaveable { mutableStateOf(setOf<ClassSection>()) }
+    var selectedDeletePendingSheets by rememberSaveable { mutableStateOf(setOf<ClassSection>()) }
     val isDeleteEnabled = selectedSheets.isNotEmpty()
     val isRestoreEnabled = selectedDeletePendingSheets.isNotEmpty()
 
@@ -178,7 +182,14 @@ fun DeleteSectionsPage(
                                                 color = ProjectColors.OffWhite4
                                             )
                                         )
-                                        .clickable { onDeleteSectionEvent(DeleteClassSheet.EventSelectRemaining(section = sheet.classSection)) }
+                                        .clickable {
+                                            selectedSheets = selectedSheets.toMutableSet().apply {
+                                                when {
+                                                    sheet.classSection in this -> remove(sheet.classSection)
+                                                    else -> add(sheet.classSection)
+                                                }
+                                            }
+                                        }
                                         .padding(
                                             horizontal = 12.dp,
                                             vertical = 8.dp
@@ -297,7 +308,14 @@ fun DeleteSectionsPage(
                                                 else -> ProjectColors.OffWhite4
                                             }
                                         )
-                                        .clickable { onDeleteSectionEvent(DeleteClassSheet.EventSelectDeletePending(section = sheet.classSection)) }
+                                        .clickable {
+                                            selectedDeletePendingSheets = selectedDeletePendingSheets.toMutableSet().apply {
+                                                when {
+                                                    sheet.classSection in this -> remove(sheet.classSection)
+                                                    else -> add(sheet.classSection)
+                                                }
+                                            }
+                                        }
                                         .padding(
                                             horizontal = 12.dp,
                                             vertical = 8.dp
@@ -361,7 +379,12 @@ fun DeleteSectionsPage(
                     horizontalArrangement = Arrangement.SpaceEvenly
                 ) {
                     OutlinedButton(
-                        onClick = { onDeleteSectionEvent(DeleteClassSheet.EventDelete) },
+                        onClick = {
+                            onDeleteSectionEvent(
+                                DeleteClassSheet.EventDelete(selectedSections = selectedSheets)
+                            )
+                            selectedSheets = emptySet()
+                        },
                         modifier = Modifier,
                         enabled = isDeleteEnabled,
                         shape = RoundedCornerShape(12.dp),
@@ -396,7 +419,12 @@ fun DeleteSectionsPage(
                         }
                     }
                     OutlinedButton(
-                        onClick = { onDeleteSectionEvent(DeleteClassSheet.EventRestore) },
+                        onClick = {
+                            onDeleteSectionEvent(
+                                DeleteClassSheet.EventRestore(selectedSections = selectedDeletePendingSheets)
+                            )
+                            selectedDeletePendingSheets = emptySet()
+                        },
                         modifier = Modifier,
                         enabled = isRestoreEnabled,
                         shape = RoundedCornerShape(12.dp),
@@ -448,7 +476,7 @@ fun DeleteSectionsPage(
                 horizontalArrangement = Arrangement.SpaceEvenly
             ) {
                 OutlinedButton(
-                    onClick = {  },
+                    onClick = { onSaveClick() },
                     modifier = Modifier,
                     colors = ButtonColors(
                         containerColor = Color.White,
@@ -522,9 +550,7 @@ fun DeleteSectionsPagePreview() {
 }
 
 sealed class DeleteClassSheet {
-    data object EventDelete : DeleteClassSheet()
-    data object EventRestore : DeleteClassSheet()
     data object EventReset : DeleteClassSheet()
-    data class EventSelectRemaining(val section: ClassSection) : DeleteClassSheet()
-    data class EventSelectDeletePending(val section: ClassSection) : DeleteClassSheet()
+    data class EventDelete(val selectedSections: Set<ClassSection>) : DeleteClassSheet()
+    data class EventRestore(val selectedSections: Set<ClassSection>) : DeleteClassSheet()
 }

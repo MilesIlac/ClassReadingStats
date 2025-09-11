@@ -91,4 +91,13 @@ class StudentsRepositoryImpl(): StudentsRepository {
         )
     }
 
+    override suspend fun deleteSections(sectionsWithCount: List<Pair<Long, Boolean>>) {
+        sectionsWithCount.forEach { (sectionId, hasStudents) ->
+            studentsDBSource.deleteSection(sectionId = sectionId)
+            if (hasStudents) {
+                studentsDBSource.deleteSectionStudents(sectionId = sectionId)
+            }
+        }
+    }
+
 }

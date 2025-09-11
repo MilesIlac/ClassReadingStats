@@ -13,6 +13,8 @@ interface StudentsRepository {
 
     suspend fun updateStudent(student: Student)
 
+    suspend fun deleteSections(sectionsWithCount: List<Pair<Long, Boolean>>)
+
     companion object {
         @Volatile
         private var newInstance: StudentsRepository? = null

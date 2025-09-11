@@ -28,6 +28,12 @@ interface RoomDAO {
     @Upsert
     suspend fun updateStudents(students: List<StudentEntity>)
 
+    @Query("DELETE FROM sections WHERE section_room_id = :sectionId")
+    suspend fun deleteSection(sectionId: Long)
+
+    @Query("DELETE FROM students WHERE section_room_id = :sectionId")
+    suspend fun deleteSectionStudents(sectionId: Long)
+
     @Query("DELETE FROM students WHERE student_room_id IN (:studentIds)")
     suspend fun deleteStudents(studentIds: List<Int>)
 

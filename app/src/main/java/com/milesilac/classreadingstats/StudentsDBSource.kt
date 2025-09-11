@@ -22,4 +22,8 @@ class StudentsDBSource() {
 
     suspend fun updateStudents(students: List<StudentEntity>) = roomDAO.updateStudents(students = students)
 
+    suspend fun deleteSection(sectionId: Long) = roomDAO.deleteSection(sectionId = sectionId)
+
+    suspend fun deleteSectionStudents(sectionId: Long) = roomDAO.deleteSectionStudents(sectionId = sectionId)
+
 }

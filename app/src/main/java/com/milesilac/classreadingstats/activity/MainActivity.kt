@@ -47,8 +47,6 @@ class MainActivity : AppCompatActivity() {
             val tempClassSheet by viewModel.tempClassSheetState.collectAsStateWithLifecycle()
             val tempRemainingClassSheets by viewModel.tempRemainingClassSheetState.collectAsStateWithLifecycle()
             val tempDeletePendingClassSheets by viewModel.tempDeletePendingClassSheetState.collectAsStateWithLifecycle()
-            val tempSelectedRemainingSheets by viewModel.tempSelectedRemainingState.collectAsStateWithLifecycle()
-            val tempSelectedDeletePendingSheets by viewModel.tempSelectedDeletePendingState.collectAsStateWithLifecycle()
 
             val tempStudentState by viewModel.tempStudentState.collectAsStateWithLifecycle()
             val localStudent by viewModel.localStudentState.collectAsStateWithLifecycle()
@@ -134,9 +132,11 @@ class MainActivity : AppCompatActivity() {
                     DeleteSectionsPage(
                         currentSheets = tempRemainingClassSheets,
                         currentDeletePendingSheets = tempDeletePendingClassSheets,
-                        selectedSheets = tempSelectedRemainingSheets,
-                        selectedDeletePendingSheets = tempSelectedDeletePendingSheets,
                         onDeleteSectionEvent = { viewModel.manageDeleteSectionEvent(event = it) },
+                        onSaveClick = {
+                            navController.navigateUp()
+                            viewModel.deleteSections()
+                        },
                         onBackClick = {
                             navController.navigateUp()
                             viewModel.manageDeleteSectionEvent(event = it)
