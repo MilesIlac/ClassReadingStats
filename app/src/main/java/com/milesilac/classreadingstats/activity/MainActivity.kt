@@ -71,6 +71,9 @@ class MainActivity : AppCompatActivity() {
                         onDeleteSectionsClick = {
                             navController.navigate(Routes.RouteDeleteSections)
                         },
+                        onDeleteStudentsClick = { studentPersistenceIds ->
+                            viewModel.deleteStudents(studentPersistenceIds = studentPersistenceIds)
+                        },
                         onEditGradesClick = { currentSectionId ->
                             navController.navigate(
                                 Routes.RouteEditGrades(

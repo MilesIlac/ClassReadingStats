@@ -11,6 +11,7 @@ import com.milesilac.classreadingstats.model.initClassSheet
 import com.milesilac.classreadingstats.repository.StudentsRepository
 import com.milesilac.classreadingstats.ui.screens.DeleteClassSheet
 import com.milesilac.classreadingstats.ui.screens.UpdateTempClassSheet
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -27,6 +28,8 @@ class MainViewModel(): ViewModel() {
     init {
         println("classInits ${this::class.simpleName} init")
     }
+
+    var getPersistenceStudentJob: Job? = null
 
     private fun <T> Flow<T>.stateInWhileSubscribed(initialValue: T): StateFlow<T> {
         return stateIn(
@@ -108,11 +111,12 @@ class MainViewModel(): ViewModel() {
         )
 
     fun getLocalSourceStudent(studentPersistenceId: Long) {
-        repository.getStudent(studentId = studentPersistenceId)
-        .onEach { student ->
-            _localStudentState.update { student }
-        }
-        .launchIn(viewModelScope)
+        getPersistenceStudentJob?.cancel()
+        getPersistenceStudentJob = repository.getStudent(studentId = studentPersistenceId)
+            .onEach { student ->
+                _localStudentState.update { student }
+            }
+            .launchIn(viewModelScope)
     }
 
     fun updateLocalSourceStudent(student: Student) {
@@ -207,6 +211,13 @@ class MainViewModel(): ViewModel() {
         }.invokeOnCompletion {
             _tempRemainingClassSheetState.update { _classSheetsState.value }
             _tempDeletePendingClassSheetState.update { listOf() }
+        }
+    }
+
+    fun deleteStudents(studentPersistenceIds: List<Long>) {
+        getPersistenceStudentJob?.cancel() //to avoid existing getStudent Flow crash
+        viewModelScope.launch {
+            repository.deleteStudentsByRoomId(studentIds = studentPersistenceIds)
         }
     }
 }

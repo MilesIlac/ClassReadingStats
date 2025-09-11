@@ -100,4 +100,8 @@ class StudentsRepositoryImpl(): StudentsRepository {
         }
     }
 
+    override suspend fun deleteStudentsByRoomId(studentIds: List<Long>) {
+        studentsDBSource.deleteStudentsByRoomId(studentIds = studentIds)
+    }
+
 }

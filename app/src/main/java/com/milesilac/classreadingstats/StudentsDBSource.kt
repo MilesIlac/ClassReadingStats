@@ -26,4 +26,6 @@ class StudentsDBSource() {
 
     suspend fun deleteSectionStudents(sectionId: Long) = roomDAO.deleteSectionStudents(sectionId = sectionId)
 
+    suspend fun deleteStudentsByRoomId(studentIds: List<Long>) = roomDAO.deleteStudentsByRoomId(studentIds = studentIds)
+
 }

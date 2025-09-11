@@ -35,7 +35,7 @@ interface RoomDAO {
     suspend fun deleteSectionStudents(sectionId: Long)
 
     @Query("DELETE FROM students WHERE student_room_id IN (:studentIds)")
-    suspend fun deleteStudents(studentIds: List<Int>)
+    suspend fun deleteStudentsByRoomId(studentIds: List<Long>)
 
     @Query("UPDATE students SET pre_gst_score = :preGSTScore WHERE student_room_id = :studentId")
     suspend fun updatePreGSTScore(studentId: Int, preGSTScore: Double)

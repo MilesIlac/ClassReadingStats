@@ -60,6 +60,7 @@ fun HomePage(
     onAddSectionClick: () -> Unit = {},
     onAddStudentClick: () -> Unit = {},
     onDeleteSectionsClick: () -> Unit = {},
+    onDeleteStudentsClick: (List<Long>) -> Unit = {},
     onEditGradesClick: (Long) -> Unit = {},
     onStudentEntryClick: (Student) -> Unit = {},
     onExportClick: (List<ClassSheet>) -> Unit = {},
@@ -79,12 +80,13 @@ fun HomePage(
             }
         )
     }
-    println("classInits homePager currentSheets size preLaunchEffect ${currentSheets.size}")
-    println("classInits homePager currentSection $currentSection")
+//    println("classInits homePager currentSheets size preLaunchEffect ${currentSheets.size}")
+//    println("classInits homePager currentSection $currentSection")
     var showBottomSheet by remember { mutableStateOf(false) }
     var isDeleteMode by remember { mutableStateOf(false) }
     var showDeleteStudentsBottomSheet by remember { mutableStateOf(false) }
     var studentsToDelete by remember { mutableStateOf(listOf<Student>()) }
+    val studentIdsToDelete = studentsToDelete.map { it.persistenceId }
     val coroutineScope = rememberCoroutineScope()
 
     // Listen for page settling
@@ -93,15 +95,15 @@ fun HomePage(
             .distinctUntilChanged()
             .collect { page ->
                 // Trigger your side-effect here
-                println("classInits homePager currentSheets size ${currentSheets.size}")
-                println("classInits homePager page $page")
+//                println("classInits homePager currentSheets size ${currentSheets.size}")
+//                println("classInits homePager page $page")
                 if (page == pagerState.targetPage) {
-                    println("classInits homePager got target $page")
+//                    println("classInits homePager got target $page")
                     currentSection = runCatching {
-                        println("classInits homePager section ${currentSheets[page].classSection}")
+//                        println("classInits homePager section ${currentSheets[page].classSection}")
                         currentSheets[page].classSection
                     }.getOrElse {
-                        println("classInits homePager section reached else")
+//                        println("classInits homePager section reached else")
                         initClassSection()
                     }
                     println("classInits homePager currentSection after flip $currentSection")
@@ -138,7 +140,7 @@ fun HomePage(
                 // Our page content
                 StudentListPage(
                     isDeleteMode = isDeleteMode,
-                    studentsToDelete = studentsToDelete,
+                    studentIdsToDelete = studentIdsToDelete,
                     maleStudents = currentSheets[page].maleStudents,
                     femaleStudents = currentSheets[page].femaleStudents,
                     onStudentEntryClick = onStudentEntryClick,
@@ -233,7 +235,7 @@ fun HomePage(
         }
         AnimatedBottomBar(
             isDeleteMode = isDeleteMode,
-            isDeleteBtnEnabled = studentsToDelete.isNotEmpty(),
+            isDeleteBtnEnabled = studentIdsToDelete.isNotEmpty(),
             onManageClick = { showBottomSheet = true },
             onDeleteClick = { showDeleteStudentsBottomSheet = true },
             onBackClick = {
@@ -278,7 +280,8 @@ fun HomePage(
             onDeleteClick = {
                 showDeleteStudentsBottomSheet = false
                 isDeleteMode = false
-              //TODO  studentsToDelete = listOf()
+                onDeleteStudentsClick(studentIdsToDelete)
+                studentsToDelete = listOf()
             }
         )
     }

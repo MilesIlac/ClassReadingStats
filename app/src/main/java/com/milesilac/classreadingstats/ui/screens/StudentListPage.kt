@@ -34,7 +34,7 @@ import sh.calvin.reorderable.rememberReorderableLazyListState
 @Composable
 fun StudentListPage(
     isDeleteMode: Boolean = false,
-    studentsToDelete: List<Student> = listOf(),
+    studentIdsToDelete: List<Long> = listOf(),
     maleStudents: List<StudentList>,
     femaleStudents: List<StudentList>,
     onStudentEntryClick: (Student) -> Unit = {},
@@ -48,20 +48,20 @@ fun StudentListPage(
     val mappedMaleStudents = maleStudents.filter {
         it is StudentList.StudentDetails
     }.map {
-        (it as StudentList.StudentDetails).student
+        (it as StudentList.StudentDetails).student.persistenceId
     }
     val mappedFemaleStudents = femaleStudents.filter {
         it is StudentList.StudentDetails
     }.map {
-        (it as StudentList.StudentDetails).student
+        (it as StudentList.StudentDetails).student.persistenceId
     }
     val maleHeaderCheckBoxChecked = when {
         mappedMaleStudents.isEmpty() -> false
-        else -> studentsToDelete.containsAll(mappedMaleStudents)
+        else -> studentIdsToDelete.containsAll(mappedMaleStudents)
     }
     val femaleHeaderCheckBoxChecked = when {
         mappedFemaleStudents.isEmpty() -> false
-        else -> studentsToDelete.containsAll(mappedFemaleStudents)
+        else -> studentIdsToDelete.containsAll(mappedFemaleStudents)
     }
 
     val lazyListState = rememberLazyListState()
@@ -137,7 +137,7 @@ fun StudentListPage(
             manageItem(
                 isDeleteMode = isDeleteMode,
                 isHeaderCheckBoxChecked = maleHeaderCheckBoxChecked,
-                studentsToDelete = studentsToDelete,
+                studentIdsToDelete = studentIdsToDelete,
                 studentItem = studentItem,
                 headerCount = maleCount,
                 reorderableLazyListState = reorderableMaleLazyListState,
@@ -159,7 +159,7 @@ fun StudentListPage(
             manageItem(
                 isDeleteMode = isDeleteMode,
                 isHeaderCheckBoxChecked = femaleHeaderCheckBoxChecked,
-                studentsToDelete = studentsToDelete,
+                studentIdsToDelete = studentIdsToDelete,
                 studentItem = studentItem,
                 headerCount = femaleCount,
                 reorderableLazyListState = reorderableFemaleLazyListState,
@@ -192,7 +192,7 @@ fun StudentListPagePreview() {
 private fun LazyListScope.manageItem(
     isDeleteMode: Boolean = false,
     isHeaderCheckBoxChecked: Boolean = false,
-    studentsToDelete: List<Student> = listOf(),
+    studentIdsToDelete: List<Long> = listOf(),
     studentItem: StudentList,
     headerCount: Int,
     reorderableLazyListState: ReorderableLazyListState,
@@ -219,7 +219,7 @@ private fun LazyListScope.manageItem(
                 ReorderableItem(reorderableLazyListState, key = studentItem.listId) { isDragging ->
                     StudentEntry(
                         isDeleteMode = isDeleteMode,
-                        isChecked = studentItem.student in studentsToDelete,
+                        isChecked = studentItem.student.persistenceId in studentIdsToDelete,
                         reorderableItemScope = this,
                         isDragging = isDragging,
                         textString = "${studentItem.student.orderId.toInt()} ${studentItem.student.name}".trim(),

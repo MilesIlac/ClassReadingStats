@@ -15,6 +15,8 @@ interface StudentsRepository {
 
     suspend fun deleteSections(sectionsWithCount: List<Pair<Long, Boolean>>)
 
+    suspend fun deleteStudentsByRoomId(studentIds: List<Long>)
+
     companion object {
         @Volatile
         private var newInstance: StudentsRepository? = null

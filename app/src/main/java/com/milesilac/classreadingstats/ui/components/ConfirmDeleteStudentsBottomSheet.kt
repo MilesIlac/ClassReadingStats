@@ -111,9 +111,7 @@ fun ConfirmDeleteStudentsBottomSheetLayout(
             studentsToDelete.forEach { student ->
                 item {
                     Row(
-                        modifier = Modifier
-
-                            ,
+                        modifier = Modifier,
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         Text(
@@ -156,7 +154,6 @@ fun ConfirmDeleteStudentsBottomSheetLayout(
                 Text(text = "Back")
             }
         }
-
     }
 }
 
