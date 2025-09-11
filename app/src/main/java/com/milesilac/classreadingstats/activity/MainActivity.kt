@@ -165,7 +165,6 @@ class MainActivity : AppCompatActivity() {
                     StudentDetailsPage(
                         student = localStudent,
                         onEditClick = {
-                            viewModel.updateTempStudent(student = localStudent)
                             navController.navigate(
                                 Routes.RouteStudentDetailEdit(
                                     studentEditType = StudentEditType.EDIT,
@@ -192,14 +191,29 @@ class MainActivity : AppCompatActivity() {
                         isFromAddSectionPage = routeStudentDetailEdit.isFromAddSectionPage,
                         classSections = currentSections,
                         onSaveClick = { editedStudent ->
-                            if (routeStudentDetailEdit.isFromAddSectionPage) {
-                                viewModel.updateTempClassSheet(
-                                    event = UpdateTempClassSheet.EventSectionStudent(student = editedStudent)
-                                )
-                            } else viewModel.updateLocalSourceStudent(student = editedStudent)
+                            when {
+                                routeStudentDetailEdit.studentEditType == StudentEditType.EDIT -> {
+                                    viewModel.updateLocalSourceStudent(student = editedStudent)
+                                }
+                                routeStudentDetailEdit.isFromAddSectionPage -> {
+                                    viewModel.updateTempClassSheet(
+                                        event = UpdateTempClassSheet.EventSectionStudent(student = editedStudent)
+                                    )
+                                }
+                                routeStudentDetailEdit.studentEditType == StudentEditType.ADD -> {
+                                    viewModel.saveCurrentTempStudent(student = editedStudent)
+                                }
+                            }
                             navController.navigateUp()
                         },
-                        onBackClick = { navController.navigateUp() },
+                        onBackClick = {
+                            when {
+                                routeStudentDetailEdit.isFromAddSectionPage -> {
+                                    viewModel.updateTempStudent(student = emptyStudent())
+                                }
+                            }
+                            navController.navigateUp()
+                        },
                         onVisible = {
                             if (WindowCompat.getInsetsController(window, window.decorView).isAppearanceLightNavigationBars.not()) {
                                 WindowCompat.getInsetsController(window, window.decorView).isAppearanceLightNavigationBars = true

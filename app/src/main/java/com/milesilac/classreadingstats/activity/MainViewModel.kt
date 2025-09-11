@@ -97,6 +97,8 @@ class MainViewModel(): ViewModel() {
     fun saveClassSheet() {
         viewModelScope.launch {
             repository.saveClassSheet(classSheet = _tempClassSheetState.value)
+        }.invokeOnCompletion {
+            _tempClassSheetState.update { initClassSheet() }
         }
     }
 
@@ -218,4 +220,13 @@ class MainViewModel(): ViewModel() {
         )
 
     fun updateTempStudent(student: Student) = _tempStudentState.update { student }
+
+    fun saveCurrentTempStudent(student: Student) {
+        updateTempStudent(student = student)
+        viewModelScope.launch {
+            repository.updateStudent(student = student)
+        }.invokeOnCompletion {
+            updateTempStudent(student = emptyStudent())
+        }
+    }
 }

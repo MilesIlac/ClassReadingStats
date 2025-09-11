@@ -109,7 +109,7 @@ fun HomePageBottomSheetLayout(
                     modifier = Modifier
                         .fillMaxWidth(),
                     enabled = when (buttonOption.first) {
-                        "Delete Sections" -> hasSections
+                        "Add Student", "Delete Sections" -> hasSections
                         "Delete Students", "Edit Input Grades" -> hasStudents
                         else -> true
                     },
