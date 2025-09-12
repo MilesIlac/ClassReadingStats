@@ -511,7 +511,6 @@ fun EditStudentsGradesPagePreview() {
 }
 
 sealed class UpdateTempClassSheetsForInputGrades {
-    data object EventBaseSheetsUpdate : UpdateTempClassSheetsForInputGrades()
     data class EventReadingTest(
         val sectionPersistenceId: Long,
         val studentPersistenceId: Long,

@@ -26,7 +26,6 @@ import com.milesilac.classreadingstats.ui.screens.StudentDetailEditPage
 import com.milesilac.classreadingstats.ui.screens.StudentDetailsPage
 import com.milesilac.classreadingstats.ui.screens.StudentEditType
 import com.milesilac.classreadingstats.ui.screens.UpdateTempClassSheetForAddSection
-import com.milesilac.classreadingstats.ui.screens.UpdateTempClassSheetsForInputGrades
 
 class MainActivity : AppCompatActivity() {
 
@@ -78,9 +77,6 @@ class MainActivity : AppCompatActivity() {
                             viewModel.deleteStudents(studentPersistenceIds = studentPersistenceIds)
                         },
                         onEditGradesClick = { currentSectionId ->
-                            viewModel.updateTempSheetsForInputGrades(
-                                event = UpdateTempClassSheetsForInputGrades.EventBaseSheetsUpdate
-                            )
                             navController.navigate(
                                 Routes.RouteEditGrades(
                                     currentSectionId = currentSectionId

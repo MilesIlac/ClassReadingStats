@@ -45,9 +45,11 @@ class MainViewModel(): ViewModel() {
     private val _classSheetsState = MutableStateFlow(listOf<ClassSheet>())
     val classSheetsState = _classSheetsState
         .onStart {
-//            println("classInits classSheetsState: flowing")
             viewModelScope.launch {
-                repository.getClassSheets().collect { classSheets -> _classSheetsState.update { classSheets } }
+                repository.getClassSheets().collect { classSheets ->
+//                    println("classInits classSheetsState: flowing")
+                    _classSheetsState.update { classSheets }
+                }
             }
         }
         .stateInWhileSubscribed(
@@ -137,20 +139,22 @@ class MainViewModel(): ViewModel() {
     fun updateTempStudent(student: Student) = _tempStudentState.update { student }
 
     fun saveCurrentTempStudent(student: Student) {
-        updateTempStudent(student = student)
+        _tempStudentState.update { student }
         viewModelScope.launch {
             repository.updateStudent(student = student)
         }.invokeOnCompletion {
-            updateTempStudent(student = emptyStudent())
+            _tempStudentState.update { emptyStudent() }
         }
     }
 
     private val _tempRemainingClassSheetState = MutableStateFlow(listOf<ClassSheet>())
     val tempRemainingClassSheetState = _tempRemainingClassSheetState
         .onStart {
-            println("classInits classSheetsState: flowing")
             viewModelScope.launch {
-                repository.getClassSheets().collect { classSheets -> _tempRemainingClassSheetState.update { classSheets } }
+                repository.getClassSheets().collect { classSheets ->
+                    println("classInits classSheetsState: flowing")
+                    _tempRemainingClassSheetState.update { classSheets }
+                }
             }
         }
         .stateInWhileSubscribed(
@@ -210,7 +214,7 @@ class MainViewModel(): ViewModel() {
                 }
             )
         }.invokeOnCompletion {
-            _tempRemainingClassSheetState.update { _classSheetsState.value }
+//            _tempRemainingClassSheetState.update { _classSheetsState.value }
             _tempDeletePendingClassSheetState.update { listOf() }
         }
     }
@@ -225,9 +229,11 @@ class MainViewModel(): ViewModel() {
     private val _tempClassSheetsStateForInputGrades = MutableStateFlow(listOf<ClassSheet>())
     val tempClassSheetsStateForInputGrades = _tempClassSheetsStateForInputGrades
         .onStart {
-            println("classInits classSheetsState: flowing")
             viewModelScope.launch {
-                repository.getClassSheets().collect { classSheets -> _tempClassSheetsStateForInputGrades.update { classSheets } }
+                repository.getClassSheets().collect { classSheets ->
+                    println("classInits classSheetsState: flowing for _tempClassSheetsStateForInputGrades")
+                    _tempClassSheetsStateForInputGrades.update { classSheets }
+                }
             }
         }
         .stateInWhileSubscribed(
@@ -236,9 +242,6 @@ class MainViewModel(): ViewModel() {
 
     fun updateTempSheetsForInputGrades(event: UpdateTempClassSheetsForInputGrades) {
         when(event) {
-            is UpdateTempClassSheetsForInputGrades.EventBaseSheetsUpdate -> {
-                _tempClassSheetsStateForInputGrades.update { _classSheetsState.value }
-            }
             is UpdateTempClassSheetsForInputGrades.EventReadingTest -> {
                 _tempClassSheetsStateForInputGrades.update {
                     it.toMutableList().apply {
@@ -263,10 +266,6 @@ class MainViewModel(): ViewModel() {
     fun updateClassSheetsForInputGrades() {
         viewModelScope.launch {
             repository.saveClassSheets(classSheets = _tempClassSheetsStateForInputGrades.value)
-        }.invokeOnCompletion {
-            viewModelScope.launch {
-                repository.getClassSheets().collect { classSheets -> _tempClassSheetsStateForInputGrades.update { classSheets } }
-            }
         }
     }
 }
