@@ -1,7 +1,10 @@
 package com.milesilac.classreadingstats.activity
 
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.milesilac.classreadingstats.helpers.transformFromJsonString
+import com.milesilac.classreadingstats.helpers.transformToJsonString
 import com.milesilac.classreadingstats.model.ClassSheet
 import com.milesilac.classreadingstats.model.Student
 import com.milesilac.classreadingstats.model.StudentList
@@ -10,6 +13,7 @@ import com.milesilac.classreadingstats.model.emptyStudent
 import com.milesilac.classreadingstats.model.initClassSheet
 import com.milesilac.classreadingstats.repository.StudentsRepository
 import com.milesilac.classreadingstats.ui.screens.DeleteClassSheet
+import com.milesilac.classreadingstats.ui.screens.StudentDetailEditEvent
 import com.milesilac.classreadingstats.ui.screens.UpdateTempClassSheetForAddSection
 import com.milesilac.classreadingstats.ui.screens.UpdateTempClassSheetsForInputGrades
 import kotlinx.coroutines.Job
@@ -17,17 +21,25 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-class MainViewModel(): ViewModel() {
+class MainViewModel(private val savedStateHandle: SavedStateHandle): ViewModel() {
 
     init {
         println("classInits ${this::class.simpleName} init")
+    }
+
+    companion object {
+        private const val TEMP_CLASS_SHEET = "tempClassSheet"
+        private const val TEMP_STUDENT = "tempStudent"
+        private const val TEMP_LOCAL_STUDENT = "tempLocalStudent"
     }
 
     var getPersistenceStudentJob: Job? = null
@@ -56,8 +68,12 @@ class MainViewModel(): ViewModel() {
             initialValue = listOf()
         )
 
-    private val _tempClassSheetState = MutableStateFlow(initClassSheet())
+    private val _tempClassSheetState = savedStateHandle.getMutableStateFlow<String?>(TEMP_CLASS_SHEET, null)
     val tempClassSheetState = _tempClassSheetState
+        .filterNotNull()
+        .map { thisString ->
+            thisString.transformFromJsonString<ClassSheet>()
+        }
         .stateInWhileSubscribed(
             initialValue = initClassSheet()
         )
@@ -65,85 +81,133 @@ class MainViewModel(): ViewModel() {
     fun updateTempClassSheet(event: UpdateTempClassSheetForAddSection) {
         when(event) {
             UpdateTempClassSheetForAddSection.EventDelete -> {
-                _tempClassSheetState.update { initClassSheet() }
+                savedStateHandle[TEMP_CLASS_SHEET] = initClassSheet().transformToJsonString()
             }
             is UpdateTempClassSheetForAddSection.EventGradeLevel -> {
-                _tempClassSheetState.update { it.copy(classSection = it.classSection.copy(gradeLevel = event.gradeLevel)) }
+                savedStateHandle[TEMP_CLASS_SHEET] = tempClassSheetState.value.let {
+                    it.copy(classSection = it.classSection.copy(gradeLevel = event.gradeLevel))
+                }.transformToJsonString()
             }
             is UpdateTempClassSheetForAddSection.EventSectionName -> {
-                _tempClassSheetState.update { it.copy(classSection = it.classSection.copy(sectionName = event.sectionName)) }
+                savedStateHandle[TEMP_CLASS_SHEET] = tempClassSheetState.value.let {
+                    it.copy(classSection = it.classSection.copy(sectionName = event.sectionName))
+                }.transformToJsonString()
             }
             is UpdateTempClassSheetForAddSection.EventSectionStudent -> {
-                when (event.student.sex) {
+                val student = tempStudentState.value
+                when (student.sex) {
                     StudentSexOrient.MALE -> {
-                        _tempClassSheetState.update {
+                        savedStateHandle[TEMP_CLASS_SHEET] = tempClassSheetState.value.let {
                             it.copy(
                                 maleStudents = it.maleStudents.toMutableList().apply {
-                                    add(StudentList.StudentDetails(student = event.student))
+                                    add(StudentList.StudentDetails(student = student))
                                 }
                             )
-                        }
+                        }.transformToJsonString()
                     }
                     StudentSexOrient.FEMALE -> {
-                        _tempClassSheetState.update {
+                        savedStateHandle[TEMP_CLASS_SHEET] = tempClassSheetState.value.let {
                             it.copy(
                                 femaleStudents = it.femaleStudents.toMutableList().apply {
-                                    add(StudentList.StudentDetails(student = event.student))
+                                    add(StudentList.StudentDetails(student = student))
                                 }
                             )
-                        }
+                        }.transformToJsonString()
                     }
                     StudentSexOrient.ERROR -> {}
                 }
+                updateTempStudent(event = StudentDetailEditEvent.EventReset(section = student.section))
             }
         }
     }
 
     fun saveClassSheet() {
         viewModelScope.launch {
-            repository.saveClassSheets(classSheets = listOf(_tempClassSheetState.value))
+            repository.saveClassSheets(classSheets = listOf(tempClassSheetState.value))
         }.invokeOnCompletion {
-            _tempClassSheetState.update { initClassSheet() }
+            savedStateHandle[TEMP_CLASS_SHEET] = initClassSheet().transformToJsonString()
         }
     }
 
-    private val _localStudentState = MutableStateFlow(emptyStudent())
+    private val _localStudentState = savedStateHandle.getMutableStateFlow<String?>(TEMP_LOCAL_STUDENT, null)
     val localStudentState = _localStudentState
+        .filterNotNull()
+        .map { thisString ->
+            thisString.transformFromJsonString<Student>()
+        }
         .stateInWhileSubscribed(
             initialValue = emptyStudent()
         )
 
-    fun getLocalSourceStudent(studentPersistenceId: Long) {
+    fun getLocalSourceStudent(studentPersistenceId: Long, withTempStudentUpdate: Boolean = true) {
         getPersistenceStudentJob?.cancel()
         getPersistenceStudentJob = repository.getStudent(studentId = studentPersistenceId)
             .onEach { student ->
-                _localStudentState.update { student }
+                savedStateHandle[TEMP_LOCAL_STUDENT] = student.transformToJsonString()
+                if (withTempStudentUpdate) {
+                    savedStateHandle[TEMP_STUDENT] = student.transformToJsonString()
+                }
             }
             .launchIn(viewModelScope)
     }
 
-    fun updateLocalSourceStudent(student: Student) {
+    fun updateLocalSourceStudent(withTempStudentUpdate: Boolean) {
         viewModelScope.launch {
-            repository.updateStudent(student = student)
+            repository.updateStudent(student = tempStudentState.value)
         }.invokeOnCompletion {
-            getLocalSourceStudent(studentPersistenceId = student.persistenceId)
+            getLocalSourceStudent(
+                studentPersistenceId = tempStudentState.value.persistenceId,
+                withTempStudentUpdate = withTempStudentUpdate
+            )
         }
     }
 
-    private val _tempStudentState = MutableStateFlow(emptyStudent())
+    private val _tempStudentState = savedStateHandle.getMutableStateFlow<String?>(TEMP_STUDENT, null)
     val tempStudentState = _tempStudentState
+        .filterNotNull()
+        .map { thisString ->
+            thisString.transformFromJsonString<Student>()
+        }
         .stateInWhileSubscribed(
             initialValue = emptyStudent()
         )
 
-    fun updateTempStudent(student: Student) = _tempStudentState.update { student }
+    fun updateTempStudent(event: StudentDetailEditEvent) {
+        when (event) {
+            is StudentDetailEditEvent.EventName -> {
+                savedStateHandle[TEMP_STUDENT] = tempStudentState.value.copy(
+                    name = event.studentName
+                ).transformToJsonString()
+            }
+            is StudentDetailEditEvent.EventSection -> {
+                savedStateHandle[TEMP_STUDENT] = tempStudentState.value.copy(
+                    section = event.section
+                ).transformToJsonString()
+            }
+            is StudentDetailEditEvent.EventSexOrient -> {
+                savedStateHandle[TEMP_STUDENT] = tempStudentState.value.copy(
+                    sex = event.sex
+                ).transformToJsonString()
+            }
+            is StudentDetailEditEvent.EventReadingTest -> {
+                savedStateHandle[TEMP_STUDENT] = tempStudentState.value.let {
+                    when {
+                        event.isPostTest -> it.copy(postTest = event.readingTest)
+                        else -> it.copy(preTest = event.readingTest)
+                    }
+                }.transformToJsonString()
+            }
+            is StudentDetailEditEvent.EventReset -> {
+                savedStateHandle[TEMP_STUDENT] = emptyStudent(section = event.section).transformToJsonString()
+            }
+        }
+    }
 
-    fun saveCurrentTempStudent(student: Student) {
-        _tempStudentState.update { student }
+    fun saveCurrentTempStudent() {
         viewModelScope.launch {
-            repository.updateStudent(student = student)
+            repository.updateStudent(student = tempStudentState.value)
         }.invokeOnCompletion {
-            _tempStudentState.update { emptyStudent() }
+            savedStateHandle[TEMP_STUDENT] = emptyStudent().transformToJsonString()
         }
     }
 

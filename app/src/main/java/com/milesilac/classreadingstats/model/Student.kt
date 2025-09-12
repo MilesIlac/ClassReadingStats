@@ -1,7 +1,6 @@
 package com.milesilac.classreadingstats.model
 
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.json.Json
 import kotlin.enums.enumEntries
 
 @Serializable
@@ -13,9 +12,7 @@ data class Student(
     var sex: StudentSexOrient,
     var preTest: ReadingTest,
     var postTest: ReadingTest? = null
-) {
-    fun toJsonString() = Json.encodeToString(this)
-}
+)
 
 fun emptyStudent(
     name: String = "",

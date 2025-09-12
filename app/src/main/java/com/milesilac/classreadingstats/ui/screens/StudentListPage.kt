@@ -67,8 +67,8 @@ fun StudentListPage(
     val lazyListState = rememberLazyListState()
     val reorderableMaleLazyListState = rememberReorderableLazyListState(lazyListState) { from, to ->
         // can't use .index because there are other items in the list (headers, footers, etc)
-        val fromIndex = maleList.indexOfFirst { it is StudentList.StudentDetails && it.listId == from.key }
-        val toIndex = maleList.indexOfFirst { it is StudentList.StudentDetails && it.listId == to.key }
+        val fromIndex = maleList.indexOfFirst { it is StudentList.StudentDetails && it.listItemId == from.key }
+        val toIndex = maleList.indexOfFirst { it is StudentList.StudentDetails && it.listItemId == to.key }
         var fromOrderId = (maleList[fromIndex] as StudentList.StudentDetails).student.orderId
         var toOrderId = (maleList[toIndex] as StudentList.StudentDetails).student.orderId
 
@@ -98,8 +98,8 @@ fun StudentListPage(
 
     val reorderableFemaleLazyListState = rememberReorderableLazyListState(lazyListState) { from, to ->
         // can't use .index because there are other items in the list (headers, footers, etc)
-        val fromIndex = femaleList.indexOfFirst { it is StudentList.StudentDetails && it.listId == from.key }
-        val toIndex = femaleList.indexOfFirst { it is StudentList.StudentDetails && it.listId == to.key }
+        val fromIndex = femaleList.indexOfFirst { it is StudentList.StudentDetails && it.listItemId == from.key }
+        val toIndex = femaleList.indexOfFirst { it is StudentList.StudentDetails && it.listItemId == to.key }
         var fromOrderId = (femaleList[fromIndex] as StudentList.StudentDetails).student.orderId
         var toOrderId = (femaleList[toIndex] as StudentList.StudentDetails).student.orderId
 
@@ -215,8 +215,8 @@ private fun LazyListScope.manageItem(
             }
         }
         is StudentList.StudentDetails -> {
-            item(key = studentItem.listId) {
-                ReorderableItem(reorderableLazyListState, key = studentItem.listId) { isDragging ->
+            item(key = studentItem.listItemId) {
+                ReorderableItem(reorderableLazyListState, key = studentItem.listItemId) { isDragging ->
                     StudentEntry(
                         isDeleteMode = isDeleteMode,
                         isChecked = studentItem.student.persistenceId in studentIdsToDelete,

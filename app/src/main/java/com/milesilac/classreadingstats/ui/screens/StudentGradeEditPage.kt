@@ -22,6 +22,7 @@ import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
@@ -58,10 +59,10 @@ fun StudentGradeEditPage(
     val focusManager = LocalFocusManager.current
     val scrollState = rememberScrollState()
 
-    var inputGST by remember { mutableStateOf(studentTest.groupScreeningTest.score.toInt().toString()) }
-    var inputORTotalWords by remember { mutableStateOf((studentTest.oralReading?.totalNumberOfWordsInSelection?.toInt() ?: -1).toString()) }
-    var inputORMiscues by remember { mutableStateOf((studentTest.oralReading?.numberOfMiscues?.toInt() ?: -1).toString()) }
-    var inputRC by remember { mutableStateOf((studentTest.readingComprehension?.inputPercentage ?: -1).toString()) }
+    var inputGST by rememberSaveable { mutableStateOf(studentTest.groupScreeningTest.score.toInt().toString()) }
+    var inputORTotalWords by rememberSaveable { mutableStateOf((studentTest.oralReading?.totalNumberOfWordsInSelection?.toInt() ?: -1).toString()) }
+    var inputORMiscues by rememberSaveable { mutableStateOf((studentTest.oralReading?.numberOfMiscues?.toInt() ?: -1).toString()) }
+    var inputRC by rememberSaveable { mutableStateOf((studentTest.readingComprehension?.inputPercentage ?: -1).toString()) }
     val newReadingTest by remember {
         derivedStateOf {
             ReadingTest(

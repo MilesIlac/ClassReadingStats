@@ -48,7 +48,6 @@ import com.milesilac.classreadingstats.helpers.nonScaledSp
 import com.milesilac.classreadingstats.model.ClassSection
 import com.milesilac.classreadingstats.model.ClassSheet
 import com.milesilac.classreadingstats.model.GradeLevel
-import com.milesilac.classreadingstats.model.Student
 import com.milesilac.classreadingstats.model.StudentList
 import com.milesilac.classreadingstats.model.initClassSheet
 import com.milesilac.classreadingstats.ui.components.EditSectionNameDialog
@@ -526,5 +525,5 @@ sealed class UpdateTempClassSheetForAddSection {
     data object EventDelete : UpdateTempClassSheetForAddSection()
     data class EventGradeLevel(val gradeLevel: GradeLevel) : UpdateTempClassSheetForAddSection()
     data class EventSectionName(val sectionName: String) : UpdateTempClassSheetForAddSection()
-    data class EventSectionStudent(val student: Student) : UpdateTempClassSheetForAddSection()
+    data object EventSectionStudent : UpdateTempClassSheetForAddSection()
 }

@@ -1,14 +1,18 @@
 package com.milesilac.classreadingstats.model
 
+import kotlinx.serialization.Serializable
 import java.util.UUID
 
-sealed class StudentList(open val listId: UUID) {
+@Serializable
+sealed class StudentList() {
+    @Serializable
     data class Header(
-        override var listId: UUID = UUID.randomUUID(),
+        var listItemId: String = UUID.randomUUID().toString(),
         var sex: StudentSexOrient
-    ) : StudentList(listId = listId)
+    ) : StudentList()
+    @Serializable
     data class StudentDetails(
-        override var listId: UUID = UUID.randomUUID(),
+        var listItemId: String = UUID.randomUUID().toString(),
         var student: Student
-    ) : StudentList(listId = listId)
+    ) : StudentList()
 }

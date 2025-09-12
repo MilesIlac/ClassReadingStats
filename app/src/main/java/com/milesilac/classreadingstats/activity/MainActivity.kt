@@ -16,12 +16,12 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
-import com.milesilac.classreadingstats.model.emptyStudent
 import com.milesilac.classreadingstats.service.exportNewFileToExcel
 import com.milesilac.classreadingstats.ui.screens.AddSectionPage
 import com.milesilac.classreadingstats.ui.screens.DeleteSectionsPage
 import com.milesilac.classreadingstats.ui.screens.EditStudentsGradesPage
 import com.milesilac.classreadingstats.ui.screens.HomePage
+import com.milesilac.classreadingstats.ui.screens.StudentDetailEditEvent
 import com.milesilac.classreadingstats.ui.screens.StudentDetailEditPage
 import com.milesilac.classreadingstats.ui.screens.StudentDetailsPage
 import com.milesilac.classreadingstats.ui.screens.StudentEditType
@@ -62,7 +62,7 @@ class MainActivity : AppCompatActivity() {
                             navController.navigate(Routes.RouteAddSection)
                         },
                         onAddStudentClick = {
-                            viewModel.updateTempStudent(student = emptyStudent())
+                            viewModel.updateTempStudent(event = StudentDetailEditEvent.EventReset())
                             navController.navigate(
                                 Routes.RouteStudentDetailEdit(
                                     studentEditType = StudentEditType.ADD,
@@ -118,7 +118,7 @@ class MainActivity : AppCompatActivity() {
                             viewModel.updateTempClassSheet(event = it)
                         },
                         onAddStudentClick = { inputSection ->
-                            viewModel.updateTempStudent(student = emptyStudent(section = inputSection))
+                            viewModel.updateTempStudent(event = StudentDetailEditEvent.EventSection(section = inputSection))
                             navController.navigate(
                                 Routes.RouteStudentDetailEdit(
                                     studentEditType = StudentEditType.ADD,
@@ -184,7 +184,10 @@ class MainActivity : AppCompatActivity() {
                                 )
                             )
                         },
-                        onBackClick = { navController.navigateUp() },
+                        onBackClick = {
+                            navController.navigateUp()
+                            viewModel.updateTempStudent(event = StudentDetailEditEvent.EventReset())
+                        },
                         onDelete = { student ->
 
                         },
@@ -202,26 +205,31 @@ class MainActivity : AppCompatActivity() {
                         student = tempStudentState,
                         isFromAddSectionPage = routeStudentDetailEdit.isFromAddSectionPage,
                         classSections = currentSections,
-                        onSaveClick = { editedStudent ->
+                        onUpdate = { viewModel.updateTempStudent(event = it) },
+                        onSaveClick = {
                             when {
                                 routeStudentDetailEdit.studentEditType == StudentEditType.EDIT -> {
-                                    viewModel.updateLocalSourceStudent(student = editedStudent)
+                                    viewModel.updateLocalSourceStudent(withTempStudentUpdate = false)
                                 }
                                 routeStudentDetailEdit.isFromAddSectionPage -> {
                                     viewModel.updateTempClassSheet(
-                                        event = UpdateTempClassSheetForAddSection.EventSectionStudent(student = editedStudent)
+                                        event = UpdateTempClassSheetForAddSection.EventSectionStudent
                                     )
                                 }
                                 routeStudentDetailEdit.studentEditType == StudentEditType.ADD -> {
-                                    viewModel.saveCurrentTempStudent(student = editedStudent)
+                                    viewModel.saveCurrentTempStudent()
                                 }
                             }
                             navController.navigateUp()
                         },
-                        onBackClick = {
+                        onBackClick = { currentSection ->
                             when {
+                                routeStudentDetailEdit.studentEditType == StudentEditType.EDIT -> {}
                                 routeStudentDetailEdit.isFromAddSectionPage -> {
-                                    viewModel.updateTempStudent(student = emptyStudent())
+                                    viewModel.updateTempStudent(event = StudentDetailEditEvent.EventReset(section = currentSection))
+                                }
+                                routeStudentDetailEdit.studentEditType == StudentEditType.ADD -> {
+                                    viewModel.updateTempStudent(event = StudentDetailEditEvent.EventReset())
                                 }
                             }
                             navController.navigateUp()

@@ -28,7 +28,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
@@ -45,6 +44,7 @@ import androidx.compose.ui.unit.sp
 import com.milesilac.classreadingstats.helpers.checkIfAddOtherModifier
 import com.milesilac.classreadingstats.helpers.nonScaledSp
 import com.milesilac.classreadingstats.model.ClassSection
+import com.milesilac.classreadingstats.model.ReadingTest
 import com.milesilac.classreadingstats.model.Student
 import com.milesilac.classreadingstats.model.StudentList
 import com.milesilac.classreadingstats.model.StudentSexOrient
@@ -65,14 +65,14 @@ fun StudentDetailEditPage(
     isFromAddSectionPage: Boolean = false,
     student: Student = emptyStudent(),
     classSections: List<ClassSection> = listOf(),
-    onSaveClick: (Student) -> Unit = {},
-    onBackClick: () -> Unit = {},
+    onUpdate: (StudentDetailEditEvent) -> Unit = {},
+    onSaveClick: () -> Unit = {},
+    onBackClick: (ClassSection) -> Unit = {},
     onVisible: () -> Unit = {}
 ) {
     onVisible()
     val pagerState = rememberPagerState(pageCount = { 2 })
     val coroutineScope = rememberCoroutineScope()
-    val inputStudent = remember { student }
     var showStudentNameEditDialog by rememberSaveable { mutableStateOf(false) }
     var showPickSectionDialog by rememberSaveable { mutableStateOf(false) }
     var showMaleOrFemaleDialog by rememberSaveable { mutableStateOf(false) }
@@ -151,7 +151,7 @@ fun StudentDetailEditPage(
                     )
                     Spacer(modifier = Modifier.width(16.dp))
                     Text(
-                        text = inputStudent.name,
+                        text = student.name,
                         modifier = Modifier
                             .weight(1F),
                         color = ProjectColors.OffWhite4,
@@ -220,9 +220,9 @@ fun StudentDetailEditPage(
                         .weight(1F),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    val inputSection = if (inputStudent.section == initClassSection()) {
+                    val inputSection = if (student.section == initClassSection()) {
                         "--"
-                    } else inputStudent.section.toSectionString()
+                    } else student.section.toSectionString()
                     Text(
                         text = inputSection,
                         modifier = Modifier,
@@ -253,9 +253,9 @@ fun StudentDetailEditPage(
                         .weight(1F),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    val inputSOrient = if (inputStudent.sex == StudentSexOrient.ERROR) {
+                    val inputSOrient = if (student.sex == StudentSexOrient.ERROR) {
                         "--"
-                    } else inputStudent.sex.wordedLabel
+                    } else student.sex.wordedLabel
                     Text(
                         text = inputSOrient,
                         modifier = Modifier,
@@ -285,21 +285,29 @@ fun StudentDetailEditPage(
                 1 -> {
                     StudentGradeEditPage(
                         modifier = Modifier,
-                        studentPersistenceId = inputStudent.persistenceId,
-                        studentTest = inputStudent.postTest ?: emptyReadingTest(),
+                        studentPersistenceId = student.persistenceId,
+                        studentTest = student.postTest ?: emptyReadingTest(),
                         onUpdateGrade = { readingTest ->
-                            inputStudent.postTest = readingTest
-                            println("Grade updated; gstScore: ${inputStudent.postTest?.groupScreeningTest?.score}")
+                            onUpdate(
+                                StudentDetailEditEvent.EventReadingTest(
+                                    isPostTest = true, readingTest = readingTest
+                                )
+                            )
+                            println("classInits Grade updated; gstScore: ${readingTest.groupScreeningTest.score}")
                         }
                     )
                 }
                 else -> StudentGradeEditPage(
                     modifier = Modifier,
-                    studentPersistenceId = inputStudent.persistenceId,
-                    studentTest = inputStudent.preTest,
+                    studentPersistenceId = student.persistenceId,
+                    studentTest = student.preTest,
                     onUpdateGrade = { readingTest ->
-                        inputStudent.preTest = readingTest
-                        println("Grade updated; gstScore: ${inputStudent.preTest.groupScreeningTest.score}")
+                        onUpdate(
+                            StudentDetailEditEvent.EventReadingTest(
+                                isPostTest = false, readingTest = readingTest
+                            )
+                        )
+                        println("classInits Grade updated; gstScore: ${readingTest.groupScreeningTest.score}")
                     }
                 )
             }
@@ -385,7 +393,7 @@ fun StudentDetailEditPage(
                 horizontalArrangement = Arrangement.SpaceEvenly
             ) {
                 OutlinedButton(
-                    onClick = { onSaveClick(inputStudent) },
+                    onClick = { onSaveClick() },
                     modifier = Modifier,
                     colors = ButtonColors(
                         containerColor = Color.White,
@@ -413,7 +421,7 @@ fun StudentDetailEditPage(
                 }
                 Spacer(modifier = Modifier.width(12.dp))
                 OutlinedButton(
-                    onClick = { onBackClick() },
+                    onClick = { onBackClick(student.section) },
                     modifier = Modifier,
                     colors = ButtonColors(
                         containerColor = Color.White,
@@ -449,10 +457,10 @@ fun StudentDetailEditPage(
         when {
             showStudentNameEditDialog -> {
                 EditStudentNameDialog(
-                    currentStudentName = inputStudent.name,
+                    currentStudentName = student.name,
                     onDismissDialog = { showStudentNameEditDialog = false },
                     onOkayClick = { newInputName ->
-                        inputStudent.name = newInputName
+                        onUpdate(StudentDetailEditEvent.EventName(studentName = newInputName))
                         showStudentNameEditDialog = false
                     }
                 )
@@ -461,11 +469,11 @@ fun StudentDetailEditPage(
                 showMaleOrFemaleDialog = false
                 EditStudentInfoDialog(
                     studentInfoType = StudentInfoType.SECTION,
-                    currentSection = inputStudent.section,
+                    currentSection = student.section,
                     sections = classSections,
                     onDismissDialog = { showPickSectionDialog = false },
                     onSectionPick = { selected ->
-                        inputStudent.section = selected
+                        onUpdate(StudentDetailEditEvent.EventSection(section = selected))
                         showPickSectionDialog = false
                     },
                 )
@@ -474,10 +482,10 @@ fun StudentDetailEditPage(
                 showPickSectionDialog = false
                 EditStudentInfoDialog(
                     studentInfoType = StudentInfoType.SEX_ORIENT,
-                    currentSex = inputStudent.sex,
+                    currentSex = student.sex,
                     onDismissDialog = { showMaleOrFemaleDialog = false },
                     onSexOrientPick = { selected ->
-                        inputStudent.sex = selected
+                        onUpdate(StudentDetailEditEvent.EventSexOrient(sex = selected))
                         showMaleOrFemaleDialog = false
                     },
                 )
@@ -497,4 +505,17 @@ fun StudentDetailEditPagePreview() {
 
 enum class StudentEditType {
     ADD, EDIT
+}
+
+sealed class StudentDetailEditEvent {
+    data class EventName(val studentName: String) : StudentDetailEditEvent()
+    data class EventSection(val section: ClassSection) : StudentDetailEditEvent()
+    data class EventSexOrient(val sex: StudentSexOrient) : StudentDetailEditEvent()
+    data class EventReadingTest(
+        val isPostTest: Boolean,
+        val readingTest: ReadingTest
+    ) : StudentDetailEditEvent()
+    data class EventReset(
+        val section: ClassSection = initClassSection()
+    ) : StudentDetailEditEvent()
 }
