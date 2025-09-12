@@ -14,10 +14,6 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusDirection
@@ -29,33 +25,45 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.milesilac.classreadingstats.helpers.isPositiveInteger
-import com.milesilac.classreadingstats.helpers.removeExtraZeroes
+import com.milesilac.classreadingstats.helpers.inputFullCheckForDecimalString
+import com.milesilac.classreadingstats.helpers.inputFullCheckForIntString
 import com.milesilac.classreadingstats.ui.theme.ProjectColors
 
 @Composable
 fun StudentGradeEditList(
     gradeEditType: GradeEditType,
     modifier: Modifier,
-    gstScoreIntString: String = ""
+    gstScoreIntString: String = "",
+    orTotalWordsIntString: String = "",
+    orTotalMiscuesIntString: String = "",
+    rcPercentString: String = "",
+    onGSTScoreEdit: (String) -> Unit = {},
+    onORTotalWordsEdit: (String) -> Unit = {},
+    onORMiscuesEdit: (String) -> Unit = {},
+    onRCPercentEdit: (String) -> Unit = {},
 ) {
     when (gradeEditType) {
         GradeEditType.GST -> {
             EditListGST(
                 modifier = modifier,
-                gstScoreIntString = gstScoreIntString
+                gstScoreIntString = gstScoreIntString,
+                onGSTScoreEdit = onGSTScoreEdit
             )
         }
         GradeEditType.OR -> {
             EditListOR(
                 modifier = modifier,
-                gstScoreIntString = gstScoreIntString
+                orTotalWordsIntString = orTotalWordsIntString,
+                orTotalMiscuesIntString = orTotalMiscuesIntString,
+                onORTotalWordsEdit = onORTotalWordsEdit,
+                onORMiscuesEdit = onORMiscuesEdit
             )
         }
         GradeEditType.RC -> {
             EditListRC(
                 modifier = modifier,
-                gstScoreIntString = gstScoreIntString
+                rcPercentString = rcPercentString,
+                onRCPercentEdit = onRCPercentEdit
             )
         }
     }
@@ -70,10 +78,10 @@ enum class GradeEditType(val typeLabel: String) {
 @Composable
 fun EditListGST(
     modifier: Modifier = Modifier,
-    gstScoreIntString: String = ""
+    gstScoreIntString: String = "",
+    onGSTScoreEdit: (String) -> Unit = {}
 ) {
     val focusManager = LocalFocusManager.current
-    var inputGST by remember { mutableStateOf(gstScoreIntString) }
     Column(
         modifier = modifier
             .background(color = ProjectColors.OffWhite4)
@@ -84,11 +92,15 @@ fun EditListGST(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         OutlinedTextField(
-            value = inputGST,
+            value = gstScoreIntString,
             onValueChange = { newValue ->
-                if (newValue.isPositiveInteger()) {
-                    inputGST = newValue.removeExtraZeroes()
-                }
+                newValue.inputFullCheckForIntString(
+                    currentValue = gstScoreIntString,
+                    errorValue = "-1",
+                    returnValue = { returnValue ->
+                        onGSTScoreEdit(returnValue)
+                    }
+                )
             },
             modifier = Modifier,
             keyboardOptions = KeyboardOptions(
@@ -130,11 +142,12 @@ fun EditListGSTPreview() {
 @Composable
 fun EditListOR(
     modifier: Modifier = Modifier,
-    gstScoreIntString: String = ""
+    orTotalWordsIntString: String = "",
+    orTotalMiscuesIntString: String = "",
+    onORTotalWordsEdit: (String) -> Unit = {},
+    onORMiscuesEdit: (String) -> Unit = {},
 ) {
     val focusManager = LocalFocusManager.current
-    var inputTotalWords by remember { mutableStateOf(gstScoreIntString) }
-    var inputTotalMiscues by remember { mutableStateOf(gstScoreIntString) }
     Row(
         modifier = modifier
             .background(color = ProjectColors.OffWhite4)
@@ -149,11 +162,15 @@ fun EditListOR(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             OutlinedTextField(
-                value = inputTotalWords,
+                value = orTotalWordsIntString,
                 onValueChange = { newValue ->
-                    if (newValue.isPositiveInteger()) {
-                        inputTotalWords = newValue.removeExtraZeroes()
-                    }
+                    newValue.inputFullCheckForIntString(
+                        currentValue = orTotalWordsIntString,
+                        errorValue = "-1",
+                        returnValue = { returnValue ->
+                            onORTotalWordsEdit(returnValue)
+                        }
+                    )
                 },
                 modifier = Modifier,
                 keyboardOptions = KeyboardOptions(
@@ -191,11 +208,15 @@ fun EditListOR(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             OutlinedTextField(
-                value = inputTotalMiscues,
+                value = orTotalMiscuesIntString,
                 onValueChange = { newValue ->
-                    if (newValue.isPositiveInteger()) {
-                        inputTotalMiscues = newValue.removeExtraZeroes()
-                    }
+                    newValue.inputFullCheckForIntString(
+                        currentValue = orTotalMiscuesIntString,
+                        errorValue = "-1",
+                        returnValue = { returnValue ->
+                            onORMiscuesEdit(returnValue)
+                        }
+                    )
                 },
                 modifier = Modifier,
                 keyboardOptions = KeyboardOptions(
@@ -238,10 +259,10 @@ fun EditListORPreview() {
 @Composable
 fun EditListRC(
     modifier: Modifier = Modifier,
-    gstScoreIntString: String = ""
+    rcPercentString: String = "",
+    onRCPercentEdit: (String) -> Unit = {}
 ) {
     val focusManager = LocalFocusManager.current
-    var inputGST by remember { mutableStateOf(gstScoreIntString) }
     Column(
         modifier = modifier
             .background(color = ProjectColors.OffWhite4)
@@ -252,11 +273,15 @@ fun EditListRC(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         OutlinedTextField(
-            value = inputGST,
+            value = rcPercentString,
             onValueChange = { newValue ->
-                if (newValue.isPositiveInteger()) {
-                    inputGST = newValue.removeExtraZeroes()
-                }
+                newValue.inputFullCheckForDecimalString(
+                    currentValue = rcPercentString,
+                    errorValue = "-1.0",
+                    returnValue = { returnValue ->
+                        onRCPercentEdit(returnValue)
+                    }
+                )
             },
             modifier = Modifier,
             keyboardOptions = KeyboardOptions(

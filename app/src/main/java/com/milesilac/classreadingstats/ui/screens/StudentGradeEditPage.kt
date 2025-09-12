@@ -35,10 +35,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.milesilac.classreadingstats.helpers.isPositiveInteger
-import com.milesilac.classreadingstats.helpers.isProperPositiveDecimal
-import com.milesilac.classreadingstats.helpers.removeExtraZeroes
-import com.milesilac.classreadingstats.helpers.removeExtraZeroesForDecimal
+import com.milesilac.classreadingstats.helpers.inputFullCheckForDecimalString
+import com.milesilac.classreadingstats.helpers.inputFullCheckForIntString
 import com.milesilac.classreadingstats.model.GroupScreeningTest
 import com.milesilac.classreadingstats.model.LearnerLevel
 import com.milesilac.classreadingstats.model.OralReading
@@ -63,7 +61,7 @@ fun StudentGradeEditPage(
     var inputGST by remember { mutableStateOf(studentTest.groupScreeningTest.score.toInt().toString()) }
     var inputORTotalWords by remember { mutableStateOf((studentTest.oralReading?.totalNumberOfWordsInSelection?.toInt() ?: -1).toString()) }
     var inputORMiscues by remember { mutableStateOf((studentTest.oralReading?.numberOfMiscues?.toInt() ?: -1).toString()) }
-    var inputRC by remember { mutableStateOf((studentTest.readingComprehension?.inputPercentage ?: -1.0).toString()) }
+    var inputRC by remember { mutableStateOf((studentTest.readingComprehension?.inputPercentage ?: -1).toString()) }
     val newReadingTest by remember {
         derivedStateOf {
             ReadingTest(
@@ -71,11 +69,11 @@ fun StudentGradeEditPage(
                     score = runCatching { inputGST.toDouble() }.getOrElse { 0.0 }
                 ),
                 oralReading = OralReading(
-                    totalNumberOfWordsInSelection = inputORTotalWords.toDouble(),
-                    numberOfMiscues = runCatching { inputORMiscues.toDouble() }.getOrElse { 0.0 }
+                    totalNumberOfWordsInSelection = runCatching { inputORMiscues.toDouble() }.getOrElse { -1.0 },
+                    numberOfMiscues = runCatching { inputORMiscues.toDouble() }.getOrElse { -1.0 }
                 ),
                 readingComprehension = ReadingComprehension(
-                    inputPercentage = runCatching { inputRC.toDouble() }.getOrElse { 0.0 }
+                    inputPercentage = runCatching { inputRC.toDouble() }.getOrElse { -1.0 }
                 )
             )
         }
@@ -144,9 +142,13 @@ fun StudentGradeEditPage(
                 OutlinedTextField(
                     value = inputGST,
                     onValueChange = { newValue ->
-                        if (newValue.isPositiveInteger()) {
-                            inputGST = newValue.removeExtraZeroes()
-                        }
+                        newValue.inputFullCheckForIntString(
+                            currentValue = inputGST,
+                            errorValue = "-1",
+                            returnValue = { returnValue ->
+                                inputGST = returnValue
+                            }
+                        )
                     },
                     modifier = Modifier
                         .fillMaxWidth()
@@ -247,9 +249,13 @@ fun StudentGradeEditPage(
                     OutlinedTextField(
                         value = inputORTotalWords,
                         onValueChange = { newValue ->
-                            if (newValue.isPositiveInteger()) {
-                                inputORTotalWords = newValue.removeExtraZeroes()
-                            }
+                            newValue.inputFullCheckForIntString(
+                                currentValue = inputORTotalWords,
+                                errorValue = "-1",
+                                returnValue = { returnValue ->
+                                    inputORTotalWords = returnValue
+                                }
+                            )
                         },
                         modifier = Modifier
                             .fillMaxWidth()
@@ -301,9 +307,13 @@ fun StudentGradeEditPage(
                     OutlinedTextField(
                         value = inputORMiscues,
                         onValueChange = { newValue ->
-                            if (newValue.isPositiveInteger()) {
-                                inputORMiscues = newValue.removeExtraZeroes()
-                            }
+                            newValue.inputFullCheckForIntString(
+                                currentValue = inputORMiscues,
+                                errorValue = "-1",
+                                returnValue = { returnValue ->
+                                    inputORMiscues = returnValue
+                                }
+                            )
                         },
                         modifier = Modifier
                             .fillMaxWidth()
@@ -409,9 +419,13 @@ fun StudentGradeEditPage(
                     OutlinedTextField(
                         value = inputRC,
                         onValueChange = { newValue ->
-                            if (newValue.isProperPositiveDecimal()) {
-                                inputRC = newValue.removeExtraZeroesForDecimal()
-                            }
+                            newValue.inputFullCheckForDecimalString(
+                                currentValue = inputRC,
+                                errorValue = "-1",
+                                returnValue = { returnValue ->
+                                    inputRC = returnValue
+                                }
+                            )
                         },
                         modifier = Modifier
                             .fillMaxWidth()

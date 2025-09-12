@@ -191,12 +191,19 @@ fun EditStudentsGradesPage(
                 .background(color = ProjectColors.OffWhite4)
                 .weight(1F),
         ) {
-            currentSheet.maleStudents.forEach { studentItem ->
+            (currentSheet.maleStudents + currentSheet.femaleStudents).forEach { studentItem ->
                 when (studentItem) {
                     is StudentList.Header -> {}
                     is StudentList.StudentDetails -> {
                         item {
-                            var inputGST by remember { mutableStateOf("${studentItem.student.preTest.groupScreeningTest.score.toInt()}") }
+                            var inputGSTPreTest by remember { mutableStateOf("${studentItem.student.preTest.groupScreeningTest.score.toInt()}") }
+                            var inputORTotalWordsPreTest by remember { mutableStateOf("${studentItem.student.preTest.oralReading?.totalNumberOfWordsInSelection?.toInt()}") }
+                            var inputORMiscuesPreTest by remember { mutableStateOf("${studentItem.student.preTest.oralReading?.numberOfMiscues?.toInt()}") }
+                            var inputRCPreTest by remember { mutableStateOf("${studentItem.student.preTest.readingComprehension?.inputPercentage}") }
+                            var inputGSTPostTest by remember { mutableStateOf("${studentItem.student.postTest?.groupScreeningTest?.score?.toInt()}") }
+                            var inputORTotalWordsPostTest by remember { mutableStateOf("${studentItem.student.postTest?.oralReading?.totalNumberOfWordsInSelection?.toInt()}") }
+                            var inputORMiscuesPostTest by remember { mutableStateOf("${studentItem.student.postTest?.oralReading?.numberOfMiscues?.toInt()}") }
+                            var inputRCPostTest by remember { mutableStateOf("${studentItem.student.postTest?.readingComprehension?.inputPercentage}") }
                             Row(
                                 verticalAlignment = Alignment.CenterVertically
                             ) {
@@ -222,45 +229,46 @@ fun EditStudentsGradesPage(
                                     gradeEditType = currentGradeEditType,
                                     modifier = Modifier
                                         .weight(0.5F),
-                                    gstScoreIntString = "${studentItem.student.preTest.groupScreeningTest.score.toInt()}"
-                                )
-                            }
-                        }
-                    }
-                }
-            }
-            currentSheet.femaleStudents.forEach { studentItem ->
-                when (studentItem) {
-                    is StudentList.Header -> {}
-                    is StudentList.StudentDetails -> {
-                        item {
-                            var inputGST by remember { mutableStateOf("${studentItem.student.preTest.groupScreeningTest.score.toInt()}") }
-                            Row(
-                                verticalAlignment = Alignment.CenterVertically
-                            ) {
-                                Row(
-                                    modifier = Modifier
-                                        .background(color = ProjectColors.OffWhite4)
-                                        .padding(
-                                            horizontal = 12.dp,
-                                            vertical = 8.dp
-                                        )
-                                        .weight(0.5F),
-                                ) {
-                                    Text(
-                                        text = "${studentItem.student.sex.sex} - ${studentItem.student.name.trim()}" ,
-                                        modifier = Modifier,
-                                        color = Color.Black,
-                                        fontSize = 16.sp,
-                                        overflow = TextOverflow.Ellipsis,
-                                        maxLines = 1
-                                    )
-                                }
-                                StudentGradeEditList(
-                                    gradeEditType = currentGradeEditType,
-                                    modifier = Modifier
-                                        .weight(0.5F),
-                                    gstScoreIntString = "${studentItem.student.preTest.groupScreeningTest.score.toInt()}"
+                                    gstScoreIntString = when (currentTest) {
+                                        TestEditType.PRETEST -> inputGSTPreTest
+                                        TestEditType.POSTTEST -> inputGSTPostTest
+                                    },
+                                    orTotalWordsIntString = when (currentTest) {
+                                        TestEditType.PRETEST -> inputORTotalWordsPreTest
+                                        TestEditType.POSTTEST -> inputORTotalWordsPostTest
+                                    },
+                                    orTotalMiscuesIntString = when (currentTest) {
+                                        TestEditType.PRETEST -> inputORMiscuesPreTest
+                                        TestEditType.POSTTEST -> inputORMiscuesPostTest
+                                    },
+                                    rcPercentString = when (currentTest) {
+                                        TestEditType.PRETEST -> inputRCPreTest
+                                        TestEditType.POSTTEST -> inputRCPostTest
+                                    },
+                                    onGSTScoreEdit = { newInput ->
+                                        when (currentTest) {
+                                            TestEditType.PRETEST -> inputGSTPreTest = newInput
+                                            TestEditType.POSTTEST -> inputGSTPostTest = newInput
+                                        }
+                                    },
+                                    onORTotalWordsEdit = { newInput ->
+                                        when (currentTest) {
+                                            TestEditType.PRETEST -> inputORTotalWordsPreTest = newInput
+                                            TestEditType.POSTTEST -> inputORTotalWordsPostTest = newInput
+                                        }
+                                    },
+                                    onORMiscuesEdit = { newInput ->
+                                        when (currentTest) {
+                                            TestEditType.PRETEST -> inputORMiscuesPreTest = newInput
+                                            TestEditType.POSTTEST -> inputORMiscuesPostTest = newInput
+                                        }
+                                    },
+                                    onRCPercentEdit = { newInput ->
+                                        when (currentTest) {
+                                            TestEditType.PRETEST -> inputRCPreTest = newInput
+                                            TestEditType.POSTTEST -> inputRCPostTest = newInput
+                                        }
+                                    }
                                 )
                             }
                         }
