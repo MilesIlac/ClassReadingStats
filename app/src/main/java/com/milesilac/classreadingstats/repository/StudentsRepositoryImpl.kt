@@ -46,17 +46,23 @@ class StudentsRepositoryImpl(): StudentsRepository {
         }
     }
 
-    override suspend fun saveClassSheet(classSheet: ClassSheet) {
-        val sectionPersistenceId = studentsDBSource.saveSection(
-            section = SectionEntity(
-                sectionRoomId = classSheet.classSection.persistenceId,
-                gradeLevel = classSheet.classSection.gradeLevel,
-                sectionName = classSheet.classSection.sectionName
+    override suspend fun saveClassSheets(classSheets: List<ClassSheet>) {
+        classSheets.forEach { classSheet ->
+            val returnSectionId = studentsDBSource.updateSection(
+                section = SectionEntity(
+                    sectionRoomId = classSheet.classSection.persistenceId,
+                    gradeLevel = classSheet.classSection.gradeLevel,
+                    sectionName = classSheet.classSection.sectionName
+                )
             )
-        )
-        studentsDBSource.updateStudents(
-            students = (classSheet.maleStudents + classSheet.femaleStudents).mapStudentListToEntity(sectionId = sectionPersistenceId)
-        )
+            val sectionPersistenceId = when {
+                returnSectionId != -1L -> returnSectionId // -1 = Update successful or Insert error
+                else -> classSheet.classSection.persistenceId
+            }
+            studentsDBSource.updateStudents(
+                students = (classSheet.maleStudents + classSheet.femaleStudents).mapStudentListToEntity(sectionId = sectionPersistenceId)
+            )
+        }
     }
 
     override fun getStudent(studentId: Long) = studentsDBSource.getStudent(studentId = studentId).map { results ->

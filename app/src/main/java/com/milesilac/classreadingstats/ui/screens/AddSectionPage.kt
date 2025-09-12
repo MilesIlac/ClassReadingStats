@@ -58,9 +58,9 @@ import kotlin.enums.enumEntries
 @Composable
 fun AddSectionPage(
     tempClassSheet: ClassSheet = initClassSheet(),
-    onUpdate: (UpdateTempClassSheet) -> Unit = {},
+    onUpdate: (UpdateTempClassSheetForAddSection) -> Unit = {},
     onSaveClick: () -> Unit = {},
-    onBackClick: (UpdateTempClassSheet) -> Unit = {},
+    onBackClick: (UpdateTempClassSheetForAddSection) -> Unit = {},
     onAddStudentClick: (ClassSection) -> Unit = {},
     onVisible: () -> Unit = {}
 ) {
@@ -176,7 +176,7 @@ fun AddSectionPage(
                                     )
                                     .selectable(
                                         selected = selectedGradeLevel == gradeLevel,
-                                        onClick = { onUpdate(UpdateTempClassSheet.EventGradeLevel(gradeLevel = gradeLevel)) },
+                                        onClick = { onUpdate(UpdateTempClassSheetForAddSection.EventGradeLevel(gradeLevel = gradeLevel)) },
                                         role = Role.RadioButton
                                     ),
                                 contentAlignment = Alignment.Center
@@ -470,7 +470,7 @@ fun AddSectionPage(
                 }
                 Spacer(modifier = Modifier.width(12.dp))
                 OutlinedButton(
-                    onClick = { onBackClick(UpdateTempClassSheet.EventDelete) },
+                    onClick = { onBackClick(UpdateTempClassSheetForAddSection.EventDelete) },
                     modifier = Modifier,
                     colors = ButtonColors(
                         containerColor = Color.White,
@@ -508,7 +508,7 @@ fun AddSectionPage(
                 currentSectionName = inputSectionName,
                 onDismissDialog = { showEditDialog = false },
                 onOkayClick = { newInputName ->
-                    onUpdate(UpdateTempClassSheet.EventSectionName(sectionName = newInputName))
+                    onUpdate(UpdateTempClassSheetForAddSection.EventSectionName(sectionName = newInputName))
                     showEditDialog = false
                 }
             )
@@ -522,9 +522,9 @@ fun AddSectionPagePreview() {
     AddSectionPage()
 }
 
-sealed class UpdateTempClassSheet {
-    data object EventDelete : UpdateTempClassSheet()
-    data class EventGradeLevel(val gradeLevel: GradeLevel) : UpdateTempClassSheet()
-    data class EventSectionName(val sectionName: String) : UpdateTempClassSheet()
-    data class EventSectionStudent(val student: Student) : UpdateTempClassSheet()
+sealed class UpdateTempClassSheetForAddSection {
+    data object EventDelete : UpdateTempClassSheetForAddSection()
+    data class EventGradeLevel(val gradeLevel: GradeLevel) : UpdateTempClassSheetForAddSection()
+    data class EventSectionName(val sectionName: String) : UpdateTempClassSheetForAddSection()
+    data class EventSectionStudent(val student: Student) : UpdateTempClassSheetForAddSection()
 }

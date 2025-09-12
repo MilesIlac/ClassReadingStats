@@ -24,11 +24,14 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
@@ -39,7 +42,12 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.milesilac.classreadingstats.model.ClassSheet
+import com.milesilac.classreadingstats.model.GroupScreeningTest
+import com.milesilac.classreadingstats.model.OralReading
+import com.milesilac.classreadingstats.model.ReadingComprehension
+import com.milesilac.classreadingstats.model.ReadingTest
 import com.milesilac.classreadingstats.model.StudentList
+import com.milesilac.classreadingstats.model.initClassSheet
 import com.milesilac.classreadingstats.model.toSectionString
 import com.milesilac.classreadingstats.ui.components.EditStudentGradesDialog
 import com.milesilac.classreadingstats.ui.components.EditStudentInfoDialog
@@ -49,18 +57,27 @@ import com.milesilac.classreadingstats.ui.components.StudentInfoType
 import com.milesilac.classreadingstats.ui.dummyStudentListsEightAmethyst
 import com.milesilac.classreadingstats.ui.dummyStudentListsEightDiamond
 import com.milesilac.classreadingstats.ui.theme.ProjectColors
+import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.distinctUntilChanged
 
 @Composable
 fun EditStudentsGradesPage(
     sheets: List<ClassSheet>,
     currentSectionId: Long,
+    onUpdateGrade: (UpdateTempClassSheetsForInputGrades) -> Unit = {},
     onScanClick: () -> Unit = {},
     onSaveClick: () -> Unit = {},
     onBackClick: () -> Unit = {},
     onVisible: () -> Unit = {}
 ) {
     onVisible()
-    var currentSheet by remember { mutableStateOf(sheets.find { it.classSection.persistenceId == currentSectionId } ?: sheets[0]) }
+    var currentSheet by remember(sheets) {
+        mutableStateOf(
+            sheets.find {
+                it.classSection.persistenceId == currentSectionId
+            } ?: runCatching { sheets[0] }.getOrElse { initClassSheet() }
+        )
+    }
     var currentTest by rememberSaveable { mutableStateOf(TestEditType.PRETEST) }
     var currentGradeEditType by rememberSaveable { mutableStateOf(GradeEditType.GST) }
     var showPickSectionDialog by rememberSaveable { mutableStateOf(false) }
@@ -196,14 +213,83 @@ fun EditStudentsGradesPage(
                     is StudentList.Header -> {}
                     is StudentList.StudentDetails -> {
                         item {
-                            var inputGSTPreTest by remember { mutableStateOf("${studentItem.student.preTest.groupScreeningTest.score.toInt()}") }
-                            var inputORTotalWordsPreTest by remember { mutableStateOf("${studentItem.student.preTest.oralReading?.totalNumberOfWordsInSelection?.toInt()}") }
-                            var inputORMiscuesPreTest by remember { mutableStateOf("${studentItem.student.preTest.oralReading?.numberOfMiscues?.toInt()}") }
-                            var inputRCPreTest by remember { mutableStateOf("${studentItem.student.preTest.readingComprehension?.inputPercentage}") }
-                            var inputGSTPostTest by remember { mutableStateOf("${studentItem.student.postTest?.groupScreeningTest?.score?.toInt()}") }
-                            var inputORTotalWordsPostTest by remember { mutableStateOf("${studentItem.student.postTest?.oralReading?.totalNumberOfWordsInSelection?.toInt()}") }
-                            var inputORMiscuesPostTest by remember { mutableStateOf("${studentItem.student.postTest?.oralReading?.numberOfMiscues?.toInt()}") }
-                            var inputRCPostTest by remember { mutableStateOf("${studentItem.student.postTest?.readingComprehension?.inputPercentage}") }
+                            var inputGSTPreTest by rememberSaveable(studentItem.student) { mutableStateOf("${studentItem.student.preTest.groupScreeningTest.score.toInt()}") }
+                            var inputORTotalWordsPreTest by rememberSaveable(studentItem.student) { mutableStateOf("${studentItem.student.preTest.oralReading?.totalNumberOfWordsInSelection?.toInt()}") }
+                            var inputORMiscuesPreTest by rememberSaveable(studentItem.student) { mutableStateOf("${studentItem.student.preTest.oralReading?.numberOfMiscues?.toInt()}") }
+                            var inputRCPreTest by rememberSaveable(studentItem.student) { mutableStateOf("${studentItem.student.preTest.readingComprehension?.inputPercentage}") }
+                            var inputGSTPostTest by rememberSaveable(studentItem.student) { mutableStateOf("${studentItem.student.postTest?.groupScreeningTest?.score?.toInt()}") }
+                            var inputORTotalWordsPostTest by rememberSaveable(studentItem.student) { mutableStateOf("${studentItem.student.postTest?.oralReading?.totalNumberOfWordsInSelection?.toInt()}") }
+                            var inputORMiscuesPostTest by rememberSaveable(studentItem.student) { mutableStateOf("${studentItem.student.postTest?.oralReading?.numberOfMiscues?.toInt()}") }
+                            var inputRCPostTest by rememberSaveable(studentItem.student) { mutableStateOf("${studentItem.student.postTest?.readingComprehension?.inputPercentage}") }
+                            val newReadingTestPre by remember {
+                                derivedStateOf {
+                                    ReadingTest(
+                                        groupScreeningTest = GroupScreeningTest(
+                                            score = runCatching { inputGSTPreTest.toDouble() }.getOrElse { 0.0 }
+                                        ),
+                                        oralReading = OralReading(
+                                            totalNumberOfWordsInSelection = runCatching { inputORTotalWordsPreTest.toDouble() }.getOrElse { -1.0 },
+                                            numberOfMiscues = runCatching { inputORMiscuesPreTest.toDouble() }.getOrElse { -1.0 }
+                                        ),
+                                        readingComprehension = ReadingComprehension(
+                                            inputPercentage = runCatching { inputRCPreTest.toDouble() }.getOrElse { -1.0 }
+                                        )
+                                    )
+                                }
+                            }
+                            val newReadingTestPost by remember {
+                                derivedStateOf {
+                                    ReadingTest(
+                                        groupScreeningTest = GroupScreeningTest(
+                                            score = runCatching { inputGSTPostTest.toDouble() }.getOrElse { 0.0 }
+                                        ),
+                                        oralReading = OralReading(
+                                            totalNumberOfWordsInSelection = runCatching { inputORTotalWordsPostTest.toDouble() }.getOrElse { -1.0 },
+                                            numberOfMiscues = runCatching { inputORMiscuesPostTest.toDouble() }.getOrElse { -1.0 }
+                                        ),
+                                        readingComprehension = ReadingComprehension(
+                                            inputPercentage = runCatching { inputRCPostTest.toDouble() }.getOrElse { -1.0 }
+                                        )
+                                    )
+                                }
+                            }
+
+                            // Listen for readingTest input change
+                            LaunchedEffect(studentItem.student.persistenceId) {
+                                snapshotFlow { newReadingTestPre }
+                                    .distinctUntilChanged()
+                                    .debounce(800L)
+                                    .collect { readingTest ->
+                                        // Trigger your side-effect here
+                                        onUpdateGrade(
+                                            UpdateTempClassSheetsForInputGrades.EventReadingTest(
+                                                sectionPersistenceId = currentSheet.classSection.persistenceId,
+                                                studentPersistenceId = studentItem.student.persistenceId,
+                                                isPostTest = false,
+                                                newReadingTest = readingTest
+                                            )
+                                        )
+                                    }
+                            }
+
+                            // Listen for readingTest input change
+                            LaunchedEffect(studentItem.student.persistenceId) {
+                                snapshotFlow { newReadingTestPost }
+                                    .distinctUntilChanged()
+                                    .debounce(800L)
+                                    .collect { readingTest ->
+                                        // Trigger your side-effect here
+                                        onUpdateGrade(
+                                            UpdateTempClassSheetsForInputGrades.EventReadingTest(
+                                                sectionPersistenceId = currentSheet.classSection.persistenceId,
+                                                studentPersistenceId = studentItem.student.persistenceId,
+                                                isPostTest = true,
+                                                newReadingTest = readingTest
+                                            )
+                                        )
+                                    }
+                            }
+
                             Row(
                                 verticalAlignment = Alignment.CenterVertically
                             ) {
@@ -318,7 +404,7 @@ fun EditStudentsGradesPage(
                     }
                 }
                 OutlinedButton(
-                    onClick = {},
+                    onClick = { onSaveClick() },
                     modifier = Modifier,
                     colors = ButtonColors(
                         containerColor = Color.White,
@@ -422,4 +508,14 @@ fun EditStudentsGradesPagePreview() {
         sheets = listOf(dummyStudentListsEightAmethyst, dummyStudentListsEightDiamond),
         currentSectionId = 111
     )
+}
+
+sealed class UpdateTempClassSheetsForInputGrades {
+    data object EventBaseSheetsUpdate : UpdateTempClassSheetsForInputGrades()
+    data class EventReadingTest(
+        val sectionPersistenceId: Long,
+        val studentPersistenceId: Long,
+        val isPostTest: Boolean,
+        val newReadingTest: ReadingTest
+    ) : UpdateTempClassSheetsForInputGrades()
 }

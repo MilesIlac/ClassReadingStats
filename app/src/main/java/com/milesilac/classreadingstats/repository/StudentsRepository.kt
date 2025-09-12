@@ -7,7 +7,7 @@ import kotlinx.coroutines.flow.Flow
 interface StudentsRepository {
     fun getClassSheets(): Flow<List<ClassSheet>>
 
-    suspend fun saveClassSheet(classSheet: ClassSheet)
+    suspend fun saveClassSheets(classSheets: List<ClassSheet>)
 
     fun getStudent(studentId: Long): Flow<Student>
 

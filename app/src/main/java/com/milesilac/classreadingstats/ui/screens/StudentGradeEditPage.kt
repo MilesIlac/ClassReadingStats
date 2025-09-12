@@ -69,7 +69,7 @@ fun StudentGradeEditPage(
                     score = runCatching { inputGST.toDouble() }.getOrElse { 0.0 }
                 ),
                 oralReading = OralReading(
-                    totalNumberOfWordsInSelection = runCatching { inputORMiscues.toDouble() }.getOrElse { -1.0 },
+                    totalNumberOfWordsInSelection = runCatching { inputORTotalWords.toDouble() }.getOrElse { -1.0 },
                     numberOfMiscues = runCatching { inputORMiscues.toDouble() }.getOrElse { -1.0 }
                 ),
                 readingComprehension = ReadingComprehension(

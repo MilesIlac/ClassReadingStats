@@ -18,7 +18,7 @@ class StudentsDBSource() {
 
     fun getStudent(studentId: Long) = roomDAO.getStudent(studentId = studentId)
 
-    suspend fun saveSection(section: SectionEntity) = roomDAO.saveSection(section = section)
+    suspend fun updateSection(section: SectionEntity) = roomDAO.updateSection(section = section)
 
     suspend fun updateStudents(students: List<StudentEntity>) = roomDAO.updateStudents(students = students)
 

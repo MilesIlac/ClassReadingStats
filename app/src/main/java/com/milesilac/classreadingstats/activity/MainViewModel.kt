@@ -10,7 +10,8 @@ import com.milesilac.classreadingstats.model.emptyStudent
 import com.milesilac.classreadingstats.model.initClassSheet
 import com.milesilac.classreadingstats.repository.StudentsRepository
 import com.milesilac.classreadingstats.ui.screens.DeleteClassSheet
-import com.milesilac.classreadingstats.ui.screens.UpdateTempClassSheet
+import com.milesilac.classreadingstats.ui.screens.UpdateTempClassSheetForAddSection
+import com.milesilac.classreadingstats.ui.screens.UpdateTempClassSheetsForInputGrades
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -59,18 +60,18 @@ class MainViewModel(): ViewModel() {
             initialValue = initClassSheet()
         )
 
-    fun updateTempClassSheet(event: UpdateTempClassSheet) {
+    fun updateTempClassSheet(event: UpdateTempClassSheetForAddSection) {
         when(event) {
-            UpdateTempClassSheet.EventDelete -> {
+            UpdateTempClassSheetForAddSection.EventDelete -> {
                 _tempClassSheetState.update { initClassSheet() }
             }
-            is UpdateTempClassSheet.EventGradeLevel -> {
+            is UpdateTempClassSheetForAddSection.EventGradeLevel -> {
                 _tempClassSheetState.update { it.copy(classSection = it.classSection.copy(gradeLevel = event.gradeLevel)) }
             }
-            is UpdateTempClassSheet.EventSectionName -> {
+            is UpdateTempClassSheetForAddSection.EventSectionName -> {
                 _tempClassSheetState.update { it.copy(classSection = it.classSection.copy(sectionName = event.sectionName)) }
             }
-            is UpdateTempClassSheet.EventSectionStudent -> {
+            is UpdateTempClassSheetForAddSection.EventSectionStudent -> {
                 when (event.student.sex) {
                     StudentSexOrient.MALE -> {
                         _tempClassSheetState.update {
@@ -98,7 +99,7 @@ class MainViewModel(): ViewModel() {
 
     fun saveClassSheet() {
         viewModelScope.launch {
-            repository.saveClassSheet(classSheet = _tempClassSheetState.value)
+            repository.saveClassSheets(classSheets = listOf(_tempClassSheetState.value))
         }.invokeOnCompletion {
             _tempClassSheetState.update { initClassSheet() }
         }
@@ -218,6 +219,54 @@ class MainViewModel(): ViewModel() {
         getPersistenceStudentJob?.cancel() //to avoid existing getStudent Flow crash
         viewModelScope.launch {
             repository.deleteStudentsByRoomId(studentIds = studentPersistenceIds)
+        }
+    }
+
+    private val _tempClassSheetsStateForInputGrades = MutableStateFlow(listOf<ClassSheet>())
+    val tempClassSheetsStateForInputGrades = _tempClassSheetsStateForInputGrades
+        .onStart {
+            println("classInits classSheetsState: flowing")
+            viewModelScope.launch {
+                repository.getClassSheets().collect { classSheets -> _tempClassSheetsStateForInputGrades.update { classSheets } }
+            }
+        }
+        .stateInWhileSubscribed(
+            initialValue = listOf()
+        )
+
+    fun updateTempSheetsForInputGrades(event: UpdateTempClassSheetsForInputGrades) {
+        when(event) {
+            is UpdateTempClassSheetsForInputGrades.EventBaseSheetsUpdate -> {
+                _tempClassSheetsStateForInputGrades.update { _classSheetsState.value }
+            }
+            is UpdateTempClassSheetsForInputGrades.EventReadingTest -> {
+                _tempClassSheetsStateForInputGrades.update {
+                    it.toMutableList().apply {
+                        this.find { sheet ->
+                            sheet.classSection.persistenceId == event.sectionPersistenceId
+                        }?.let { thisSheet ->
+                            (thisSheet.maleStudents + thisSheet.femaleStudents).find { sList ->
+                                sList is StudentList.StudentDetails && sList.student.persistenceId == event.studentPersistenceId
+                            }?.let { thisSList ->
+                                when {
+                                    event.isPostTest -> (thisSList as StudentList.StudentDetails).student.postTest = event.newReadingTest
+                                    else -> (thisSList as StudentList.StudentDetails).student.preTest = event.newReadingTest
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    fun updateClassSheetsForInputGrades() {
+        viewModelScope.launch {
+            repository.saveClassSheets(classSheets = _tempClassSheetsStateForInputGrades.value)
+        }.invokeOnCompletion {
+            viewModelScope.launch {
+                repository.getClassSheets().collect { classSheets -> _tempClassSheetsStateForInputGrades.update { classSheets } }
+            }
         }
     }
 }

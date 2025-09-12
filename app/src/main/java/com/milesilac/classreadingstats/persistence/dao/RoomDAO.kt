@@ -23,7 +23,7 @@ interface RoomDAO {
     fun getStudent(studentId: Long): Flow<StudentRelationship>
 
     @Upsert
-    suspend fun saveSection(section: SectionEntity): Long
+    suspend fun updateSection(section: SectionEntity): Long
 
     @Upsert
     suspend fun updateStudents(students: List<StudentEntity>)

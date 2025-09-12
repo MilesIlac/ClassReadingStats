@@ -25,7 +25,8 @@ import com.milesilac.classreadingstats.ui.screens.HomePage
 import com.milesilac.classreadingstats.ui.screens.StudentDetailEditPage
 import com.milesilac.classreadingstats.ui.screens.StudentDetailsPage
 import com.milesilac.classreadingstats.ui.screens.StudentEditType
-import com.milesilac.classreadingstats.ui.screens.UpdateTempClassSheet
+import com.milesilac.classreadingstats.ui.screens.UpdateTempClassSheetForAddSection
+import com.milesilac.classreadingstats.ui.screens.UpdateTempClassSheetsForInputGrades
 
 class MainActivity : AppCompatActivity() {
 
@@ -51,6 +52,8 @@ class MainActivity : AppCompatActivity() {
             val tempStudentState by viewModel.tempStudentState.collectAsStateWithLifecycle()
             val localStudent by viewModel.localStudentState.collectAsStateWithLifecycle()
 
+            val tempClassSheetsForInputGrades by viewModel.tempClassSheetsStateForInputGrades.collectAsStateWithLifecycle()
+
             NavHost(navController = navController, startDestination = Routes.RouteHome) {
                 composable<Routes.RouteHome> {
                     HomePage(
@@ -75,6 +78,9 @@ class MainActivity : AppCompatActivity() {
                             viewModel.deleteStudents(studentPersistenceIds = studentPersistenceIds)
                         },
                         onEditGradesClick = { currentSectionId ->
+                            viewModel.updateTempSheetsForInputGrades(
+                                event = UpdateTempClassSheetsForInputGrades.EventBaseSheetsUpdate
+                            )
                             navController.navigate(
                                 Routes.RouteEditGrades(
                                     currentSectionId = currentSectionId
@@ -154,8 +160,15 @@ class MainActivity : AppCompatActivity() {
                 composable<Routes.RouteEditGrades> { backStackEntry ->
                     val routeEditGrades: Routes.RouteEditGrades = backStackEntry.toRoute()
                     EditStudentsGradesPage(
-                        sheets = currentSheets,
+                        sheets = tempClassSheetsForInputGrades,
                         currentSectionId = routeEditGrades.currentSectionId,
+                        onUpdateGrade = {
+                            viewModel.updateTempSheetsForInputGrades(event = it)
+                        },
+                        onSaveClick = {
+                            navController.navigateUp()
+                            viewModel.updateClassSheetsForInputGrades()
+                        },
                         onBackClick = { navController.navigateUp() },
                         onVisible = {
                             if (WindowCompat.getInsetsController(window, window.decorView).isAppearanceLightNavigationBars.not()) {
@@ -200,7 +213,7 @@ class MainActivity : AppCompatActivity() {
                                 }
                                 routeStudentDetailEdit.isFromAddSectionPage -> {
                                     viewModel.updateTempClassSheet(
-                                        event = UpdateTempClassSheet.EventSectionStudent(student = editedStudent)
+                                        event = UpdateTempClassSheetForAddSection.EventSectionStudent(student = editedStudent)
                                     )
                                 }
                                 routeStudentDetailEdit.studentEditType == StudentEditType.ADD -> {
