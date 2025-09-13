@@ -422,7 +422,7 @@ fun StudentGradeEditPage(
                         onValueChange = { newValue ->
                             newValue.inputFullCheckForDecimalString(
                                 currentValue = inputRC,
-                                errorValue = "-1",
+                                errorValue = "-1.0",
                                 returnValue = { returnValue ->
                                     inputRC = returnValue
                                 }
