@@ -39,10 +39,12 @@ fun calculateLearnerReadingComprehension(
 }
 
 fun calculateLearnerOverallReadingProfile(
+    isGSTPassed: Boolean,
     orLevel: LearnerLevel,
     rcLevel: LearnerLevel
 ): LearnerLevel {
     return when {
+        isGSTPassed -> LearnerLevel.INDEPENDENT
         orLevel == LearnerLevel.INDEPENDENT && rcLevel == LearnerLevel.INDEPENDENT -> LearnerLevel.INDEPENDENT
         orLevel == LearnerLevel.FRUSTRATION || rcLevel == LearnerLevel.FRUSTRATION -> LearnerLevel.FRUSTRATION
         orLevel == LearnerLevel.INSTRUCTIONAL || rcLevel == LearnerLevel.INSTRUCTIONAL -> LearnerLevel.INSTRUCTIONAL

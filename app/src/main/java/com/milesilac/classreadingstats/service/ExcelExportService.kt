@@ -86,7 +86,11 @@ fun exportNewFileToExcel(
                     studentORLevel = pretestORLevel.level,
                     studentRCPercentage = student.preTest.readingComprehension?.inputPercentage ?: -1.0,
                     studentRCLevel = pretestRCLevel.level,
-                    studentOverallReadingProfile = calculateLearnerOverallReadingProfile(orLevel = pretestORLevel, rcLevel = pretestRCLevel).level
+                    studentOverallReadingProfile = calculateLearnerOverallReadingProfile(
+                        isGSTPassed = student.preTest.shouldGradePassage().not(),
+                        orLevel = pretestORLevel,
+                        rcLevel = pretestRCLevel
+                    ).level
                 )
                 lastRowIndex++
             }
@@ -131,7 +135,11 @@ fun exportNewFileToExcel(
                     studentORLevel = pretestORLevel.level,
                     studentRCPercentage = student.preTest.readingComprehension?.inputPercentage ?: -1.0,
                     studentRCLevel = pretestRCLevel.level,
-                    studentOverallReadingProfile = calculateLearnerOverallReadingProfile(orLevel = pretestORLevel, rcLevel = pretestRCLevel).level
+                    studentOverallReadingProfile = calculateLearnerOverallReadingProfile(
+                        isGSTPassed = student.postTest?.shouldGradePassage()?.not() ?: false,
+                        orLevel = pretestORLevel,
+                        rcLevel = pretestRCLevel
+                    ).level
                 )
                 lastRowIndex++
             }

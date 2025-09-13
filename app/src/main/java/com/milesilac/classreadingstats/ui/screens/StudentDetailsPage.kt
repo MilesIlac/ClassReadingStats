@@ -62,10 +62,12 @@ fun StudentDetailsPage(
     val coroutineScope = rememberCoroutineScope()
 
     val readingProfilePreTest = calculateLearnerOverallReadingProfile(
+        isGSTPassed = student.preTest.shouldGradePassage().not(),
         orLevel = student.preTest.oralReading?.level ?: LearnerLevel.ERROR,
         rcLevel = student.preTest.readingComprehension?.level ?: LearnerLevel.ERROR
     )
     val readingProfilePostTest = calculateLearnerOverallReadingProfile(
+        isGSTPassed = student.postTest?.shouldGradePassage()?.not() ?: false,
         orLevel = student.postTest?.oralReading?.level ?: LearnerLevel.ERROR,
         rcLevel = student.postTest?.readingComprehension?.level ?: LearnerLevel.ERROR
     )
