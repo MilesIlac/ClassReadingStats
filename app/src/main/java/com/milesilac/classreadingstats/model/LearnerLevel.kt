@@ -39,7 +39,7 @@ fun calculateLearnerReadingComprehension(
 }
 
 fun calculateLearnerOverallReadingProfile(
-    isGSTPassed: Boolean,
+    isGSTPassed: Boolean = false,
     orLevel: LearnerLevel,
     rcLevel: LearnerLevel
 ): LearnerLevel {
@@ -48,6 +48,20 @@ fun calculateLearnerOverallReadingProfile(
         orLevel == LearnerLevel.INDEPENDENT && rcLevel == LearnerLevel.INDEPENDENT -> LearnerLevel.INDEPENDENT
         orLevel == LearnerLevel.FRUSTRATION || rcLevel == LearnerLevel.FRUSTRATION -> LearnerLevel.FRUSTRATION
         orLevel == LearnerLevel.INSTRUCTIONAL || rcLevel == LearnerLevel.INSTRUCTIONAL -> LearnerLevel.INSTRUCTIONAL
+        else -> LearnerLevel.ERROR
+    }
+}
+
+fun calculateGrandOverallReadingProfile(
+    isPreTestOnly: Boolean,
+    overallPreTest: LearnerLevel,
+    overallPostTest: LearnerLevel
+): LearnerLevel {
+    return when {
+        isPreTestOnly -> overallPreTest
+        overallPreTest == LearnerLevel.INDEPENDENT && overallPostTest == LearnerLevel.INDEPENDENT -> LearnerLevel.INDEPENDENT
+        overallPreTest == LearnerLevel.FRUSTRATION || overallPostTest == LearnerLevel.FRUSTRATION -> LearnerLevel.FRUSTRATION
+        overallPreTest == LearnerLevel.INSTRUCTIONAL || overallPostTest == LearnerLevel.INSTRUCTIONAL -> LearnerLevel.INSTRUCTIONAL
         else -> LearnerLevel.ERROR
     }
 }

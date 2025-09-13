@@ -9,6 +9,7 @@ import androidx.annotation.RequiresApi
 import com.milesilac.classreadingstats.model.ClassSheet
 import com.milesilac.classreadingstats.model.LearnerLevel
 import com.milesilac.classreadingstats.model.StudentList
+import com.milesilac.classreadingstats.model.calculateGrandOverallReadingProfile
 import com.milesilac.classreadingstats.model.calculateLearnerOverallReadingProfile
 import com.milesilac.classreadingstats.model.toSectionString
 import org.apache.poi.ss.usermodel.CellStyle
@@ -31,6 +32,7 @@ fun exportNewFileToExcel(
     val cellStyle = newBook.createCellStyle().apply {
         alignment = HorizontalAlignment.CENTER
         verticalAlignment = VerticalAlignment.CENTER
+        wrapText = true
     }
     val orPercentCellStyle = newBook.createCellStyle().apply {
         alignment = HorizontalAlignment.CENTER
@@ -70,27 +72,27 @@ fun exportNewFileToExcel(
                     studentOrderId = student.orderId,
                     studentName = student.name
                 )
-                val pretestORLevel = student.preTest.oralReading?.level ?: LearnerLevel.ERROR
-                val pretestRCLevel = student.preTest.readingComprehension?.level ?: LearnerLevel.ERROR
                 addStudentGrades(
                     classSheet = classSheet,
                     rowIndex = lastRowIndex,
                     cellStyle = cellStyle,
                     orPercentCellStyle = orPercentCellStyle,
                     rcPercentCellStyle = rcPercentCellStyle,
-                    studentGSTScore = student.preTest.groupScreeningTest.score,
-                    studentGSTComprehensionLevel = student.preTest.groupScreeningTest.comprehensionLevel.level,
-                    studentORNumberOfMiscues = student.preTest.oralReading?.numberOfMiscues ?: -1.0,
-                    studentORTotalNumberOfWords = student.preTest.oralReading?.totalNumberOfWordsInSelection ?: -1.0,
-                    studentORPercentage = student.preTest.oralReading?.percentage ?: -1.0,
-                    studentORLevel = pretestORLevel.level,
-                    studentRCPercentage = student.preTest.readingComprehension?.inputPercentage ?: -1.0,
-                    studentRCLevel = pretestRCLevel.level,
-                    studentOverallReadingProfile = calculateLearnerOverallReadingProfile(
-                        isGSTPassed = student.preTest.shouldGradePassage().not(),
-                        orLevel = pretestORLevel,
-                        rcLevel = pretestRCLevel
-                    ).level
+                    studentPreGSTScore = student.preTest.groupScreeningTest.score,
+                    studentPreGSTComprehensionLevel = student.preTest.groupScreeningTest.comprehensionLevel.level,
+                    studentIsGSTPassed = student.preTest.shouldGradePassage().not(),
+                    studentPreORNumberOfMiscues = student.preTest.oralReading?.numberOfMiscues ?: -1.0,
+                    studentPreORTotalNumberOfWords = student.preTest.oralReading?.totalNumberOfWordsInSelection ?: -1.0,
+                    studentPreORPercentage = student.preTest.oralReading?.percentage ?: -1.0,
+                    studentPreORLevel = student.preTest.oralReading?.level ?: LearnerLevel.ERROR,
+                    studentPreRCPercentage = student.preTest.readingComprehension?.inputPercentage ?: -1.0,
+                    studentPreRCLevel = student.preTest.readingComprehension?.level ?: LearnerLevel.ERROR,
+                    studentPostORNumberOfMiscues = student.postTest?.oralReading?.numberOfMiscues ?: -1.0,
+                    studentPostORTotalNumberOfWords = student.postTest?.oralReading?.totalNumberOfWordsInSelection ?: -1.0,
+                    studentPostORPercentage = student.postTest?.oralReading?.percentage ?: -1.0,
+                    studentPostORLevel = student.postTest?.oralReading?.level ?: LearnerLevel.ERROR,
+                    studentPostRCPercentage = student.postTest?.readingComprehension?.inputPercentage ?: -1.0,
+                    studentPostRCLevel = student.postTest?.readingComprehension?.level ?: LearnerLevel.ERROR
                 )
                 lastRowIndex++
             }
@@ -119,27 +121,27 @@ fun exportNewFileToExcel(
                     studentOrderId = student.orderId,
                     studentName = student.name
                 )
-                val pretestORLevel = student.preTest.oralReading?.level ?: LearnerLevel.ERROR
-                val pretestRCLevel = student.preTest.readingComprehension?.level ?: LearnerLevel.ERROR
                 addStudentGrades(
                     classSheet = classSheet,
                     rowIndex = lastRowIndex,
                     cellStyle = cellStyle,
                     orPercentCellStyle = orPercentCellStyle,
                     rcPercentCellStyle = rcPercentCellStyle,
-                    studentGSTScore = student.preTest.groupScreeningTest.score,
-                    studentGSTComprehensionLevel = student.preTest.groupScreeningTest.comprehensionLevel.level,
-                    studentORNumberOfMiscues = student.preTest.oralReading?.numberOfMiscues ?: -1.0,
-                    studentORTotalNumberOfWords = student.preTest.oralReading?.totalNumberOfWordsInSelection ?: -1.0,
-                    studentORPercentage = student.preTest.oralReading?.percentage ?: -1.0,
-                    studentORLevel = pretestORLevel.level,
-                    studentRCPercentage = student.preTest.readingComprehension?.inputPercentage ?: -1.0,
-                    studentRCLevel = pretestRCLevel.level,
-                    studentOverallReadingProfile = calculateLearnerOverallReadingProfile(
-                        isGSTPassed = student.postTest?.shouldGradePassage()?.not() ?: false,
-                        orLevel = pretestORLevel,
-                        rcLevel = pretestRCLevel
-                    ).level
+                    studentPreGSTScore = student.preTest.groupScreeningTest.score,
+                    studentPreGSTComprehensionLevel = student.preTest.groupScreeningTest.comprehensionLevel.level,
+                    studentIsGSTPassed = student.preTest.shouldGradePassage().not(),
+                    studentPreORNumberOfMiscues = student.preTest.oralReading?.numberOfMiscues ?: -1.0,
+                    studentPreORTotalNumberOfWords = student.preTest.oralReading?.totalNumberOfWordsInSelection ?: -1.0,
+                    studentPreORPercentage = student.preTest.oralReading?.percentage ?: -1.0,
+                    studentPreORLevel = student.preTest.oralReading?.level ?: LearnerLevel.ERROR,
+                    studentPreRCPercentage = student.preTest.readingComprehension?.inputPercentage ?: -1.0,
+                    studentPreRCLevel = student.preTest.readingComprehension?.level ?: LearnerLevel.ERROR,
+                    studentPostORNumberOfMiscues = student.postTest?.oralReading?.numberOfMiscues ?: -1.0,
+                    studentPostORTotalNumberOfWords = student.postTest?.oralReading?.totalNumberOfWordsInSelection ?: -1.0,
+                    studentPostORPercentage = student.postTest?.oralReading?.percentage ?: -1.0,
+                    studentPostORLevel = student.postTest?.oralReading?.level ?: LearnerLevel.ERROR,
+                    studentPostRCPercentage = student.postTest?.readingComprehension?.inputPercentage ?: -1.0,
+                    studentPostRCLevel = student.postTest?.readingComprehension?.level ?: LearnerLevel.ERROR
                 )
                 lastRowIndex++
             }
@@ -297,11 +299,19 @@ fun XSSFSheet.createGradeLabels(
         setCellStyle(cellStyle)
     }
     zeroRow.createCell(20).apply {
+        setCellValue("Pre-Test Reading Profile".uppercase())
+        setCellStyle(cellStyle)
+    }
+    zeroRow.createCell(21).apply {
         setCellValue("Post-Test".uppercase())
         setCellStyle(cellStyle)
     }
+    zeroRow.createCell(27).apply {
+        setCellValue("Post-Test Reading Profile".uppercase())
+        setCellStyle(cellStyle)
+    }
     zeroRow.createCell(28).apply {
-        setCellValue("Reading Profile".uppercase())
+        setCellValue("Overall Reading Profile".uppercase())
         setCellStyle(cellStyle)
     }
 
@@ -315,11 +325,7 @@ fun XSSFSheet.createGradeLabels(
         setCellValue("Graded Passage".uppercase())
         setCellStyle(cellStyle)
     }
-    oneRow.createCell(20).apply {
-        setCellValue("Group Screening Test".uppercase())
-        setCellStyle(cellStyle)
-    }
-    oneRow.createCell(22).apply {
+    oneRow.createCell(21).apply {
         setCellValue("Graded Passage".uppercase())
         setCellStyle(cellStyle)
     }
@@ -338,7 +344,7 @@ fun XSSFSheet.createGradeLabels(
         setCellValue("Reading Comprehension".uppercase())
         setCellStyle(cellStyle)
     }
-    twoRow.createCell(22).apply {
+    twoRow.createCell(21).apply {
         setCellValue("Oral Reading".uppercase())
         setCellStyle(cellStyle)
     }
@@ -385,35 +391,27 @@ fun XSSFSheet.createGradeLabels(
         setCellValue("Reading Level".uppercase())
         setCellStyle(cellStyle)
     }
-    threeRow.createCell(20).apply {
-        setCellValue("Score".uppercase())
-        setCellStyle(cellStyle)
-    }
     threeRow.createCell(21).apply {
-        setCellValue("Comprehension Level".uppercase())
-        setCellStyle(cellStyle)
-    }
-    threeRow.createCell(22).apply {
         setCellValue("Number of Miscues".uppercase())
         setCellStyle(cellStyle)
     }
-    threeRow.createCell(23).apply {
+    threeRow.createCell(22).apply {
         setCellValue("Total Number of Words".uppercase())
         setCellStyle(cellStyle)
     }
-    threeRow.createCell(24).apply {
+    threeRow.createCell(23).apply {
         setCellValue("Percentage".uppercase())
         setCellStyle(cellStyle)
     }
-    threeRow.createCell(25).apply {
+    threeRow.createCell(24).apply {
         setCellValue("Reading Level".uppercase())
         setCellStyle(cellStyle)
     }
-    threeRow.createCell(26).apply {
+    threeRow.createCell(25).apply {
         setCellValue("Percentage".uppercase())
         setCellStyle(cellStyle)
     }
-    threeRow.createCell(27).apply {
+    threeRow.createCell(26).apply {
         setCellValue("Reading Level".uppercase())
         setCellStyle(cellStyle)
     }
@@ -442,23 +440,26 @@ fun XSSFSheet.createGradeLabels(
         CellRangeAddress(rowStartIndex + 2,rowStartIndex + 2,18,19)
     ) // Pre-Test Reading Comprehension merge
     classSheet.addMergedRegion(
-        CellRangeAddress(rowStartIndex,rowStartIndex,20,27)
+        CellRangeAddress(rowStartIndex,rowStartIndex + 3,20,20)
+    ) // Pre-Test Reading Profile merge
+    classSheet.addMergedRegion(
+        CellRangeAddress(rowStartIndex,rowStartIndex,21,26)
     ) // Post-Test merge
     classSheet.addMergedRegion(
-        CellRangeAddress(rowStartIndex + 1,rowStartIndex + 2,20,21)
-    ) // Post-Test Group Screening Test merge
-    classSheet.addMergedRegion(
-        CellRangeAddress(rowStartIndex + 1,rowStartIndex + 1,22,27)
+        CellRangeAddress(rowStartIndex + 1,rowStartIndex + 1,21,26)
     ) // Post-Test Graded Passage merge
     classSheet.addMergedRegion(
-        CellRangeAddress(rowStartIndex + 2,rowStartIndex + 2,22,25)
+        CellRangeAddress(rowStartIndex + 2,rowStartIndex + 2,21,24)
     ) // Post-Test Oral Reading merge
     classSheet.addMergedRegion(
-        CellRangeAddress(rowStartIndex + 2,rowStartIndex + 2,26,27)
+        CellRangeAddress(rowStartIndex + 2,rowStartIndex + 2,25,26)
     ) // Post-Test Reading Comprehension merge
     classSheet.addMergedRegion(
+        CellRangeAddress(rowStartIndex,rowStartIndex + 3,27,27)
+    ) // Post-Test Reading Profile merge
+    classSheet.addMergedRegion(
         CellRangeAddress(rowStartIndex,rowStartIndex + 3,28,28)
-    ) // Reading Profile merge
+    ) // Grand Overall Reading Profile merge
 
     if (rowStartIndex == 0) { //the following logic should now be called once when rowStartIndex == initialRowStartIndex
         for (columnIndex in 10..40) {
@@ -506,59 +507,119 @@ fun addStudentGrades(
     cellStyle: CellStyle,
     orPercentCellStyle: CellStyle,
     rcPercentCellStyle: CellStyle,
-    studentGSTScore: Double,
-    studentGSTComprehensionLevel: String,
-    studentORNumberOfMiscues: Double,
-    studentORTotalNumberOfWords: Double,
-    studentORPercentage: Double,
-    studentORLevel: String,
-    studentRCPercentage: Double,
-    studentRCLevel: String,
-    studentOverallReadingProfile: String,
+    studentPreGSTScore: Double,
+    studentPreGSTComprehensionLevel: String,
+    studentIsGSTPassed: Boolean,
+    studentPreORNumberOfMiscues: Double,
+    studentPreORTotalNumberOfWords: Double,
+    studentPreORPercentage: Double,
+    studentPreORLevel: LearnerLevel,
+    studentPreRCPercentage: Double,
+    studentPreRCLevel: LearnerLevel,
+    studentPostORNumberOfMiscues: Double,
+    studentPostORTotalNumberOfWords: Double,
+    studentPostORPercentage: Double,
+    studentPostORLevel: LearnerLevel,
+    studentPostRCPercentage: Double,
+    studentPostRCLevel: LearnerLevel,
 ) {
     val studentRow = classSheet.getOrCreateRow(rowIndex)
     studentRow.createCell(12).apply {
-        setCellValue(studentGSTScore)
+        setCellValue(studentPreGSTScore)
         setCellStyle(cellStyle)
     }
     studentRow.createCell(13).apply {
-        setCellValue(studentGSTComprehensionLevel)
+        setCellValue(studentPreGSTComprehensionLevel)
         setCellStyle(cellStyle)
     }
     studentRow.createCell(14).apply {
-        if (studentORNumberOfMiscues > -1) {
-            setCellValue(studentORNumberOfMiscues)
+        if (studentPreORNumberOfMiscues > -1) {
+            setCellValue(studentPreORNumberOfMiscues)
         } else setCellValue("")
         setCellStyle(cellStyle)
     }
     studentRow.createCell(15).apply {
-        if (studentORTotalNumberOfWords > -1) {
-            setCellValue(studentORTotalNumberOfWords)
+        if (studentPreORTotalNumberOfWords > -1) {
+            setCellValue(studentPreORTotalNumberOfWords)
         } else setCellValue("")
         setCellStyle(cellStyle)
     }
     studentRow.createCell(16).apply {
-        if (studentORPercentage != -0.01) {
-            setCellValue(studentORPercentage)
+        if (studentPreORPercentage != -0.01) {
+            setCellValue(studentPreORPercentage)
         } else setCellValue("")
         setCellStyle(orPercentCellStyle)
     }
     studentRow.createCell(17).apply {
-        setCellValue(studentORLevel)
+        setCellValue(studentPreORLevel.level)
         setCellStyle(cellStyle)
     }
     studentRow.createCell(18).apply {
-        if (studentRCPercentage > -1) {
-            setCellValue(studentRCPercentage)
+        if (studentPreRCPercentage > -1) {
+            setCellValue(studentPreRCPercentage)
         } else setCellValue("")
         setCellStyle(rcPercentCellStyle)
     }
     studentRow.createCell(19).apply {
-        setCellValue(studentRCLevel)
+        setCellValue(studentPreRCLevel.level)
         setCellStyle(cellStyle)
     }
+    val studentPreTestOverallReadingProfile = calculateLearnerOverallReadingProfile(
+        isGSTPassed = studentIsGSTPassed,
+        orLevel = studentPreORLevel,
+        rcLevel = studentPreRCLevel
+    )
+    studentRow.createCell(20).apply {
+        setCellValue(studentPreTestOverallReadingProfile.level)
+        setCellStyle(cellStyle)
+    }
+    studentRow.createCell(21).apply {
+        if (studentPostORNumberOfMiscues > -1) {
+            setCellValue(studentPostORNumberOfMiscues)
+        } else setCellValue("")
+        setCellStyle(cellStyle)
+    }
+    studentRow.createCell(22).apply {
+        if (studentPostORTotalNumberOfWords > -1) {
+            setCellValue(studentPostORTotalNumberOfWords)
+        } else setCellValue("")
+        setCellStyle(cellStyle)
+    }
+    studentRow.createCell(23).apply {
+        if (studentPostORPercentage != -0.01) {
+            setCellValue(studentPostORPercentage)
+        } else setCellValue("")
+        setCellStyle(orPercentCellStyle)
+    }
+    studentRow.createCell(24).apply {
+        setCellValue(studentPostORLevel.level)
+        setCellStyle(cellStyle)
+    }
+    studentRow.createCell(25).apply {
+        if (studentPostRCPercentage > -1) {
+            setCellValue(studentPostRCPercentage)
+        } else setCellValue("")
+        setCellStyle(rcPercentCellStyle)
+    }
+    studentRow.createCell(26).apply {
+        setCellValue(studentPostRCLevel.level)
+        setCellStyle(cellStyle)
+    }
+    val studentPostTestOverallReadingProfile = calculateLearnerOverallReadingProfile(
+        orLevel = studentPostORLevel,
+        rcLevel = studentPostRCLevel
+    )
+    studentRow.createCell(27).apply {
+        setCellValue(studentPostTestOverallReadingProfile.level)
+        setCellStyle(cellStyle)
+    }
+    val studentGrandOverallReadingProfile = calculateGrandOverallReadingProfile(
+        isPreTestOnly = studentPostTestOverallReadingProfile.level.isEmpty(),
+        overallPreTest = studentPreTestOverallReadingProfile,
+        overallPostTest = studentPostTestOverallReadingProfile
+    )
     studentRow.createCell(28).apply {
-        setCellValue(studentOverallReadingProfile)
+        setCellValue(studentGrandOverallReadingProfile.level)
         setCellStyle(cellStyle)
     }
 }
