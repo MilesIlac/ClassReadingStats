@@ -286,7 +286,7 @@ fun StudentDetailEditPage(
                     StudentGradeEditPage(
                         modifier = Modifier,
                         studentPersistenceId = student.persistenceId,
-                        studentTest = student.postTest ?: emptyReadingTest(),
+                        studentTest = student.postTest ?: emptyReadingTest(isPostTest = true),
                         onUpdateGrade = { readingTest ->
                             onUpdate(
                                 StudentDetailEditEvent.EventReadingTest(

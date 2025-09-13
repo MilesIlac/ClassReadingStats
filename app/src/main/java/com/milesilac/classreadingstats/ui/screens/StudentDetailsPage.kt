@@ -55,7 +55,9 @@ fun StudentDetailsPage(
     onVisible: () -> Unit = {}
 ) {
     onVisible()
-    val hasPostTest = student.postTest != null
+    val hasPostTest = student.postTest?.let {
+        it.groupScreeningTest.score != -1.0
+    } ?: false
     val pagerState = rememberPagerState(pageCount = { if (hasPostTest) 2 else 1 })
     val coroutineScope = rememberCoroutineScope()
 

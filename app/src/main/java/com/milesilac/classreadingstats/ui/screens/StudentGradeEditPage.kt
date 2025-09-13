@@ -67,7 +67,7 @@ fun StudentGradeEditPage(
         derivedStateOf {
             ReadingTest(
                 groupScreeningTest = GroupScreeningTest(
-                    score = runCatching { inputGST.toDouble() }.getOrElse { 0.0 }
+                    score = runCatching { inputGST.toDouble() }.getOrElse { -1.0 }
                 ),
                 oralReading = OralReading(
                     totalNumberOfWordsInSelection = runCatching { inputORTotalWords.toDouble() }.getOrElse { -1.0 },

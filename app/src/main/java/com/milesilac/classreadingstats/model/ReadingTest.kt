@@ -11,8 +11,11 @@ data class ReadingTest(
     fun shouldGradePassage() = groupScreeningTest.comprehensionLevel != ComprehensionLevel.PASSED
 }
 
-fun emptyReadingTest() = ReadingTest(
+fun emptyReadingTest(isPostTest: Boolean = false) = ReadingTest(
     groupScreeningTest = GroupScreeningTest(
-        score = 0.0
+        score = when {
+            isPostTest -> -1.0
+            else -> 0.0
+        }
     )
 )
