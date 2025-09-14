@@ -66,4 +66,4 @@ inline fun String.inputFullCheckForDecimalString(
 
 fun String.isAllLetters() = this.all { it.isLetter() || it.isWhitespace() }
 
-fun String.capitalizeMaybe() = replaceFirstChar { if (it.isLowerCase()) it.titlecase(getDefault()) else it.toString() }
+fun String.capitalizeMaybeWithTrim() = trim().replaceFirstChar { if (it.isLowerCase()) it.titlecase(getDefault()) else it.toString() }

@@ -31,8 +31,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.milesilac.classreadingstats.helpers.capitalizeMaybe
-import com.milesilac.classreadingstats.helpers.isAllLetters
+import com.milesilac.classreadingstats.helpers.capitalizeMaybeWithTrim
 import com.milesilac.classreadingstats.ui.theme.ProjectColors
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -85,9 +84,7 @@ fun EditStudentNameDialogLayout(
         OutlinedTextField(
             value = inputName,
             onValueChange = { newValue ->
-                if (newValue.isAllLetters()) {
-                    inputName = newValue.capitalizeMaybe()
-                }
+                inputName = newValue.capitalizeMaybeWithTrim()
             },
             modifier = Modifier
                 .fillMaxWidth(),

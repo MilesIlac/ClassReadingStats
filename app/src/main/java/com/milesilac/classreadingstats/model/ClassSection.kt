@@ -1,6 +1,6 @@
 package com.milesilac.classreadingstats.model
 
-import com.milesilac.classreadingstats.helpers.capitalizeMaybe
+import com.milesilac.classreadingstats.helpers.capitalizeMaybeWithTrim
 import com.milesilac.classreadingstats.model.level.GradeLevel
 import kotlinx.serialization.Serializable
 import kotlin.enums.enumEntries
@@ -37,7 +37,7 @@ fun String.toClassSection(): ClassSection {
     val gradeLevel = gradeLevels.find { it.name == gradeLevelString.trim() }
         ?: gradeLevels.find { it.grade.toString() == gradeLevelString.trim() }
         ?: GradeLevel.ERROR
-    val sectionName = sectionNameString.trim().capitalizeMaybe()
+    val sectionName = sectionNameString.capitalizeMaybeWithTrim()
     return when {
         gradeLevel == GradeLevel.ERROR -> ClassSection(gradeLevel = gradeLevel, sectionName = "")
         else -> ClassSection(gradeLevel = gradeLevel, sectionName = sectionName)
