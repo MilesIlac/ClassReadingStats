@@ -44,6 +44,7 @@ import androidx.compose.ui.unit.sp
 import com.milesilac.classreadingstats.helpers.checkIfAddOtherModifier
 import com.milesilac.classreadingstats.helpers.nonScaledSp
 import com.milesilac.classreadingstats.model.ClassSection
+import com.milesilac.classreadingstats.model.ClassSheet
 import com.milesilac.classreadingstats.model.test.ReadingTest
 import com.milesilac.classreadingstats.model.Student
 import com.milesilac.classreadingstats.model.StudentList
@@ -51,10 +52,13 @@ import com.milesilac.classreadingstats.model.StudentSexOrient
 import com.milesilac.classreadingstats.model.test.emptyReadingTest
 import com.milesilac.classreadingstats.model.emptyStudent
 import com.milesilac.classreadingstats.model.initClassSection
+import com.milesilac.classreadingstats.model.initClassSheet
 import com.milesilac.classreadingstats.model.toSectionString
 import com.milesilac.classreadingstats.ui.components.EditPostTestDialog
 import com.milesilac.classreadingstats.ui.components.EditStudentInfoDialog
 import com.milesilac.classreadingstats.ui.components.EditStudentNameDialog
+import com.milesilac.classreadingstats.ui.components.SaveErrorDialog
+import com.milesilac.classreadingstats.ui.components.SaveErrorEvent
 import com.milesilac.classreadingstats.ui.components.StudentInfoType
 import com.milesilac.classreadingstats.ui.dummyStudentListsEightAmethyst
 import com.milesilac.classreadingstats.ui.theme.ProjectColors
@@ -66,6 +70,7 @@ fun StudentDetailEditPage(
     studentEditType: StudentEditType = StudentEditType.ADD,
     isFromAddSectionPage: Boolean = false,
     student: Student = emptyStudent(),
+    currentSheets: List<ClassSheet> = listOf(),
     classSections: List<ClassSection> = listOf(),
     onUpdate: (StudentDetailEditEvent) -> Unit = {},
     onSaveClick: () -> Unit = {},
@@ -73,6 +78,18 @@ fun StudentDetailEditPage(
     onVisible: () -> Unit = {}
 ) {
     onVisible()
+    val currentSheet = currentSheets.find { it.classSection == student.section } ?: initClassSheet()
+    val students = (currentSheet.maleStudents + currentSheet.femaleStudents).mapNotNull {
+        if (it is StudentList.StudentDetails) it.student else null
+    }
+    val hasIssues = listOf(
+        student.name.isEmpty() to SaveErrorEvent.AddStudentErrorEvent.AddStudentName(),
+        (student.section == initClassSection()) to SaveErrorEvent.AddStudentErrorEvent.PickSection(),
+        (student.sex == StudentSexOrient.ERROR) to SaveErrorEvent.AddStudentErrorEvent.PickSexOrient(),
+        (students.find {
+            it.name.trim().uppercase() == student.name.trim().uppercase() && it.sex == student.sex
+        } != null) to SaveErrorEvent.AddStudentErrorEvent.ExistingStudent(),
+    )
     var hasPostTest by rememberSaveable { mutableStateOf(student.hasPostTest) }
     val pagerState = rememberPagerState(pageCount = { if (hasPostTest) 2 else 1 })
     val coroutineScope = rememberCoroutineScope()
@@ -80,6 +97,7 @@ fun StudentDetailEditPage(
     var showPickSectionDialog by rememberSaveable { mutableStateOf(false) }
     var showMaleOrFemaleDialog by rememberSaveable { mutableStateOf(false) }
     var showEditPostTestDialog by rememberSaveable { mutableStateOf(false) }
+    var showSaveErrorDialog by rememberSaveable { mutableStateOf(false) }
 
     Column(
         modifier = Modifier
@@ -235,7 +253,7 @@ fun StudentDetailEditPage(
                         textAlign = TextAlign.Center
                     )
                     val inputSectionSubtext = if (isFromAddSectionPage.not()) {
-                        "Click to Edit"
+                        "Click to Edit Section"
                     } else "(From Add Section)"
                     Text(
                         text = inputSectionSubtext,
@@ -258,7 +276,7 @@ fun StudentDetailEditPage(
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     val inputSOrient = if (student.sex == StudentSexOrient.ERROR) {
-                        "--"
+                        "Male/Female?"
                     } else student.sex.wordedLabel
                     Text(
                         text = inputSOrient,
@@ -411,7 +429,12 @@ fun StudentDetailEditPage(
                 horizontalArrangement = Arrangement.SpaceEvenly
             ) {
                 OutlinedButton(
-                    onClick = { onSaveClick() },
+                    onClick = {
+                        when {
+                            hasIssues.any { it.first } -> showSaveErrorDialog = true
+                            else -> onSaveClick()
+                        }
+                    },
                     modifier = Modifier,
                     colors = ButtonColors(
                         containerColor = Color.White,
@@ -519,6 +542,15 @@ fun StudentDetailEditPage(
                             pagerState.animateScrollToPage(page = 1)
                         }
                     }
+                )
+            }
+            showSaveErrorDialog -> {
+                val currentIssues = hasIssues.mapNotNull {
+                    if (it.first) it.second else null
+                }
+                SaveErrorDialog(
+                    errorEvents = currentIssues,
+                    onDismissDialog = { showSaveErrorDialog = false }
                 )
             }
         }

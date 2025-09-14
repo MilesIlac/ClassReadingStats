@@ -51,12 +51,15 @@ import com.milesilac.classreadingstats.model.level.GradeLevel
 import com.milesilac.classreadingstats.model.StudentList
 import com.milesilac.classreadingstats.model.initClassSheet
 import com.milesilac.classreadingstats.ui.components.EditSectionNameDialog
+import com.milesilac.classreadingstats.ui.components.SaveErrorDialog
+import com.milesilac.classreadingstats.ui.components.SaveErrorEvent
 import com.milesilac.classreadingstats.ui.theme.ProjectColors
 import kotlin.enums.enumEntries
 
 @Composable
 fun AddSectionPage(
     tempClassSheet: ClassSheet = initClassSheet(),
+    currentSections: List<ClassSection> = listOf(),
     onUpdate: (UpdateTempClassSheetForAddSection) -> Unit = {},
     onSaveClick: () -> Unit = {},
     onBackClick: (UpdateTempClassSheetForAddSection) -> Unit = {},
@@ -66,8 +69,16 @@ fun AddSectionPage(
     onVisible()
     val selectedGradeLevel = tempClassSheet.classSection.gradeLevel
     val inputSectionName = tempClassSheet.classSection.sectionName
+    val hasIssues = listOf(
+        (selectedGradeLevel == GradeLevel.ERROR) to SaveErrorEvent.AddSectionErrorEvent.AddGradeLevel(),
+        inputSectionName.isEmpty() to SaveErrorEvent.AddSectionErrorEvent.AddSectionName(),
+        (currentSections.find { it.gradeLevel == selectedGradeLevel
+                && it.sectionName.trim().uppercase() == inputSectionName.trim().uppercase()
+        } != null) to SaveErrorEvent.AddSectionErrorEvent.ExistingSection()
+    )
     val hasGradeAndSection = selectedGradeLevel != GradeLevel.ERROR && inputSectionName.isNotEmpty()
     var showEditDialog by rememberSaveable { mutableStateOf(false) }
+    var showSaveErrorDialog by rememberSaveable { mutableStateOf(false) }
 
 //    val students = dummyStudentListsEightAmethyst.maleStudents.filter { it is StudentList.StudentDetails }.map {
 //        (it as StudentList.StudentDetails).student
@@ -441,7 +452,12 @@ fun AddSectionPage(
                 horizontalArrangement = Arrangement.SpaceEvenly
             ) {
                 OutlinedButton(
-                    onClick = { onSaveClick() },
+                    onClick = {
+                        when {
+                            hasIssues.any { it.first } -> showSaveErrorDialog = true
+                            else -> onSaveClick()
+                        }
+                    },
                     modifier = Modifier,
                     colors = ButtonColors(
                         containerColor = Color.White,
@@ -510,6 +526,15 @@ fun AddSectionPage(
                     onUpdate(UpdateTempClassSheetForAddSection.EventSectionName(sectionName = newInputName))
                     showEditDialog = false
                 }
+            )
+        }
+        if (showSaveErrorDialog) {
+            val currentIssues = hasIssues.mapNotNull {
+                if (it.first) it.second else null
+            }
+            SaveErrorDialog(
+                errorEvents = currentIssues,
+                onDismissDialog = { showSaveErrorDialog = false }
             )
         }
     }

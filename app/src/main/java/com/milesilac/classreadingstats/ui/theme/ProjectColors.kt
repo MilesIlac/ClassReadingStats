@@ -42,5 +42,6 @@ class ProjectColors {
         val OffRed1 = Color(0xFF990000)
         val OffRed2 = Color(0xFF5F0505)
         val OffRed3 = Color(0xFFCD8282)
+        val OffRed4 = Color(0xFFD51111)
     }
 }

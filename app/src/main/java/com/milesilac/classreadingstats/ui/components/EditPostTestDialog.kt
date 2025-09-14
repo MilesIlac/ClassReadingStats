@@ -21,6 +21,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -58,7 +59,7 @@ fun EditPostTestDialogLayout(
     Column(
         modifier = Modifier
             .background(
-                color = ProjectColors.OffRed1,
+                color = ProjectColors.OffOrange4,
                 shape = RoundedCornerShape(24.dp)
             )
             .clip(shape = RoundedCornerShape(24.dp))
@@ -66,19 +67,19 @@ fun EditPostTestDialogLayout(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(
-            text = "Note",
-            color = ProjectColors.OffWhite4
+            text = "NOTE",
+            color = ProjectColors.OffGreen4
         )
         Spacer(modifier = Modifier.height(8.dp))
         Column(
             modifier = Modifier
                 .background(
-                    color = ProjectColors.OffRed2,
+                    color = ProjectColors.OffOrange1,
                     shape = RoundedCornerShape(8.dp)
                 )
                 .border(
                     width = 1.dp,
-                    color = ProjectColors.OffWhite4,
+                    color = ProjectColors.OffBrown1,
                     shape = RoundedCornerShape(8.dp)
                 )
                 .clip(shape = RoundedCornerShape(8.dp))
@@ -92,7 +93,7 @@ fun EditPostTestDialogLayout(
                         vertical = 12.dp
                     )
                     .fillMaxWidth(),
-                color = ProjectColors.OffWhite4,
+                color = Color.Black,
                 textAlign = TextAlign.Center
             )
         }
@@ -107,14 +108,14 @@ fun EditPostTestDialogLayout(
                 modifier = Modifier,
                 shape = RoundedCornerShape(12.dp),
                 colors = ButtonColors(
-                    containerColor = ProjectColors.OffRed3,
-                    contentColor = ProjectColors.OffBrown1,
-                    disabledContainerColor = ProjectColors.OffRed3,
-                    disabledContentColor = ProjectColors.OffBrown1
+                    containerColor = ProjectColors.OffOrange3,
+                    contentColor = ProjectColors.OffGreen4,
+                    disabledContainerColor = ProjectColors.OffOrange3,
+                    disabledContentColor = ProjectColors.OffGreen4
                 ),
                 border = BorderStroke(
                     width = 1.dp,
-                    color = ProjectColors.OffWhite4
+                    color = ProjectColors.OffBrown3
                 ),
                 contentPadding = PaddingValues(
                     horizontal = 16.dp,
@@ -136,14 +137,14 @@ fun EditPostTestDialogLayout(
                 modifier = Modifier,
                 shape = RoundedCornerShape(12.dp),
                 colors = ButtonColors(
-                    containerColor = ProjectColors.OffRed3,
-                    contentColor = ProjectColors.OffBrown1,
-                    disabledContainerColor = ProjectColors.OffRed3,
-                    disabledContentColor = ProjectColors.OffBrown1
+                    containerColor = ProjectColors.OffOrange3,
+                    contentColor = ProjectColors.OffGreen4,
+                    disabledContainerColor = ProjectColors.OffOrange3,
+                    disabledContentColor = ProjectColors.OffGreen4
                 ),
                 border = BorderStroke(
                     width = 1.dp,
-                    color = ProjectColors.OffWhite4
+                    color = ProjectColors.OffBrown3
                 ),
                 contentPadding = PaddingValues(
                     horizontal = 16.dp,
@@ -155,7 +156,7 @@ fun EditPostTestDialogLayout(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text(
-                        text = "Back",
+                        text = "BACK",
                         modifier = Modifier,
                     )
                 }

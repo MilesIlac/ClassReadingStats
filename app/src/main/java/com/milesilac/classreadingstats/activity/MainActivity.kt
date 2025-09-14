@@ -108,6 +108,7 @@ class MainActivity : AppCompatActivity() {
                 composable<Routes.RouteAddSection> {
                     AddSectionPage(
                         tempClassSheet = tempClassSheet,
+                        currentSections = currentSections,
                         onUpdate = { viewModel.updateTempClassSheet(event = it) },
                         onSaveClick = {
                             viewModel.saveClassSheet()
@@ -204,6 +205,7 @@ class MainActivity : AppCompatActivity() {
                         studentEditType = routeStudentDetailEdit.studentEditType,
                         student = tempStudentState,
                         isFromAddSectionPage = routeStudentDetailEdit.isFromAddSectionPage,
+                        currentSheets = currentSheets,
                         classSections = currentSections,
                         onUpdate = { viewModel.updateTempStudent(event = it) },
                         onSaveClick = {
