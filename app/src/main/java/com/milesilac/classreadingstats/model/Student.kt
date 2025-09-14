@@ -1,5 +1,9 @@
 package com.milesilac.classreadingstats.model
 
+import com.milesilac.classreadingstats.model.test.GroupScreeningTest
+import com.milesilac.classreadingstats.model.test.ReadingTest
+import com.milesilac.classreadingstats.model.test.emptyReadingTest
+import com.milesilac.classreadingstats.model.test.initGST
 import kotlinx.serialization.Serializable
 import kotlin.enums.enumEntries
 

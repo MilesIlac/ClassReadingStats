@@ -4,10 +4,10 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.milesilac.classreadingstats.model.ClassSection
-import com.milesilac.classreadingstats.model.GroupScreeningTest
-import com.milesilac.classreadingstats.model.OralReading
-import com.milesilac.classreadingstats.model.ReadingComprehension
-import com.milesilac.classreadingstats.model.ReadingTest
+import com.milesilac.classreadingstats.model.test.GroupScreeningTest
+import com.milesilac.classreadingstats.model.test.OralReading
+import com.milesilac.classreadingstats.model.test.ReadingComprehension
+import com.milesilac.classreadingstats.model.test.ReadingTest
 import com.milesilac.classreadingstats.model.Student
 import com.milesilac.classreadingstats.model.StudentList
 import com.milesilac.classreadingstats.model.StudentSexOrient

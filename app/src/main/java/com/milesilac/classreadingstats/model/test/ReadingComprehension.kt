@@ -1,5 +1,7 @@
-package com.milesilac.classreadingstats.model
+package com.milesilac.classreadingstats.model.test
 
+import com.milesilac.classreadingstats.model.level.LearnerLevel
+import com.milesilac.classreadingstats.model.level.calculateLearnerReadingComprehension
 import kotlinx.serialization.Serializable
 
 @Serializable

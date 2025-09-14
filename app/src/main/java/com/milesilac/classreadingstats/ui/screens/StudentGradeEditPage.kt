@@ -38,10 +38,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.milesilac.classreadingstats.helpers.inputFullCheckForDecimalString
 import com.milesilac.classreadingstats.helpers.inputFullCheckForIntString
-import com.milesilac.classreadingstats.model.GroupScreeningTest
-import com.milesilac.classreadingstats.model.OralReading
-import com.milesilac.classreadingstats.model.ReadingComprehension
-import com.milesilac.classreadingstats.model.ReadingTest
+import com.milesilac.classreadingstats.model.test.GroupScreeningTest
+import com.milesilac.classreadingstats.model.test.OralReading
+import com.milesilac.classreadingstats.model.test.ReadingComprehension
+import com.milesilac.classreadingstats.model.test.ReadingTest
 import com.milesilac.classreadingstats.model.StudentList
 import com.milesilac.classreadingstats.ui.dummyStudentListsEightAmethyst
 import com.milesilac.classreadingstats.ui.theme.ProjectColors

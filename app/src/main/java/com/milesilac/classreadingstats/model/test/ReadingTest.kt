@@ -1,4 +1,4 @@
-package com.milesilac.classreadingstats.model
+package com.milesilac.classreadingstats.model.test
 
 import kotlinx.serialization.Serializable
 

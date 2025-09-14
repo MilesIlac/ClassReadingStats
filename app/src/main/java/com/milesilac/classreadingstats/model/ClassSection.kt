@@ -1,8 +1,8 @@
 package com.milesilac.classreadingstats.model
 
 import com.milesilac.classreadingstats.helpers.capitalizeMaybe
+import com.milesilac.classreadingstats.model.level.GradeLevel
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.json.Json
 import kotlin.enums.enumEntries
 
 @Serializable
@@ -10,9 +10,7 @@ data class ClassSection(
     var persistenceId: Long = 0,
     var gradeLevel: GradeLevel = GradeLevel.EIGHT,
     var sectionName: String
-) {
-    fun toJsonString() = Json.encodeToString(this)
-}
+)
 
 fun initClassSection() = ClassSection(
     gradeLevel = GradeLevel.ERROR,

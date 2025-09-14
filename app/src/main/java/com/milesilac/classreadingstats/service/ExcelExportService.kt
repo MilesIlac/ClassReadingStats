@@ -7,11 +7,11 @@ import android.os.Environment
 import android.provider.MediaStore
 import androidx.annotation.RequiresApi
 import com.milesilac.classreadingstats.model.ClassSheet
-import com.milesilac.classreadingstats.model.GroupScreeningTest
-import com.milesilac.classreadingstats.model.LearnerLevel
+import com.milesilac.classreadingstats.model.test.GroupScreeningTest
+import com.milesilac.classreadingstats.model.level.LearnerLevel
 import com.milesilac.classreadingstats.model.StudentList
-import com.milesilac.classreadingstats.model.calculateGrandOverallReadingProfile
-import com.milesilac.classreadingstats.model.calculateLearnerOverallReadingProfile
+import com.milesilac.classreadingstats.model.level.calculateGrandOverallReadingProfile
+import com.milesilac.classreadingstats.model.level.calculateLearnerOverallReadingProfile
 import com.milesilac.classreadingstats.model.toSectionString
 import org.apache.poi.ss.usermodel.CellStyle
 import org.apache.poi.ss.usermodel.HorizontalAlignment

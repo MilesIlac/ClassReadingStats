@@ -3,7 +3,7 @@ package com.milesilac.classreadingstats.persistence.model
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.milesilac.classreadingstats.model.GradeLevel
+import com.milesilac.classreadingstats.model.level.GradeLevel
 
 @Entity(tableName = "sections")
 data class SectionEntity(

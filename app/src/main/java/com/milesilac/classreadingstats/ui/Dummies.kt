@@ -2,11 +2,11 @@ package com.milesilac.classreadingstats.ui
 
 import com.milesilac.classreadingstats.model.ClassSection
 import com.milesilac.classreadingstats.model.ClassSheet
-import com.milesilac.classreadingstats.model.GradeLevel
-import com.milesilac.classreadingstats.model.GroupScreeningTest
-import com.milesilac.classreadingstats.model.OralReading
-import com.milesilac.classreadingstats.model.ReadingComprehension
-import com.milesilac.classreadingstats.model.ReadingTest
+import com.milesilac.classreadingstats.model.level.GradeLevel
+import com.milesilac.classreadingstats.model.test.GroupScreeningTest
+import com.milesilac.classreadingstats.model.test.OralReading
+import com.milesilac.classreadingstats.model.test.ReadingComprehension
+import com.milesilac.classreadingstats.model.test.ReadingTest
 import com.milesilac.classreadingstats.model.Student
 import com.milesilac.classreadingstats.model.StudentList
 import com.milesilac.classreadingstats.model.StudentSexOrient

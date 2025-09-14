@@ -6,7 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.milesilac.classreadingstats.helpers.transformFromJsonString
 import com.milesilac.classreadingstats.helpers.transformToJsonString
 import com.milesilac.classreadingstats.model.ClassSheet
-import com.milesilac.classreadingstats.model.GroupScreeningTest
+import com.milesilac.classreadingstats.model.test.GroupScreeningTest
 import com.milesilac.classreadingstats.model.Student
 import com.milesilac.classreadingstats.model.StudentList
 import com.milesilac.classreadingstats.model.StudentSexOrient

@@ -42,11 +42,11 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.milesilac.classreadingstats.model.ClassSheet
-import com.milesilac.classreadingstats.model.OralReading
-import com.milesilac.classreadingstats.model.ReadingComprehension
-import com.milesilac.classreadingstats.model.ReadingTest
+import com.milesilac.classreadingstats.model.test.OralReading
+import com.milesilac.classreadingstats.model.test.ReadingComprehension
+import com.milesilac.classreadingstats.model.test.ReadingTest
 import com.milesilac.classreadingstats.model.StudentList
-import com.milesilac.classreadingstats.model.emptyReadingTest
+import com.milesilac.classreadingstats.model.test.emptyReadingTest
 import com.milesilac.classreadingstats.model.initClassSheet
 import com.milesilac.classreadingstats.model.toSectionString
 import com.milesilac.classreadingstats.ui.components.EditStudentGradesDialog

@@ -1,4 +1,4 @@
-package com.milesilac.classreadingstats.model
+package com.milesilac.classreadingstats.model.level
 
 import kotlin.enums.enumEntries
 

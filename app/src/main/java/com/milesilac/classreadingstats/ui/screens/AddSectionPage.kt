@@ -47,7 +47,7 @@ import androidx.compose.ui.unit.sp
 import com.milesilac.classreadingstats.helpers.nonScaledSp
 import com.milesilac.classreadingstats.model.ClassSection
 import com.milesilac.classreadingstats.model.ClassSheet
-import com.milesilac.classreadingstats.model.GradeLevel
+import com.milesilac.classreadingstats.model.level.GradeLevel
 import com.milesilac.classreadingstats.model.StudentList
 import com.milesilac.classreadingstats.model.initClassSheet
 import com.milesilac.classreadingstats.ui.components.EditSectionNameDialog

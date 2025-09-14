@@ -37,10 +37,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.milesilac.classreadingstats.helpers.nonScaledSp
-import com.milesilac.classreadingstats.model.LearnerLevel
+import com.milesilac.classreadingstats.model.level.LearnerLevel
 import com.milesilac.classreadingstats.model.Student
 import com.milesilac.classreadingstats.model.StudentList
-import com.milesilac.classreadingstats.model.calculateLearnerOverallReadingProfile
+import com.milesilac.classreadingstats.model.level.calculateLearnerOverallReadingProfile
 import com.milesilac.classreadingstats.model.toSectionString
 import com.milesilac.classreadingstats.ui.dummyStudentListsEightAmethyst
 import com.milesilac.classreadingstats.ui.theme.ProjectColors

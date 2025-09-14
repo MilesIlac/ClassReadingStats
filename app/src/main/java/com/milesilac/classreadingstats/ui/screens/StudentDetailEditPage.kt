@@ -44,11 +44,11 @@ import androidx.compose.ui.unit.sp
 import com.milesilac.classreadingstats.helpers.checkIfAddOtherModifier
 import com.milesilac.classreadingstats.helpers.nonScaledSp
 import com.milesilac.classreadingstats.model.ClassSection
-import com.milesilac.classreadingstats.model.ReadingTest
+import com.milesilac.classreadingstats.model.test.ReadingTest
 import com.milesilac.classreadingstats.model.Student
 import com.milesilac.classreadingstats.model.StudentList
 import com.milesilac.classreadingstats.model.StudentSexOrient
-import com.milesilac.classreadingstats.model.emptyReadingTest
+import com.milesilac.classreadingstats.model.test.emptyReadingTest
 import com.milesilac.classreadingstats.model.emptyStudent
 import com.milesilac.classreadingstats.model.initClassSection
 import com.milesilac.classreadingstats.model.toSectionString
