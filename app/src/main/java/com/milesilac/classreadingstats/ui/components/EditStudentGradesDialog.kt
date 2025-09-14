@@ -27,6 +27,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -37,10 +38,11 @@ import kotlin.enums.enumEntries
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun EditStudentGradesDialog(
+    hasPostTest: Boolean = false,
     currentTestType: TestEditType = TestEditType.PRETEST,
     currentGradeType: GradeEditType = GradeEditType.GST,
     onDismissDialog: () -> Unit = {},
-    onOkayClick: (TestEditType, GradeEditType) -> Unit = { _,_ -> },
+    onOkayClick: (Boolean, TestEditType, GradeEditType) -> Unit = { _,_,_ -> },
 ) {
     BasicAlertDialog(
         onDismissRequest = {
@@ -48,6 +50,7 @@ fun EditStudentGradesDialog(
         }
     ) {
         EditStudentGradesDialogLayout(
+            hasPostTest = hasPostTest,
             currentTestType = currentTestType,
             currentGradeType = currentGradeType,
             onOkayClick = onOkayClick
@@ -63,16 +66,23 @@ fun EditStudentGradesDialogPreview() {
 
 @Composable
 fun EditStudentGradesDialogLayout(
+    hasPostTest: Boolean = false,
     currentTestType: TestEditType = TestEditType.PRETEST,
     currentGradeType: GradeEditType = GradeEditType.GST,
-    onOkayClick: (TestEditType, GradeEditType) -> Unit = { _,_ -> },
+    onOkayClick: (Boolean, TestEditType, GradeEditType) -> Unit = { _,_,_ -> },
 ) {
+    var hasPostTestValue by remember { mutableStateOf(hasPostTest) }
     var selectedTest by remember { mutableStateOf(currentTestType) }
     var selectedGradeType by remember { mutableStateOf(currentGradeType) }
+    if (selectedTest == TestEditType.POSTTEST && selectedGradeType == GradeEditType.GST) {
+        selectedGradeType = GradeEditType.OR
+    }
 
     val radioButtonColors = RadioButtonDefaults.colors(
         selectedColor = ProjectColors.OffWhite4,
         unselectedColor = ProjectColors.OffWhite4,
+        disabledSelectedColor = Color.DarkGray,
+        disabledUnselectedColor = Color.DarkGray
     )
 
     Column(
@@ -107,11 +117,21 @@ fun EditStudentGradesDialogLayout(
                 .clip(shape = RoundedCornerShape(8.dp)),
         ) {
             enumEntries<TestEditType>().forEach { test ->
+                val isOnPostTest = test == TestEditType.POSTTEST && hasPostTestValue.not()
+                val choiceEnabled = when {
+                    test == TestEditType.POSTTEST -> hasPostTestValue
+                    else -> true
+                }
                 Row(
                     Modifier
                         .selectable(
                             selected = (selectedTest == test),
-                            onClick = { selectedTest = test },
+                            onClick = {
+                                when {
+                                    isOnPostTest -> hasPostTestValue = true
+                                    else -> selectedTest = test
+                                }
+                            },
                             role = Role.RadioButton
                         )
                         .padding(horizontal = 16.dp)
@@ -121,6 +141,7 @@ fun EditStudentGradesDialogLayout(
                     RadioButton(
                         selected = (selectedTest == test),
                         onClick = null, // null recommended for accessibility with screen readers,
+                        enabled = choiceEnabled,
                         colors = radioButtonColors
                     )
                     Text(
@@ -129,9 +150,24 @@ fun EditStudentGradesDialogLayout(
                             .padding(
                                 horizontal = 8.dp,
                                 vertical = 16.dp
-                            ),
-                        color = ProjectColors.OffWhite4
+                            )
+                            .weight(1F),
+                        color = when {
+                            choiceEnabled -> ProjectColors.OffWhite4
+                            else -> Color.DarkGray
+                        }
                     )
+                    if (isOnPostTest) {
+                        Text(
+                            text = "UNLOCK",
+                            modifier = Modifier
+                                .padding(
+                                    horizontal = 8.dp,
+                                    vertical = 16.dp
+                                ),
+                            color = ProjectColors.OffWhite4
+                        )
+                    }
                 }
             }
         }
@@ -150,20 +186,29 @@ fun EditStudentGradesDialogLayout(
                 .clip(shape = RoundedCornerShape(8.dp)),
         ) {
             enumEntries<GradeEditType>().forEach { gradeType ->
+                val choiceEnabled = when {
+                    selectedTest == TestEditType.POSTTEST -> gradeType != GradeEditType.GST
+                    else -> true
+                }
                 Row(
                     Modifier
                         .selectable(
                             selected = (selectedGradeType == gradeType),
+                            enabled = choiceEnabled,
+                            role = Role.RadioButton,
                             onClick = { selectedGradeType = gradeType },
-                            role = Role.RadioButton
                         )
                         .padding(horizontal = 16.dp)
                         .fillMaxWidth(),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     RadioButton(
-                        selected = (selectedGradeType == gradeType),
+                        selected = when {
+                            choiceEnabled -> (selectedGradeType == gradeType)
+                            else -> false
+                        },
                         onClick = null, // null recommended for accessibility with screen readers,
+                        enabled = choiceEnabled,
                         colors = radioButtonColors
                     )
                     Text(
@@ -173,7 +218,10 @@ fun EditStudentGradesDialogLayout(
                                 horizontal = 8.dp,
                                 vertical = 16.dp
                             ),
-                        color = ProjectColors.OffWhite4
+                        color = when {
+                            choiceEnabled -> ProjectColors.OffWhite4
+                            else -> Color.DarkGray
+                        }
                     )
                 }
             }
@@ -181,7 +229,7 @@ fun EditStudentGradesDialogLayout(
         Spacer(modifier = Modifier.height(8.dp))
         OutlinedButton(
             onClick = {
-                onOkayClick(selectedTest, selectedGradeType)
+                onOkayClick(hasPostTestValue, selectedTest, selectedGradeType)
             },
             modifier = Modifier,
             shape = RoundedCornerShape(12.dp),

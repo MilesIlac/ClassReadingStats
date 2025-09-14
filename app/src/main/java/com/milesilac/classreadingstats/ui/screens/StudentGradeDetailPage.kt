@@ -16,7 +16,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.milesilac.classreadingstats.model.LearnerLevel
+import com.milesilac.classreadingstats.model.GroupScreeningTest
 import com.milesilac.classreadingstats.model.ReadingTest
 import com.milesilac.classreadingstats.model.StudentList
 import com.milesilac.classreadingstats.ui.dummyStudentListsEightAmethyst
@@ -24,16 +24,21 @@ import com.milesilac.classreadingstats.ui.theme.ProjectColors
 
 @Composable
 fun StudentGradeDetailPage(
+    isPostTest: Boolean = false,
+    gst: GroupScreeningTest,
     studentTest: ReadingTest,
 ) {
     val scrollState = rememberScrollState()
-    val shouldGradePassage = studentTest.shouldGradePassage()
+    val shouldGradePassage = when {
+        isPostTest -> true
+        else -> gst.shouldGradePassage()
+    }
 
-    val oralReadingPercentage = studentTest.oralReading?.percentage ?: -1.0
-    val oralReadingLearnerLevel = studentTest.oralReading?.level ?: LearnerLevel.ERROR
+    val oralReadingPercentage = studentTest.oralReading.percentage
+    val oralReadingLearnerLevel = studentTest.oralReading.level
 
-    val readingComprehensionPercentage = studentTest.readingComprehension?.inputPercentage ?: -1.0
-    val readingComprehensionLearnerLevel = studentTest.readingComprehension?.level ?: LearnerLevel.ERROR
+    val readingComprehensionPercentage = studentTest.readingComprehension.inputPercentage
+    val readingComprehensionLearnerLevel = studentTest.readingComprehension.level
 
     Column(
         modifier = Modifier
@@ -41,40 +46,40 @@ fun StudentGradeDetailPage(
             .fillMaxSize()
             .verticalScroll(state = scrollState)
     ) {
-        Column(
-            modifier = Modifier
-                .background(color = ProjectColors.OffViolet1)
-                .padding(
-                    horizontal = 12.dp,
-                    vertical = 12.dp
+        if (isPostTest.not()) {
+            Column(
+                modifier = Modifier
+                    .background(color = ProjectColors.OffViolet1)
+                    .padding(
+                        horizontal = 12.dp,
+                        vertical = 12.dp
+                    )
+                    .fillMaxWidth()
+                    .align(Alignment.CenterHorizontally),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Text(
+                    text = "Group Screening Test Score",
+                    modifier = Modifier,
+                    color = ProjectColors.OffWhite4,
+                    fontSize = 24.sp,
+                    textAlign = TextAlign.Center
                 )
-                .fillMaxWidth()
-                .align(Alignment.CenterHorizontally),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
+            }
             Text(
-                text = "Group Screening Test Score",
-                modifier = Modifier,
-                color = ProjectColors.OffWhite4,
-                fontSize = 24.sp,
+                text = "${gst.score.toInt()} (Level - ${gst.comprehensionLevel.level})",
+                modifier = Modifier
+                    .padding(
+                        horizontal = 12.dp,
+                        vertical = 12.dp
+                    )
+                    .fillMaxWidth()
+                    .align(Alignment.CenterHorizontally),
+                color = Color.Black,
+                fontSize = 20.sp,
                 textAlign = TextAlign.Center
             )
         }
-        val gstScore = studentTest.groupScreeningTest.score
-        val gstComprehensionLevel = studentTest.groupScreeningTest.comprehensionLevel
-        Text(
-            text = "${gstScore.toInt()} (Level - ${gstComprehensionLevel.level})",
-            modifier = Modifier
-                .padding(
-                    horizontal = 12.dp,
-                    vertical = 12.dp
-                )
-                .fillMaxWidth()
-                .align(Alignment.CenterHorizontally),
-            color = Color.Black,
-            fontSize = 20.sp,
-            textAlign = TextAlign.Center
-        )
         if (shouldGradePassage) {
             Column(
                 modifier = Modifier
@@ -106,7 +111,7 @@ fun StudentGradeDetailPage(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Text(
-                    text = "No. Of Miscues: ${(studentTest.oralReading?.numberOfMiscues ?: -1).toInt()}",
+                    text = "No. Of Miscues: ${studentTest.oralReading.numberOfMiscues.toInt()}",
                     modifier = Modifier,
                     color = Color.Black,
                     fontSize = 20.sp,
@@ -178,7 +183,9 @@ fun StudentGradeDetailPage(
 @Preview
 @Composable
 fun StudentGradeDetailPagePreview() {
+    val student = (dummyStudentListsEightAmethyst.maleStudents[15] as StudentList.StudentDetails).student
     StudentGradeDetailPage(
-        studentTest = (dummyStudentListsEightAmethyst.maleStudents[15] as StudentList.StudentDetails).student.preTest
+        gst = student.gst,
+        studentTest = student.preTest
     )
 }

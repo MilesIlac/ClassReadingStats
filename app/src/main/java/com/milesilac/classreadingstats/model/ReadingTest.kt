@@ -4,18 +4,8 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class ReadingTest(
-    var groupScreeningTest: GroupScreeningTest,
-    var oralReading: OralReading? = null,
-    var readingComprehension: ReadingComprehension? = null
-) {
-    fun shouldGradePassage() = groupScreeningTest.comprehensionLevel != ComprehensionLevel.PASSED
-}
-
-fun emptyReadingTest(isPostTest: Boolean = false) = ReadingTest(
-    groupScreeningTest = GroupScreeningTest(
-        score = when {
-            isPostTest -> -1.0
-            else -> 0.0
-        }
-    )
+    var oralReading: OralReading = initOralReading(),
+    var readingComprehension: ReadingComprehension = initReadingComprehension()
 )
+
+fun emptyReadingTest() = ReadingTest()

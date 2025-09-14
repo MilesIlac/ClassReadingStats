@@ -8,3 +8,7 @@ data class ReadingComprehension(
 ) {
     val level: LearnerLevel get() = calculateLearnerReadingComprehension(percentage = inputPercentage)
 }
+
+fun initReadingComprehension() = ReadingComprehension(
+    inputPercentage = -1.0,
+)

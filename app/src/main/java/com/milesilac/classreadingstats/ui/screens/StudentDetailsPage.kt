@@ -55,19 +55,17 @@ fun StudentDetailsPage(
     onVisible: () -> Unit = {}
 ) {
     onVisible()
-    val hasPostTest = student.postTest?.let {
-        it.groupScreeningTest.score != -1.0
-    } ?: false
+    val hasPostTest = student.hasPostTest
     val pagerState = rememberPagerState(pageCount = { if (hasPostTest) 2 else 1 })
     val coroutineScope = rememberCoroutineScope()
 
     val readingProfilePreTest = calculateLearnerOverallReadingProfile(
-        isGSTPassed = student.preTest.shouldGradePassage().not(),
-        orLevel = student.preTest.oralReading?.level ?: LearnerLevel.ERROR,
-        rcLevel = student.preTest.readingComprehension?.level ?: LearnerLevel.ERROR
+        isGSTPassed = student.gst.shouldGradePassage().not(),
+        orLevel = student.preTest.oralReading.level,
+        rcLevel = student.preTest.readingComprehension.level
     )
     val readingProfilePostTest = calculateLearnerOverallReadingProfile(
-        isGSTPassed = student.postTest?.shouldGradePassage()?.not() ?: false,
+        isGSTPassed = false,
         orLevel = student.postTest?.oralReading?.level ?: LearnerLevel.ERROR,
         rcLevel = student.postTest?.readingComprehension?.level ?: LearnerLevel.ERROR
     )
@@ -167,10 +165,13 @@ fun StudentDetailsPage(
             when (page) {
                 1 -> {
                     StudentGradeDetailPage(
+                        isPostTest = true,
+                        gst = student.gst,
                         studentTest = student.postTest ?: student.preTest,
                     )
                 }
                 else -> StudentGradeDetailPage(
+                    gst = student.gst,
                     studentTest = student.preTest,
                 )
             }

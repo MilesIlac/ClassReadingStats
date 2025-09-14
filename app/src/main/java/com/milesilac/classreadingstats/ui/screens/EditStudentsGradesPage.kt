@@ -42,11 +42,11 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.milesilac.classreadingstats.model.ClassSheet
-import com.milesilac.classreadingstats.model.GroupScreeningTest
 import com.milesilac.classreadingstats.model.OralReading
 import com.milesilac.classreadingstats.model.ReadingComprehension
 import com.milesilac.classreadingstats.model.ReadingTest
 import com.milesilac.classreadingstats.model.StudentList
+import com.milesilac.classreadingstats.model.emptyReadingTest
 import com.milesilac.classreadingstats.model.initClassSheet
 import com.milesilac.classreadingstats.model.toSectionString
 import com.milesilac.classreadingstats.ui.components.EditStudentGradesDialog
@@ -76,6 +76,13 @@ fun EditStudentsGradesPage(
             sheets.find {
                 it.classSection.persistenceId == currentSectionId
             } ?: runCatching { sheets[0] }.getOrElse { initClassSheet() }
+        )
+    }
+    var hasPostTest by rememberSaveable(currentSheet) {
+        mutableStateOf(
+            (currentSheet.maleStudents + currentSheet.femaleStudents).any { sList ->
+                sList is StudentList.StudentDetails && sList.student.hasPostTest
+            }
         )
     }
     var currentTest by rememberSaveable { mutableStateOf(TestEditType.PRETEST) }
@@ -213,20 +220,16 @@ fun EditStudentsGradesPage(
                     is StudentList.Header -> {}
                     is StudentList.StudentDetails -> {
                         item {
-                            var inputGSTPreTest by rememberSaveable(studentItem.student) { mutableStateOf("${studentItem.student.preTest.groupScreeningTest.score.toInt()}") }
-                            var inputORTotalWordsPreTest by rememberSaveable(studentItem.student) { mutableStateOf("${studentItem.student.preTest.oralReading?.totalNumberOfWordsInSelection?.toInt()}") }
-                            var inputORMiscuesPreTest by rememberSaveable(studentItem.student) { mutableStateOf("${studentItem.student.preTest.oralReading?.numberOfMiscues?.toInt()}") }
-                            var inputRCPreTest by rememberSaveable(studentItem.student) { mutableStateOf("${studentItem.student.preTest.readingComprehension?.inputPercentage}") }
-                            var inputGSTPostTest by rememberSaveable(studentItem.student) { mutableStateOf("${studentItem.student.postTest?.groupScreeningTest?.score?.toInt()}") }
-                            var inputORTotalWordsPostTest by rememberSaveable(studentItem.student) { mutableStateOf("${studentItem.student.postTest?.oralReading?.totalNumberOfWordsInSelection?.toInt()}") }
-                            var inputORMiscuesPostTest by rememberSaveable(studentItem.student) { mutableStateOf("${studentItem.student.postTest?.oralReading?.numberOfMiscues?.toInt()}") }
-                            var inputRCPostTest by rememberSaveable(studentItem.student) { mutableStateOf("${studentItem.student.postTest?.readingComprehension?.inputPercentage}") }
+                            var inputGST by rememberSaveable(studentItem.student) { mutableStateOf("${studentItem.student.gst.score.toInt()}") }
+                            var inputORTotalWordsPreTest by rememberSaveable(studentItem.student) { mutableStateOf("${studentItem.student.preTest.oralReading.totalNumberOfWordsInSelection.toInt()}") }
+                            var inputORMiscuesPreTest by rememberSaveable(studentItem.student) { mutableStateOf("${studentItem.student.preTest.oralReading.numberOfMiscues.toInt()}") }
+                            var inputRCPreTest by rememberSaveable(studentItem.student) { mutableStateOf("${studentItem.student.preTest.readingComprehension.inputPercentage}") }
+                            var inputORTotalWordsPostTest by rememberSaveable(studentItem.student) { mutableStateOf("${(studentItem.student.postTest?.oralReading?.totalNumberOfWordsInSelection ?: -1.0).toInt()}") }
+                            var inputORMiscuesPostTest by rememberSaveable(studentItem.student) { mutableStateOf("${(studentItem.student.postTest?.oralReading?.numberOfMiscues ?: -1.0).toInt()}") }
+                            var inputRCPostTest by rememberSaveable(studentItem.student) { mutableStateOf("${(studentItem.student.postTest?.readingComprehension?.inputPercentage ?: -1.0)}") }
                             val newReadingTestPre by remember {
                                 derivedStateOf {
                                     ReadingTest(
-                                        groupScreeningTest = GroupScreeningTest(
-                                            score = runCatching { inputGSTPreTest.toDouble() }.getOrElse { 0.0 }
-                                        ),
                                         oralReading = OralReading(
                                             totalNumberOfWordsInSelection = runCatching { inputORTotalWordsPreTest.toDouble() }.getOrElse { -1.0 },
                                             numberOfMiscues = runCatching { inputORMiscuesPreTest.toDouble() }.getOrElse { -1.0 }
@@ -240,9 +243,6 @@ fun EditStudentsGradesPage(
                             val newReadingTestPost by remember {
                                 derivedStateOf {
                                     ReadingTest(
-                                        groupScreeningTest = GroupScreeningTest(
-                                            score = runCatching { inputGSTPostTest.toDouble() }.getOrElse { -1.0 }
-                                        ),
                                         oralReading = OralReading(
                                             totalNumberOfWordsInSelection = runCatching { inputORTotalWordsPostTest.toDouble() }.getOrElse { -1.0 },
                                             numberOfMiscues = runCatching { inputORMiscuesPostTest.toDouble() }.getOrElse { -1.0 }
@@ -254,6 +254,23 @@ fun EditStudentsGradesPage(
                                 }
                             }
 
+                            // Listen for gst input change
+                            LaunchedEffect(studentItem.student.persistenceId) {
+                                snapshotFlow { inputGST }
+                                    .distinctUntilChanged()
+                                    .debounce(800L)
+                                    .collect { gst ->
+                                        // Trigger your side-effect here
+                                        onUpdateGrade(
+                                            UpdateTempClassSheetsForInputGrades.EventGST(
+                                                sectionPersistenceId = currentSheet.classSection.persistenceId,
+                                                studentPersistenceId = studentItem.student.persistenceId,
+                                                gstScore = runCatching { gst.toDouble() }.getOrElse { 0.0 }
+                                            )
+                                        )
+                                    }
+                            }
+
                             // Listen for readingTest input change
                             LaunchedEffect(studentItem.student.persistenceId) {
                                 snapshotFlow { newReadingTestPre }
@@ -261,14 +278,17 @@ fun EditStudentsGradesPage(
                                     .debounce(800L)
                                     .collect { readingTest ->
                                         // Trigger your side-effect here
-                                        onUpdateGrade(
-                                            UpdateTempClassSheetsForInputGrades.EventReadingTest(
-                                                sectionPersistenceId = currentSheet.classSection.persistenceId,
-                                                studentPersistenceId = studentItem.student.persistenceId,
-                                                isPostTest = false,
-                                                newReadingTest = readingTest
+                                        if (studentItem.student.preTest != readingTest) {
+                                            onUpdateGrade(
+                                                UpdateTempClassSheetsForInputGrades.EventReadingTest(
+                                                    sectionPersistenceId = currentSheet.classSection.persistenceId,
+                                                    studentPersistenceId = studentItem.student.persistenceId,
+                                                    hasPostTest = studentItem.student.hasPostTest,
+                                                    isPostTest = false,
+                                                    newReadingTest = readingTest
+                                                )
                                             )
-                                        )
+                                        }
                                     }
                             }
 
@@ -279,14 +299,17 @@ fun EditStudentsGradesPage(
                                     .debounce(800L)
                                     .collect { readingTest ->
                                         // Trigger your side-effect here
-                                        onUpdateGrade(
-                                            UpdateTempClassSheetsForInputGrades.EventReadingTest(
-                                                sectionPersistenceId = currentSheet.classSection.persistenceId,
-                                                studentPersistenceId = studentItem.student.persistenceId,
-                                                isPostTest = true,
-                                                newReadingTest = readingTest
+                                        if (studentItem.student.postTest != readingTest || readingTest != emptyReadingTest()) {
+                                            onUpdateGrade(
+                                                UpdateTempClassSheetsForInputGrades.EventReadingTest(
+                                                    sectionPersistenceId = currentSheet.classSection.persistenceId,
+                                                    studentPersistenceId = studentItem.student.persistenceId,
+                                                    hasPostTest = hasPostTest,
+                                                    isPostTest = true,
+                                                    newReadingTest = readingTest
+                                                )
                                             )
-                                        )
+                                        }
                                     }
                             }
 
@@ -316,8 +339,8 @@ fun EditStudentsGradesPage(
                                     modifier = Modifier
                                         .weight(0.5F),
                                     gstScoreIntString = when (currentTest) {
-                                        TestEditType.PRETEST -> inputGSTPreTest
-                                        TestEditType.POSTTEST -> inputGSTPostTest
+                                        TestEditType.PRETEST -> inputGST
+                                        TestEditType.POSTTEST -> ""
                                     },
                                     orTotalWordsIntString = when (currentTest) {
                                         TestEditType.PRETEST -> inputORTotalWordsPreTest
@@ -333,8 +356,8 @@ fun EditStudentsGradesPage(
                                     },
                                     onGSTScoreEdit = { newInput ->
                                         when (currentTest) {
-                                            TestEditType.PRETEST -> inputGSTPreTest = newInput
-                                            TestEditType.POSTTEST -> inputGSTPostTest = newInput
+                                            TestEditType.PRETEST -> inputGST = newInput
+                                            TestEditType.POSTTEST -> {}
                                         }
                                     },
                                     onORTotalWordsEdit = { newInput ->
@@ -482,10 +505,12 @@ fun EditStudentsGradesPage(
             showPickGradeTypeDialog -> {
                 showPickSectionDialog = false
                 EditStudentGradesDialog(
+                    hasPostTest = hasPostTest,
                     currentTestType = currentTest,
                     currentGradeType = currentGradeEditType,
                     onDismissDialog = { showPickGradeTypeDialog = false },
-                    onOkayClick = { selectedTest, selectedGradeType ->
+                    onOkayClick = { hasPostTestValue, selectedTest, selectedGradeType ->
+                        hasPostTest = hasPostTestValue
                         currentTest = selectedTest
                         currentGradeEditType = selectedGradeType
                         showPickGradeTypeDialog = false
@@ -511,9 +536,15 @@ fun EditStudentsGradesPagePreview() {
 }
 
 sealed class UpdateTempClassSheetsForInputGrades {
+    data class EventGST(
+        val sectionPersistenceId: Long,
+        val studentPersistenceId: Long,
+        val gstScore: Double
+    ) : UpdateTempClassSheetsForInputGrades()
     data class EventReadingTest(
         val sectionPersistenceId: Long,
         val studentPersistenceId: Long,
+        val hasPostTest: Boolean,
         val isPostTest: Boolean,
         val newReadingTest: ReadingTest
     ) : UpdateTempClassSheetsForInputGrades()

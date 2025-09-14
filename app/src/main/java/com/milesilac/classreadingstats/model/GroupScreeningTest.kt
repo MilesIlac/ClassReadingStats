@@ -9,4 +9,8 @@ class GroupScreeningTest(
     val comprehensionLevel: ComprehensionLevel get() = calculateComprehensionLevel(
         score = score.toInt()
     )
+
+    fun shouldGradePassage() = comprehensionLevel != ComprehensionLevel.PASSED
 }
+
+fun initGST() = GroupScreeningTest(score = 0.0)

@@ -19,11 +19,11 @@ data class StudentEntity(
     @ColumnInfo(name = "order_id") val orderId: Double,
     @ColumnInfo(name = "student_name") val studentName: String,
     val sex: StudentSexOrient,
-    @ColumnInfo(name = "pre_gst_score") val preGSTScore: Double,
+    @ColumnInfo(name = "has_post_test") val hasPostTest: Boolean,
+    @ColumnInfo(name = "gst_score") val gstScore: Double,
     @ColumnInfo(name = "pre_or_total_words") val preORTotalNumberOfWords: Double,
     @ColumnInfo(name = "pre_or_miscues") val preORNumberOfMiscues: Double,
     @ColumnInfo(name = "pre_rc_percent") val preRCInputPercentage: Double,
-    @ColumnInfo(name = "post_gst_score") val postGSTScore: Double?,
     @ColumnInfo(name = "post_or_total_words") val postORTotalNumberOfWords: Double?,
     @ColumnInfo(name = "post_or_miscues") val postORNumberOfMiscues: Double?,
     @ColumnInfo(name = "post_rc_percent") val postRCInputPercentage: Double?,
@@ -53,10 +53,9 @@ fun StudentEntity.mapStudentEntity(classSection: ClassSection) = Student(
     name = this.studentName,
     section = classSection,
     sex = this.sex,
+    hasPostTest = this.hasPostTest,
+    gst = GroupScreeningTest(score = this.gstScore),
     preTest = ReadingTest(
-        groupScreeningTest = GroupScreeningTest(
-            score = this.preGSTScore
-        ),
         oralReading = OralReading(
             totalNumberOfWordsInSelection = this.preORTotalNumberOfWords,
             numberOfMiscues = this.preORNumberOfMiscues
@@ -66,11 +65,8 @@ fun StudentEntity.mapStudentEntity(classSection: ClassSection) = Student(
         )
     ),
     postTest = when {
-        this.postGSTScore != null -> {
+        this.hasPostTest -> {
             ReadingTest(
-                groupScreeningTest = GroupScreeningTest(
-                    score = this.postGSTScore
-                ),
                 oralReading = OralReading(
                     totalNumberOfWordsInSelection = this.postORTotalNumberOfWords ?: -1.0,
                     numberOfMiscues = this.postORNumberOfMiscues ?: -1.0
@@ -100,11 +96,11 @@ fun Student.mapStudent(sectionId: Long) = StudentEntity(
     orderId = this.orderId,
     studentName = this.name,
     sex = this.sex,
-    preGSTScore = this.preTest.groupScreeningTest.score,
-    preORTotalNumberOfWords = this.preTest.oralReading?.totalNumberOfWordsInSelection ?: -1.0,
-    preORNumberOfMiscues = this.preTest.oralReading?.numberOfMiscues ?: -1.0,
-    preRCInputPercentage = this.preTest.readingComprehension?.inputPercentage ?: -1.0,
-    postGSTScore = this.postTest?.groupScreeningTest?.score,
+    hasPostTest = this.hasPostTest,
+    gstScore = this.gst.score,
+    preORTotalNumberOfWords = this.preTest.oralReading.totalNumberOfWordsInSelection,
+    preORNumberOfMiscues = this.preTest.oralReading.numberOfMiscues,
+    preRCInputPercentage = this.preTest.readingComprehension.inputPercentage,
     postORTotalNumberOfWords = this.postTest?.oralReading?.totalNumberOfWordsInSelection,
     postORNumberOfMiscues = this.postTest?.oralReading?.numberOfMiscues,
     postRCInputPercentage = this.postTest?.readingComprehension?.inputPercentage

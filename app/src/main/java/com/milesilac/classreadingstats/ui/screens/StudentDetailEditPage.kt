@@ -52,11 +52,13 @@ import com.milesilac.classreadingstats.model.emptyReadingTest
 import com.milesilac.classreadingstats.model.emptyStudent
 import com.milesilac.classreadingstats.model.initClassSection
 import com.milesilac.classreadingstats.model.toSectionString
+import com.milesilac.classreadingstats.ui.components.EditPostTestDialog
 import com.milesilac.classreadingstats.ui.components.EditStudentInfoDialog
 import com.milesilac.classreadingstats.ui.components.EditStudentNameDialog
 import com.milesilac.classreadingstats.ui.components.StudentInfoType
 import com.milesilac.classreadingstats.ui.dummyStudentListsEightAmethyst
 import com.milesilac.classreadingstats.ui.theme.ProjectColors
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 @Composable
@@ -71,11 +73,13 @@ fun StudentDetailEditPage(
     onVisible: () -> Unit = {}
 ) {
     onVisible()
-    val pagerState = rememberPagerState(pageCount = { 2 })
+    var hasPostTest by rememberSaveable { mutableStateOf(student.hasPostTest) }
+    val pagerState = rememberPagerState(pageCount = { if (hasPostTest) 2 else 1 })
     val coroutineScope = rememberCoroutineScope()
     var showStudentNameEditDialog by rememberSaveable { mutableStateOf(false) }
     var showPickSectionDialog by rememberSaveable { mutableStateOf(false) }
     var showMaleOrFemaleDialog by rememberSaveable { mutableStateOf(false) }
+    var showEditPostTestDialog by rememberSaveable { mutableStateOf(false) }
 
     Column(
         modifier = Modifier
@@ -285,29 +289,37 @@ fun StudentDetailEditPage(
                 1 -> {
                     StudentGradeEditPage(
                         modifier = Modifier,
+                        isPostTest = true,
                         studentPersistenceId = student.persistenceId,
-                        studentTest = student.postTest ?: emptyReadingTest(isPostTest = true),
+                        gst = student.gst,
+                        studentTest = student.postTest ?: emptyReadingTest(),
                         onUpdateGrade = { readingTest ->
                             onUpdate(
                                 StudentDetailEditEvent.EventReadingTest(
-                                    isPostTest = true, readingTest = readingTest
+                                    hasPostTest = hasPostTest,
+                                    isPostTest = true,
+                                    readingTest = readingTest
                                 )
                             )
-                            println("classInits Grade updated; gstScore: ${readingTest.groupScreeningTest.score}")
                         }
                     )
                 }
                 else -> StudentGradeEditPage(
                     modifier = Modifier,
                     studentPersistenceId = student.persistenceId,
+                    gst = student.gst,
                     studentTest = student.preTest,
+                    onUpdateGST = { gstScore ->
+                        onUpdate(StudentDetailEditEvent.EventGST(gstScore = gstScore))
+                    },
                     onUpdateGrade = { readingTest ->
                         onUpdate(
                             StudentDetailEditEvent.EventReadingTest(
-                                isPostTest = false, readingTest = readingTest
+                                hasPostTest = hasPostTest,
+                                isPostTest = false,
+                                readingTest = readingTest
                             )
                         )
-                        println("classInits Grade updated; gstScore: ${readingTest.groupScreeningTest.score}")
                     }
                 )
             }
@@ -366,13 +378,19 @@ fun StudentDetailEditPage(
                         text = "PostTest",
                         modifier = Modifier
                             .background(
-                                color = ProjectColors.OffWhite4,
+                                color = when {
+                                    hasPostTest.not() -> Color.Gray
+                                    else -> ProjectColors.OffWhite4
+                                },
                                 shape = RoundedCornerShape(12.dp)
                             )
                             .clip(shape = RoundedCornerShape(12.dp))
                             .clickable {
-                                coroutineScope.launch {
-                                    pagerState.animateScrollToPage(page = 1)
+                                when {
+                                    hasPostTest.not() -> showEditPostTestDialog = true
+                                    else -> coroutineScope.launch {
+                                        pagerState.animateScrollToPage(page = 1)
+                                    }
                                 }
                             }
                             .padding(vertical = 12.dp)
@@ -490,6 +508,19 @@ fun StudentDetailEditPage(
                     },
                 )
             }
+            showEditPostTestDialog -> {
+                EditPostTestDialog(
+                    onDismissDialog = { showEditPostTestDialog = false },
+                    onOkayClick = {
+                        hasPostTest = true
+                        showEditPostTestDialog = false
+                        coroutineScope.launch {
+                            delay(150L)
+                            pagerState.animateScrollToPage(page = 1)
+                        }
+                    }
+                )
+            }
         }
     }
 }
@@ -511,7 +542,9 @@ sealed class StudentDetailEditEvent {
     data class EventName(val studentName: String) : StudentDetailEditEvent()
     data class EventSection(val section: ClassSection) : StudentDetailEditEvent()
     data class EventSexOrient(val sex: StudentSexOrient) : StudentDetailEditEvent()
+    data class EventGST(val gstScore: Double) : StudentDetailEditEvent()
     data class EventReadingTest(
+        val hasPostTest: Boolean = false,
         val isPostTest: Boolean,
         val readingTest: ReadingTest
     ) : StudentDetailEditEvent()

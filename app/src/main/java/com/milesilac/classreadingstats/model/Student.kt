@@ -10,6 +10,8 @@ data class Student(
     var name: String,
     var section: ClassSection,
     var sex: StudentSexOrient,
+    var hasPostTest: Boolean,
+    var gst: GroupScreeningTest,
     var preTest: ReadingTest,
     var postTest: ReadingTest? = null
 )
@@ -18,11 +20,15 @@ fun emptyStudent(
     name: String = "",
     section: ClassSection = initClassSection(),
     sex: StudentSexOrient = StudentSexOrient.ERROR,
+    hasPostTest: Boolean = false,
+    gst: GroupScreeningTest = initGST(),
     preTest: ReadingTest = emptyReadingTest()
 ) = Student(
     name = name,
     section = section,
     sex = sex,
+    hasPostTest = hasPostTest,
+    gst = gst,
     preTest = preTest
 )
 

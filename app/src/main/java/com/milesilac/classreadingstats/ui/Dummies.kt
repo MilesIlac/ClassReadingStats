@@ -10,9 +10,6 @@ import com.milesilac.classreadingstats.model.ReadingTest
 import com.milesilac.classreadingstats.model.Student
 import com.milesilac.classreadingstats.model.StudentList
 import com.milesilac.classreadingstats.model.StudentSexOrient
-import com.milesilac.classreadingstats.persistence.model.ClassSheetRelationship
-import com.milesilac.classreadingstats.persistence.model.SectionEntity
-import com.milesilac.classreadingstats.persistence.model.StudentEntity
 
 val dummySections = listOf(
     ClassSection(gradeLevel = GradeLevel.EIGHT, sectionName = "Amethyst"),
@@ -29,20 +26,17 @@ val dummyStudentListsEightAmethyst = ClassSheet(
                 name = "Alao, John Nathan",
                 section = ClassSection(gradeLevel = GradeLevel.EIGHT, sectionName = "Amethyst"),
                 sex = StudentSexOrient.MALE,
+                hasPostTest = false,
+                gst = GroupScreeningTest(
+                    score = 13.0
+                ),
                 preTest = ReadingTest(
-                    groupScreeningTest = GroupScreeningTest(
-                        score = 13.0,
-//                        comprehensionLevel = ComprehensionLevel.FIVE
-                    ),
                     oralReading = OralReading(
                         totalNumberOfWordsInSelection = 106.0,
-                        numberOfMiscues = 3.0,
-//                        percentage = 97.17,
-//                        level = LearnerLevel.INDEPENDENT
+                        numberOfMiscues = 3.0
                     ),
                     readingComprehension = ReadingComprehension(
-                        inputPercentage = 86.0,
-//                        level = LearnerLevel.INDEPENDENT
+                        inputPercentage = 86.0
                     )
                 ),
             )
@@ -53,20 +47,17 @@ val dummyStudentListsEightAmethyst = ClassSheet(
                 name = "Alendro, Frellian",
                 section = ClassSection(gradeLevel = GradeLevel.EIGHT, sectionName = "Amethyst"),
                 sex = StudentSexOrient.MALE,
+                hasPostTest = false,
+                gst = GroupScreeningTest(
+                    score = 13.0
+                ),
                 preTest = ReadingTest(
-                    groupScreeningTest = GroupScreeningTest(
-                        score = 13.0,
-//                        comprehensionLevel = ComprehensionLevel.FIVE
-                    ),
                     oralReading = OralReading(
                         totalNumberOfWordsInSelection = 106.0,
                         numberOfMiscues = 8.0,
-//                        percentage = 92.45,
-//                        level = LearnerLevel.INSTRUCTIONAL
                     ),
                     readingComprehension = ReadingComprehension(
                         inputPercentage = 63.0,
-//                        level = LearnerLevel.INSTRUCTIONAL
                     )
                 ),
             )
@@ -77,20 +68,17 @@ val dummyStudentListsEightAmethyst = ClassSheet(
                 name = "Bandong, John Paul Mariano",
                 section = ClassSection(gradeLevel = GradeLevel.EIGHT, sectionName = "Amethyst"),
                 sex = StudentSexOrient.MALE,
+                hasPostTest = false,
+                gst = GroupScreeningTest(
+                    score = 15.0
+                ),
                 preTest = ReadingTest(
-                    groupScreeningTest = GroupScreeningTest(
-                        score = 15.0,
-//                        comprehensionLevel = ComprehensionLevel.FIVE
-                    ),
                     oralReading = OralReading(
                         totalNumberOfWordsInSelection = 106.0,
                         numberOfMiscues = 3.0,
-//                        percentage = 97.17,
-//                        level = LearnerLevel.INDEPENDENT
                     ),
                     readingComprehension = ReadingComprehension(
                         inputPercentage = 86.0,
-//                        level = LearnerLevel.INDEPENDENT
                     )
                 ),
             )
@@ -101,20 +89,17 @@ val dummyStudentListsEightAmethyst = ClassSheet(
                 name = "Bauca, Romel Ustare",
                 section = ClassSection(gradeLevel = GradeLevel.EIGHT, sectionName = "Amethyst"),
                 sex = StudentSexOrient.MALE,
+                hasPostTest = false,
+                gst = GroupScreeningTest(
+                    score = 12.0
+                ),
                 preTest = ReadingTest(
-                    groupScreeningTest = GroupScreeningTest(
-                        score = 12.0,
-//                        comprehensionLevel = ComprehensionLevel.FIVE
-                    ),
                     oralReading = OralReading(
                         totalNumberOfWordsInSelection = 106.0,
                         numberOfMiscues = 9.0,
-//                        percentage = 91.51,
-//                        level = LearnerLevel.INSTRUCTIONAL
                     ),
                     readingComprehension = ReadingComprehension(
                         inputPercentage = 71.0,
-//                        level = LearnerLevel.INSTRUCTIONAL
                     )
                 ),
             )
@@ -125,20 +110,17 @@ val dummyStudentListsEightAmethyst = ClassSheet(
                 name = "Buscayno, Mark Deniel",
                 section = ClassSection(gradeLevel = GradeLevel.EIGHT, sectionName = "Amethyst"),
                 sex = StudentSexOrient.MALE,
+                hasPostTest = false,
+                gst = GroupScreeningTest(
+                    score = 11.0
+                ),
                 preTest = ReadingTest(
-                    groupScreeningTest = GroupScreeningTest(
-                        score = 11.0,
-//                        comprehensionLevel = ComprehensionLevel.FIVE
-                    ),
                     oralReading = OralReading(
                         totalNumberOfWordsInSelection = 106.0,
                         numberOfMiscues = 10.0,
-//                        percentage = 90.52,
-//                        level = LearnerLevel.INSTRUCTIONAL
                     ),
                     readingComprehension = ReadingComprehension(
                         inputPercentage = 71.0,
-//                        level = LearnerLevel.INSTRUCTIONAL
                     )
                 ),
             )
@@ -149,20 +131,17 @@ val dummyStudentListsEightAmethyst = ClassSheet(
                 name = "Cabuquit, Raymart Sotto",
                 section = ClassSection(gradeLevel = GradeLevel.EIGHT, sectionName = "Amethyst"),
                 sex = StudentSexOrient.MALE,
+                hasPostTest = false,
+                gst = GroupScreeningTest(
+                    score = 16.0
+                ),
                 preTest = ReadingTest(
-                    groupScreeningTest = GroupScreeningTest(
-                        score = 16.0,
-//                        comprehensionLevel = ComprehensionLevel.SIX
-                    ),
                     oralReading = OralReading(
                         totalNumberOfWordsInSelection = 106.0,
                         numberOfMiscues = 10.0,
-//                        percentage = 90.52,
-//                        level = LearnerLevel.INSTRUCTIONAL
                     ),
                     readingComprehension = ReadingComprehension(
                         inputPercentage = 63.0,
-//                        level = LearnerLevel.INSTRUCTIONAL
                     )
                 ),
             )
@@ -173,20 +152,17 @@ val dummyStudentListsEightAmethyst = ClassSheet(
                 name = "Cuyno, Jhullian Jade",
                 section = ClassSection(gradeLevel = GradeLevel.EIGHT, sectionName = "Amethyst"),
                 sex = StudentSexOrient.MALE,
+                hasPostTest = false,
+                gst = GroupScreeningTest(
+                    score = 7.0
+                ),
                 preTest = ReadingTest(
-                    groupScreeningTest = GroupScreeningTest(
-                        score = 7.0,
-//                        comprehensionLevel = ComprehensionLevel.FIVE
-                    ),
                     oralReading = OralReading(
                         totalNumberOfWordsInSelection = 106.0,
                         numberOfMiscues = 10.0,
-//                        percentage = 90.52,
-//                        level = LearnerLevel.INSTRUCTIONAL
                     ),
                     readingComprehension = ReadingComprehension(
                         inputPercentage = 63.0,
-//                        level = LearnerLevel.INSTRUCTIONAL
                     )
                 ),
             )
@@ -197,20 +173,17 @@ val dummyStudentListsEightAmethyst = ClassSheet(
                 name = "Daganato, Jerome Soon Jin Riῆos",
                 section = ClassSection(gradeLevel = GradeLevel.EIGHT, sectionName = "Amethyst"),
                 sex = StudentSexOrient.MALE,
+                hasPostTest = false,
+                gst = GroupScreeningTest(
+                    score = 14.0
+                ),
                 preTest = ReadingTest(
-                    groupScreeningTest = GroupScreeningTest(
-                        score = 14.0,
-//                        comprehensionLevel = ComprehensionLevel.FIVE
-                    ),
                     oralReading = OralReading(
                         totalNumberOfWordsInSelection = 106.0,
                         numberOfMiscues = 2.0,
-//                        percentage = 98.11,
-//                        level = LearnerLevel.INDEPENDENT
                     ),
                     readingComprehension = ReadingComprehension(
                         inputPercentage = 86.0,
-//                        level = LearnerLevel.INDEPENDENT
                     )
                 ),
             )
@@ -221,20 +194,17 @@ val dummyStudentListsEightAmethyst = ClassSheet(
                 name = "Dela Cruz, Charlie",
                 section = ClassSection(gradeLevel = GradeLevel.EIGHT, sectionName = "Amethyst"),
                 sex = StudentSexOrient.MALE,
+                hasPostTest = false,
+                gst = GroupScreeningTest(
+                    score = 16.0
+                ),
                 preTest = ReadingTest(
-                    groupScreeningTest = GroupScreeningTest(
-                        score = 16.0,
-//                        comprehensionLevel = ComprehensionLevel.SIX
-                    ),
                     oralReading = OralReading(
                         totalNumberOfWordsInSelection = 106.0,
                         numberOfMiscues = 8.0,
-//                        percentage = 92.45,
-//                        level = LearnerLevel.INSTRUCTIONAL
                     ),
                     readingComprehension = ReadingComprehension(
                         inputPercentage = 63.0,
-//                        level = LearnerLevel.INSTRUCTIONAL
                     )
                 ),
             )
@@ -245,20 +215,17 @@ val dummyStudentListsEightAmethyst = ClassSheet(
                 name = "Dela cruz, Kurt Yuri Ignacio",
                 section = ClassSection(gradeLevel = GradeLevel.EIGHT, sectionName = "Amethyst"),
                 sex = StudentSexOrient.MALE,
+                hasPostTest = false,
+                gst = GroupScreeningTest(
+                    score = 16.0
+                ),
                 preTest = ReadingTest(
-                    groupScreeningTest = GroupScreeningTest(
-                        score = 16.0,
-//                        comprehensionLevel = ComprehensionLevel.SIX
-                    ),
                     oralReading = OralReading(
                         totalNumberOfWordsInSelection = 106.0,
                         numberOfMiscues = 9.0,
-//                        percentage = 91.51,
-//                        level = LearnerLevel.INSTRUCTIONAL
                     ),
                     readingComprehension = ReadingComprehension(
                         inputPercentage = 63.0,
-//                        level = LearnerLevel.INSTRUCTIONAL
                     )
                 ),
             )
@@ -269,20 +236,17 @@ val dummyStudentListsEightAmethyst = ClassSheet(
                 name = "De Otoy, Edwin Cagadas",
                 section = ClassSection(gradeLevel = GradeLevel.EIGHT, sectionName = "Amethyst"),
                 sex = StudentSexOrient.MALE,
+                hasPostTest = false,
+                gst = GroupScreeningTest(
+                    score = 8.0
+                ),
                 preTest = ReadingTest(
-                    groupScreeningTest = GroupScreeningTest(
-                        score = 8.0,
-//                        comprehensionLevel = ComprehensionLevel.FIVE
-                    ),
                     oralReading = OralReading(
                         totalNumberOfWordsInSelection = 106.0,
                         numberOfMiscues = 17.0,
-//                        percentage = 80.23,
-//                        level = LearnerLevel.FRUSTRATION
                     ),
                     readingComprehension = ReadingComprehension(
                         inputPercentage = 43.0,
-//                        level = LearnerLevel.FRUSTRATION
                     )
                 ),
             )
@@ -293,20 +257,17 @@ val dummyStudentListsEightAmethyst = ClassSheet(
                 name = "Enano, Andrew John Apas",
                 section = ClassSection(gradeLevel = GradeLevel.EIGHT, sectionName = "Amethyst"),
                 sex = StudentSexOrient.MALE,
+                hasPostTest = false,
+                gst = GroupScreeningTest(
+                    score = 14.0
+                ),
                 preTest = ReadingTest(
-                    groupScreeningTest = GroupScreeningTest(
-                        score = 14.0,
-//                        comprehensionLevel = ComprehensionLevel.FIVE
-                    ),
                     oralReading = OralReading(
                         totalNumberOfWordsInSelection = 106.0,
                         numberOfMiscues = 9.0,
-//                        percentage = 91.51,
-//                        level = LearnerLevel.INSTRUCTIONAL
                     ),
                     readingComprehension = ReadingComprehension(
                         inputPercentage = 71.0,
-//                        level = LearnerLevel.INSTRUCTIONAL
                     )
                 ),
             )
@@ -317,20 +278,17 @@ val dummyStudentListsEightAmethyst = ClassSheet(
                 name = "Estrella, Tristan Andrei Sulam",
                 section = ClassSection(gradeLevel = GradeLevel.EIGHT, sectionName = "Amethyst"),
                 sex = StudentSexOrient.MALE,
+                hasPostTest = false,
+                gst = GroupScreeningTest(
+                    score = 19.0
+                ),
                 preTest = ReadingTest(
-                    groupScreeningTest = GroupScreeningTest(
-                        score = 19.0,
-//                        comprehensionLevel = ComprehensionLevel.FIVE
-                    ),
                     oralReading = OralReading(
                         totalNumberOfWordsInSelection = 106.0,
                         numberOfMiscues = 9.0,
-//                        percentage = 91.51,
-//                        level = LearnerLevel.INSTRUCTIONAL
                     ),
                     readingComprehension = ReadingComprehension(
                         inputPercentage = 63.0,
-//                        level = LearnerLevel.INSTRUCTIONAL
                     )
                 ),
             )
@@ -341,20 +299,17 @@ val dummyStudentListsEightAmethyst = ClassSheet(
                 name = "Galang, Gian Jaren Tamayo",
                 section = ClassSection(gradeLevel = GradeLevel.EIGHT, sectionName = "Amethyst"),
                 sex = StudentSexOrient.MALE,
+                hasPostTest = false,
+                gst = GroupScreeningTest(
+                    score = 15.0
+                ),
                 preTest = ReadingTest(
-                    groupScreeningTest = GroupScreeningTest(
-                        score = 15.0,
-//                        comprehensionLevel = ComprehensionLevel.FIVE
-                    ),
                     oralReading = OralReading(
                         totalNumberOfWordsInSelection = 106.0,
                         numberOfMiscues = 10.0,
-//                        percentage = 90.52,
-//                        level = LearnerLevel.INSTRUCTIONAL
                     ),
                     readingComprehension = ReadingComprehension(
                         inputPercentage = 71.0,
-//                        level = LearnerLevel.INSTRUCTIONAL
                     )
                 ),
             )
@@ -365,20 +320,17 @@ val dummyStudentListsEightAmethyst = ClassSheet(
                 name = "Grijaldo, Sebastian Allen Quian Gutierrez",
                 section = ClassSection(gradeLevel = GradeLevel.EIGHT, sectionName = "Amethyst"),
                 sex = StudentSexOrient.MALE,
+                hasPostTest = false,
+                gst = GroupScreeningTest(
+                    score = 18.0
+                ),
                 preTest = ReadingTest(
-                    groupScreeningTest = GroupScreeningTest(
-                        score = 18.0,
-//                        comprehensionLevel = ComprehensionLevel.SIX
-                    ),
                     oralReading = OralReading(
                         totalNumberOfWordsInSelection = 106.0,
                         numberOfMiscues = 10.0,
-//                        percentage = 90.52,
-//                        level = LearnerLevel.INSTRUCTIONAL
                     ),
                     readingComprehension = ReadingComprehension(
                         inputPercentage = 63.0,
-//                        level = LearnerLevel.INSTRUCTIONAL
                     )
                 ),
             )
@@ -389,20 +341,17 @@ val dummyStudentListsEightAmethyst = ClassSheet(
                 name = "Ibaῆez, Prince Nathan",
                 section = ClassSection(gradeLevel = GradeLevel.EIGHT, sectionName = "Amethyst"),
                 sex = StudentSexOrient.MALE,
+                hasPostTest = false,
+                gst = GroupScreeningTest(
+                    score = 13.0
+                ),
                 preTest = ReadingTest(
-                    groupScreeningTest = GroupScreeningTest(
-                        score = 13.0,
-//                        comprehensionLevel = ComprehensionLevel.FIVE
-                    ),
                     oralReading = OralReading(
                         totalNumberOfWordsInSelection = 106.0,
                         numberOfMiscues = 8.0,
-//                        percentage = 92.45,
-//                        level = LearnerLevel.INSTRUCTIONAL
                     ),
                     readingComprehension = ReadingComprehension(
                         inputPercentage = 71.0,
-//                        level = LearnerLevel.INSTRUCTIONAL
                     )
                 ),
             )
@@ -413,20 +362,17 @@ val dummyStudentListsEightAmethyst = ClassSheet(
                 name = "Lacson, Angel Mendoza",
                 section = ClassSection(gradeLevel = GradeLevel.EIGHT, sectionName = "Amethyst"),
                 sex = StudentSexOrient.MALE,
+                hasPostTest = false,
+                gst = GroupScreeningTest(
+                    score = 14.0
+                ),
                 preTest = ReadingTest(
-                    groupScreeningTest = GroupScreeningTest(
-                        score = 14.0,
-//                        comprehensionLevel = ComprehensionLevel.FIVE
-                    ),
                     oralReading = OralReading(
                         totalNumberOfWordsInSelection = 106.0,
                         numberOfMiscues = 8.0,
-//                        percentage = 92.45,
-//                        level = LearnerLevel.INSTRUCTIONAL
                     ),
                     readingComprehension = ReadingComprehension(
                         inputPercentage = 100.0,
-//                        level = LearnerLevel.INDEPENDENT
                     )
                 ),
             )
@@ -437,20 +383,17 @@ val dummyStudentListsEightAmethyst = ClassSheet(
                 name = "Nocom, Leeiel Briones",
                 section = ClassSection(gradeLevel = GradeLevel.EIGHT, sectionName = "Amethyst"),
                 sex = StudentSexOrient.MALE,
+                hasPostTest = false,
+                gst = GroupScreeningTest(
+                    score = 12.0
+                ),
                 preTest = ReadingTest(
-                    groupScreeningTest = GroupScreeningTest(
-                        score = 12.0,
-//                        comprehensionLevel = ComprehensionLevel.FIVE
-                    ),
                     oralReading = OralReading(
                         totalNumberOfWordsInSelection = 106.0,
                         numberOfMiscues = 8.0,
-//                        percentage = 92.45,
-//                        level = LearnerLevel.INSTRUCTIONAL
                     ),
                     readingComprehension = ReadingComprehension(
                         inputPercentage = 71.0,
-//                        level = LearnerLevel.INSTRUCTIONAL
                     )
                 ),
             )
@@ -461,20 +404,17 @@ val dummyStudentListsEightAmethyst = ClassSheet(
                 name = "Ocampo, Brahne Niven Pandaan ",
                 section = ClassSection(gradeLevel = GradeLevel.EIGHT, sectionName = "Amethyst"),
                 sex = StudentSexOrient.MALE,
+                hasPostTest = false,
+                gst = GroupScreeningTest(
+                    score = 17.0
+                ),
                 preTest = ReadingTest(
-                    groupScreeningTest = GroupScreeningTest(
-                        score = 17.0,
-//                        comprehensionLevel = ComprehensionLevel.SIX
-                    ),
                     oralReading = OralReading(
                         totalNumberOfWordsInSelection = 106.0,
                         numberOfMiscues = 3.0,
-//                        percentage = 97.17,
-//                        level = LearnerLevel.INDEPENDENT
                     ),
                     readingComprehension = ReadingComprehension(
                         inputPercentage = 88.0,
-//                        level = LearnerLevel.INDEPENDENT
                     )
                 ),
             )
@@ -485,20 +425,17 @@ val dummyStudentListsEightAmethyst = ClassSheet(
                 name = "Pamintuan, Fervinson Massif Rosadeno",
                 section = ClassSection(gradeLevel = GradeLevel.EIGHT, sectionName = "Amethyst"),
                 sex = StudentSexOrient.MALE,
+                hasPostTest = false,
+                gst = GroupScreeningTest(
+                    score = 6.0
+                ),
                 preTest = ReadingTest(
-                    groupScreeningTest = GroupScreeningTest(
-                        score = 6.0,
-//                        comprehensionLevel = ComprehensionLevel.SIX
-                    ),
                     oralReading = OralReading(
                         totalNumberOfWordsInSelection = 106.0,
                         numberOfMiscues = 2.0,
-//                        percentage = 98.11,
-//                        level = LearnerLevel.INDEPENDENT
                     ),
                     readingComprehension = ReadingComprehension(
                         inputPercentage = 86.0,
-//                        level = LearnerLevel.INDEPENDENT
                     )
                 ),
             )
@@ -509,20 +446,17 @@ val dummyStudentListsEightAmethyst = ClassSheet(
                 name = "Pepito, Francis Johan Balaguer",
                 section = ClassSection(gradeLevel = GradeLevel.EIGHT, sectionName = "Amethyst"),
                 sex = StudentSexOrient.MALE,
+                hasPostTest = false,
+                gst = GroupScreeningTest(
+                    score = 13.0
+                ),
                 preTest = ReadingTest(
-                    groupScreeningTest = GroupScreeningTest(
-                        score = 13.0,
-//                        comprehensionLevel = ComprehensionLevel.FIVE
-                    ),
                     oralReading = OralReading(
                         totalNumberOfWordsInSelection = 106.0,
                         numberOfMiscues = 2.0,
-//                        percentage = 98.11,
-//                        level = LearnerLevel.INDEPENDENT
                     ),
                     readingComprehension = ReadingComprehension(
                         inputPercentage = 86.0,
-//                        level = LearnerLevel.INDEPENDENT
                     )
                 ),
             )
@@ -533,20 +467,17 @@ val dummyStudentListsEightAmethyst = ClassSheet(
                 name = "Sabbun, Aries Leyva",
                 section = ClassSection(gradeLevel = GradeLevel.EIGHT, sectionName = "Amethyst"),
                 sex = StudentSexOrient.MALE,
+                hasPostTest = false,
+                gst = GroupScreeningTest(
+                    score = 12.0
+                ),
                 preTest = ReadingTest(
-                    groupScreeningTest = GroupScreeningTest(
-                        score = 12.0,
-//                        comprehensionLevel = ComprehensionLevel.FIVE
-                    ),
                     oralReading = OralReading(
                         totalNumberOfWordsInSelection = 106.0,
                         numberOfMiscues = 19.0,
-//                        percentage = 77.91,
-//                        level = LearnerLevel.FRUSTRATION
                     ),
                     readingComprehension = ReadingComprehension(
                         inputPercentage = 43.0,
-//                        level = LearnerLevel.FRUSTRATION
                     )
                 ),
             )
@@ -560,20 +491,17 @@ val dummyStudentListsEightAmethyst = ClassSheet(
                 name = "Baldonado, Ameerah Faith Balisay",
                 section = ClassSection(gradeLevel = GradeLevel.EIGHT, sectionName = "Diamond"),
                 sex = StudentSexOrient.FEMALE,
+                hasPostTest = false,
+                gst = GroupScreeningTest(
+                    score = 15.0
+                ),
                 preTest = ReadingTest(
-                    groupScreeningTest = GroupScreeningTest(
-                        score = 15.0,
-//                        comprehensionLevel = ComprehensionLevel.FIVE
-                    ),
                     oralReading = OralReading(
                         totalNumberOfWordsInSelection = 106.0,
                         numberOfMiscues = 3.0,
-//                        percentage = 97.17,
-//                        level = LearnerLevel.INDEPENDENT
                     ),
                     readingComprehension = ReadingComprehension(
                         inputPercentage = 100.0,
-//                        level = LearnerLevel.INDEPENDENT
                     )
                 ),
             )
@@ -591,20 +519,17 @@ val dummyStudentListsEightDiamond = ClassSheet(
                 name = "Baldonado, Ameerah Faith Balisay",
                 section = ClassSection(gradeLevel = GradeLevel.EIGHT, sectionName = "Diamond"),
                 sex = StudentSexOrient.FEMALE,
+                hasPostTest = false,
+                gst = GroupScreeningTest(
+                    score = 15.0
+                ),
                 preTest = ReadingTest(
-                    groupScreeningTest = GroupScreeningTest(
-                        score = 15.0,
-//                        comprehensionLevel = ComprehensionLevel.FIVE
-                    ),
                     oralReading = OralReading(
                         totalNumberOfWordsInSelection = 106.0,
                         numberOfMiscues = 3.0,
-//                        percentage = 97.17,
-//                        level = LearnerLevel.INDEPENDENT
                     ),
                     readingComprehension = ReadingComprehension(
                         inputPercentage = 100.0,
-//                        level = LearnerLevel.INDEPENDENT
                     )
                 ),
             )
@@ -615,20 +540,17 @@ val dummyStudentListsEightDiamond = ClassSheet(
                 name = "Barcinas, Maria Angela Galang",
                 section = ClassSection(gradeLevel = GradeLevel.EIGHT, sectionName = "Diamond"),
                 sex = StudentSexOrient.FEMALE,
+                hasPostTest = false,
+                gst = GroupScreeningTest(
+                    score = 10.0
+                ),
                 preTest = ReadingTest(
-                    groupScreeningTest = GroupScreeningTest(
-                        score = 10.0,
-//                        comprehensionLevel = ComprehensionLevel.FIVE
-                    ),
                     oralReading = OralReading(
                         totalNumberOfWordsInSelection = 106.0,
                         numberOfMiscues = 7.0,
-//                        percentage = 93.4,
-//                        level = LearnerLevel.INSTRUCTIONAL
                     ),
                     readingComprehension = ReadingComprehension(
                         inputPercentage = 100.0,
-//                        level = LearnerLevel.INDEPENDENT
                     )
                 ),
             )
@@ -639,20 +561,17 @@ val dummyStudentListsEightDiamond = ClassSheet(
                 name = "Dayan- Dayan, Akiko Reign",
                 section = ClassSection(gradeLevel = GradeLevel.EIGHT, sectionName = "Diamond"),
                 sex = StudentSexOrient.FEMALE,
+                hasPostTest = false,
+                gst = GroupScreeningTest(
+                    score = 5.0
+                ),
                 preTest = ReadingTest(
-                    groupScreeningTest = GroupScreeningTest(
-                        score = 5.0,
-//                        comprehensionLevel = ComprehensionLevel.FIVE
-                    ),
                     oralReading = OralReading(
                         totalNumberOfWordsInSelection = 106.0,
                         numberOfMiscues = 7.0,
-//                        percentage = 93.4,
-//                        level = LearnerLevel.INSTRUCTIONAL
                     ),
                     readingComprehension = ReadingComprehension(
                         inputPercentage = 100.0,
-//                        level = LearnerLevel.INDEPENDENT
                     )
                 ),
             )
@@ -663,20 +582,17 @@ val dummyStudentListsEightDiamond = ClassSheet(
                 name = "Guiao, Cristine Bumatay",
                 section = ClassSection(gradeLevel = GradeLevel.EIGHT, sectionName = "Diamond"),
                 sex = StudentSexOrient.FEMALE,
+                hasPostTest = false,
+                gst = GroupScreeningTest(
+                    score = 12.0
+                ),
                 preTest = ReadingTest(
-                    groupScreeningTest = GroupScreeningTest(
-                        score = 12.0,
-//                        comprehensionLevel = ComprehensionLevel.FIVE
-                    ),
                     oralReading = OralReading(
                         totalNumberOfWordsInSelection = 106.0,
                         numberOfMiscues = 2.0,
-//                        percentage = 98.11,
-//                        level = LearnerLevel.INDEPENDENT
                     ),
                     readingComprehension = ReadingComprehension(
                         inputPercentage = 86.0,
-//                        level = LearnerLevel.INDEPENDENT
                     )
                 ),
             )
@@ -687,20 +603,17 @@ val dummyStudentListsEightDiamond = ClassSheet(
                 name = "Loremas, Jermaine Fernando",
                 section = ClassSection(gradeLevel = GradeLevel.EIGHT, sectionName = "Diamond"),
                 sex = StudentSexOrient.FEMALE,
+                hasPostTest = false,
+                gst = GroupScreeningTest(
+                    score = 9.0
+                ),
                 preTest = ReadingTest(
-                    groupScreeningTest = GroupScreeningTest(
-                        score = 9.0,
-//                        comprehensionLevel = ComprehensionLevel.FIVE
-                    ),
                     oralReading = OralReading(
                         totalNumberOfWordsInSelection = 106.0,
                         numberOfMiscues = 9.0,
-//                        percentage = 91.51,
-//                        level = LearnerLevel.INSTRUCTIONAL
                     ),
                     readingComprehension = ReadingComprehension(
                         inputPercentage = 71.0,
-//                        level = LearnerLevel.INSTRUCTIONAL
                     )
                 ),
             )
@@ -711,20 +624,17 @@ val dummyStudentListsEightDiamond = ClassSheet(
                 name = "Lugue, Rhian Joyce Payumo",
                 section = ClassSection(gradeLevel = GradeLevel.EIGHT, sectionName = "Diamond"),
                 sex = StudentSexOrient.FEMALE,
+                hasPostTest = false,
+                gst = GroupScreeningTest(
+                    score = 12.0
+                ),
                 preTest = ReadingTest(
-                    groupScreeningTest = GroupScreeningTest(
-                        score = 12.0,
-//                        comprehensionLevel = ComprehensionLevel.FIVE
-                    ),
                     oralReading = OralReading(
                         totalNumberOfWordsInSelection = 106.0,
                         numberOfMiscues = 2.0,
-//                        percentage = 98.11,
-//                        level = LearnerLevel.INDEPENDENT
                     ),
                     readingComprehension = ReadingComprehension(
                         inputPercentage = 71.0,
-//                        level = LearnerLevel.INSTRUCTIONAL
                     )
                 ),
             )
@@ -735,20 +645,17 @@ val dummyStudentListsEightDiamond = ClassSheet(
                 name = "Marzan, Kristina Joy Fernandez",
                 section = ClassSection(gradeLevel = GradeLevel.EIGHT, sectionName = "Diamond"),
                 sex = StudentSexOrient.FEMALE,
+                hasPostTest = false,
+                gst = GroupScreeningTest(
+                    score = 15.0
+                ),
                 preTest = ReadingTest(
-                    groupScreeningTest = GroupScreeningTest(
-                        score = 15.0,
-//                        comprehensionLevel = ComprehensionLevel.FIVE
-                    ),
                     oralReading = OralReading(
                         totalNumberOfWordsInSelection = 106.0,
                         numberOfMiscues = 3.0,
-//                        percentage = 97.17,
-//                        level = LearnerLevel.INDEPENDENT
                     ),
                     readingComprehension = ReadingComprehension(
                         inputPercentage = 100.0,
-//                        level = LearnerLevel.INDEPENDENT
                     )
                 ),
             )
@@ -759,20 +666,17 @@ val dummyStudentListsEightDiamond = ClassSheet(
                 name = "Perez, Prynzes Nicole Tiglao",
                 section = ClassSection(gradeLevel = GradeLevel.EIGHT, sectionName = "Diamond"),
                 sex = StudentSexOrient.FEMALE,
+                hasPostTest = false,
+                gst = GroupScreeningTest(
+                    score = 5.0
+                ),
                 preTest = ReadingTest(
-                    groupScreeningTest = GroupScreeningTest(
-                        score = 5.0,
-//                        comprehensionLevel = ComprehensionLevel.FIVE
-                    ),
                     oralReading = OralReading(
                         totalNumberOfWordsInSelection = 106.0,
                         numberOfMiscues = 2.0,
-//                        percentage = 98.11,
-//                        level = LearnerLevel.INDEPENDENT
                     ),
                     readingComprehension = ReadingComprehension(
                         inputPercentage = 100.0,
-//                        level = LearnerLevel.INDEPENDENT
                     )
                 ),
             )
@@ -783,20 +687,17 @@ val dummyStudentListsEightDiamond = ClassSheet(
                 name = "Recto, Rachelle Ann",
                 section = ClassSection(gradeLevel = GradeLevel.EIGHT, sectionName = "Diamond"),
                 sex = StudentSexOrient.FEMALE,
+                hasPostTest = false,
+                gst = GroupScreeningTest(
+                    score = 10.0
+                ),
                 preTest = ReadingTest(
-                    groupScreeningTest = GroupScreeningTest(
-                        score = 10.0,
-//                        comprehensionLevel = ComprehensionLevel.FIVE
-                    ),
                     oralReading = OralReading(
                         totalNumberOfWordsInSelection = 106.0,
                         numberOfMiscues = 10.0,
-//                        percentage = 90.56,
-//                        level = LearnerLevel.INSTRUCTIONAL
                     ),
                     readingComprehension = ReadingComprehension(
                         inputPercentage = 71.0,
-//                        level = LearnerLevel.INSTRUCTIONAL
                     )
                 ),
             )
@@ -807,20 +708,17 @@ val dummyStudentListsEightDiamond = ClassSheet(
                 name = "Reyes, Amanda Faith Quiboloy",
                 section = ClassSection(gradeLevel = GradeLevel.EIGHT, sectionName = "Diamond"),
                 sex = StudentSexOrient.FEMALE,
+                hasPostTest = false,
+                gst = GroupScreeningTest(
+                    score = 10.0
+                ),
                 preTest = ReadingTest(
-                    groupScreeningTest = GroupScreeningTest(
-                        score = 10.0,
-//                        comprehensionLevel = ComprehensionLevel.FIVE
-                    ),
                     oralReading = OralReading(
                         totalNumberOfWordsInSelection = 106.0,
                         numberOfMiscues = 2.0,
-//                        percentage = 98.11,
-//                        level = LearnerLevel.INSTRUCTIONAL
                     ),
                     readingComprehension = ReadingComprehension(
                         inputPercentage = 63.0,
-//                        level = LearnerLevel.INSTRUCTIONAL
                     )
                 ),
             )
@@ -831,20 +729,17 @@ val dummyStudentListsEightDiamond = ClassSheet(
                 name = "Reyes, Fiona Briel Bondoc",
                 section = ClassSection(gradeLevel = GradeLevel.EIGHT, sectionName = "Diamond"),
                 sex = StudentSexOrient.FEMALE,
+                hasPostTest = false,
+                gst = GroupScreeningTest(
+                    score = 7.0
+                ),
                 preTest = ReadingTest(
-                    groupScreeningTest = GroupScreeningTest(
-                        score = 7.0,
-//                        comprehensionLevel = ComprehensionLevel.FIVE
-                    ),
                     oralReading = OralReading(
                         totalNumberOfWordsInSelection = 106.0,
                         numberOfMiscues = 2.0,
-//                        percentage = 98.11,
-//                        level = LearnerLevel.INDEPENDENT
                     ),
                     readingComprehension = ReadingComprehension(
                         inputPercentage = 71.0,
-//                        level = LearnerLevel.INSTRUCTIONAL
                     )
                 ),
             )
@@ -855,20 +750,17 @@ val dummyStudentListsEightDiamond = ClassSheet(
                 name = "Rivamonte, Mary Juliet Barrientos",
                 section = ClassSection(gradeLevel = GradeLevel.EIGHT, sectionName = "Diamond"),
                 sex = StudentSexOrient.FEMALE,
+                hasPostTest = false,
+                gst = GroupScreeningTest(
+                    score = 13.0
+                ),
                 preTest = ReadingTest(
-                    groupScreeningTest = GroupScreeningTest(
-                        score = 13.0,
-//                        comprehensionLevel = ComprehensionLevel.FIVE
-                    ),
                     oralReading = OralReading(
                         totalNumberOfWordsInSelection = 106.0,
                         numberOfMiscues = 9.0,
-//                        percentage = 91.51,
-//                        level = LearnerLevel.INSTRUCTIONAL
                     ),
                     readingComprehension = ReadingComprehension(
                         inputPercentage = 71.0,
-//                        level = LearnerLevel.INSTRUCTIONAL
                     )
                 ),
             )
@@ -879,20 +771,17 @@ val dummyStudentListsEightDiamond = ClassSheet(
                 name = "Sagad, Keona Zoe Wage",
                 section = ClassSection(gradeLevel = GradeLevel.EIGHT, sectionName = "Diamond"),
                 sex = StudentSexOrient.FEMALE,
+                hasPostTest = false,
+                gst = GroupScreeningTest(
+                    score = 9.0
+                ),
                 preTest = ReadingTest(
-                    groupScreeningTest = GroupScreeningTest(
-                        score = 9.0,
-//                        comprehensionLevel = ComprehensionLevel.FIVE
-                    ),
                     oralReading = OralReading(
                         totalNumberOfWordsInSelection = 106.0,
                         numberOfMiscues = 2.0,
-//                        percentage = 98.11,
-//                        level = LearnerLevel.INDEPENDENT
                     ),
                     readingComprehension = ReadingComprehension(
                         inputPercentage = 86.0,
-//                        level = LearnerLevel.INDEPENDENT
                     )
                 ),
             )
@@ -903,20 +792,17 @@ val dummyStudentListsEightDiamond = ClassSheet(
                 name = "Saldivar, Leyarra Janel Basco",
                 section = ClassSection(gradeLevel = GradeLevel.EIGHT, sectionName = "Diamond"),
                 sex = StudentSexOrient.FEMALE,
+                hasPostTest = false,
+                gst = GroupScreeningTest(
+                    score = 13.0
+                ),
                 preTest = ReadingTest(
-                    groupScreeningTest = GroupScreeningTest(
-                        score = 13.0,
-//                        comprehensionLevel = ComprehensionLevel.FIVE
-                    ),
                     oralReading = OralReading(
                         totalNumberOfWordsInSelection = 106.0,
                         numberOfMiscues = 3.0,
-//                        percentage = 97.17,
-//                        level = LearnerLevel.INDEPENDENT
                     ),
                     readingComprehension = ReadingComprehension(
                         inputPercentage = 63.0,
-//                        level = LearnerLevel.INSTRUCTIONAL
                     )
                 ),
             )
@@ -927,20 +813,17 @@ val dummyStudentListsEightDiamond = ClassSheet(
                 name = "Sampana, Aira Joy Soliman",
                 section = ClassSection(gradeLevel = GradeLevel.EIGHT, sectionName = "Diamond"),
                 sex = StudentSexOrient.FEMALE,
+                hasPostTest = false,
+                gst = GroupScreeningTest(
+                    score = 10.0
+                ),
                 preTest = ReadingTest(
-                    groupScreeningTest = GroupScreeningTest(
-                        score = 10.0,
-//                        comprehensionLevel = ComprehensionLevel.FIVE
-                    ),
                     oralReading = OralReading(
                         totalNumberOfWordsInSelection = 106.0,
                         numberOfMiscues = 9.0,
-//                        percentage = 91.51,
-//                        level = LearnerLevel.INSTRUCTIONAL
                     ),
                     readingComprehension = ReadingComprehension(
                         inputPercentage = 63.0,
-//                        level = LearnerLevel.INSTRUCTIONAL
                     )
                 ),
             )
@@ -951,20 +834,17 @@ val dummyStudentListsEightDiamond = ClassSheet(
                 name = "Tiamzon, Ruslyn Ghin Abahas",
                 section = ClassSection(gradeLevel = GradeLevel.EIGHT, sectionName = "Diamond"),
                 sex = StudentSexOrient.FEMALE,
+                hasPostTest = false,
+                gst = GroupScreeningTest(
+                    score = 18.0
+                ),
                 preTest = ReadingTest(
-                    groupScreeningTest = GroupScreeningTest(
-                        score = 18.0,
-//                        comprehensionLevel = ComprehensionLevel.SIX
-                    ),
                     oralReading = OralReading(
                         totalNumberOfWordsInSelection = 106.0,
                         numberOfMiscues = 3.0,
-//                        percentage = 97.17,
-//                        level = LearnerLevel.INDEPENDENT
                     ),
                     readingComprehension = ReadingComprehension(
                         inputPercentage = 63.0,
-//                        level = LearnerLevel.INSTRUCTIONAL
                     )
                 ),
             )
@@ -975,58 +855,20 @@ val dummyStudentListsEightDiamond = ClassSheet(
                 name = "Villapana, Shanelle Cruz",
                 section = ClassSection(gradeLevel = GradeLevel.EIGHT, sectionName = "Diamond"),
                 sex = StudentSexOrient.FEMALE,
+                hasPostTest = false,
+                gst = GroupScreeningTest(
+                    score = 8.0
+                ),
                 preTest = ReadingTest(
-                    groupScreeningTest = GroupScreeningTest(
-                        score = 8.0,
-//                        comprehensionLevel = ComprehensionLevel.FIVE
-                    ),
                     oralReading = OralReading(
                         totalNumberOfWordsInSelection = 106.0,
                         numberOfMiscues = 3.0,
-//                        percentage = 97.17,
-//                        level = LearnerLevel.INDEPENDENT
                     ),
                     readingComprehension = ReadingComprehension(
                         inputPercentage = 86.0,
-//                        level = LearnerLevel.INDEPENDENT
                     )
                 ),
             )
         )
-    )
-)
-
-val dummyRoomList = listOf(
-    ClassSheetRelationship(
-        section = SectionEntity(
-            sectionRoomId = 111,
-            gradeLevel = GradeLevel.EIGHT,
-            sectionName = "Aquamarine"
-        ),
-        students = listOf(
-            StudentEntity(
-                studentRoomId = 2222,
-                sectionRoomId = 111,
-                orderId = 1.0,
-                studentName = "Villapana, Shanelle Cruz",
-                sex = StudentSexOrient.FEMALE,
-                preGSTScore = 8.0,
-                preORTotalNumberOfWords = 106.0,
-                preORNumberOfMiscues = 3.0,
-                preRCInputPercentage = 86.0,
-                postGSTScore = null,
-                postORTotalNumberOfWords = null,
-                postORNumberOfMiscues = null,
-                postRCInputPercentage = null
-            )
-        )
-    ),
-    ClassSheetRelationship(
-        section = SectionEntity(
-            sectionRoomId = 222,
-            gradeLevel = GradeLevel.EIGHT,
-            sectionName = "Peridot"
-        ),
-        students = listOf()
     )
 )

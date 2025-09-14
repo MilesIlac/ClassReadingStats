@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.milesilac.classreadingstats.helpers.transformFromJsonString
 import com.milesilac.classreadingstats.helpers.transformToJsonString
 import com.milesilac.classreadingstats.model.ClassSheet
+import com.milesilac.classreadingstats.model.GroupScreeningTest
 import com.milesilac.classreadingstats.model.Student
 import com.milesilac.classreadingstats.model.StudentList
 import com.milesilac.classreadingstats.model.StudentSexOrient
@@ -189,11 +190,25 @@ class MainViewModel(private val savedStateHandle: SavedStateHandle): ViewModel()
                     sex = event.sex
                 ).transformToJsonString()
             }
+            is StudentDetailEditEvent.EventGST -> {
+                savedStateHandle[TEMP_STUDENT] = tempStudentState.value.copy(
+                    gst = GroupScreeningTest(score = event.gstScore)
+                ).transformToJsonString()
+            }
             is StudentDetailEditEvent.EventReadingTest -> {
                 savedStateHandle[TEMP_STUDENT] = tempStudentState.value.let {
                     when {
-                        event.isPostTest -> it.copy(postTest = event.readingTest)
-                        else -> it.copy(preTest = event.readingTest)
+                        event.isPostTest -> it.copy(
+                            hasPostTest = event.hasPostTest, //only update when actually editing postTest
+                            postTest = event.readingTest
+                        )
+                        else -> it.copy(
+                            preTest = event.readingTest,
+                            postTest = when {
+                                event.hasPostTest -> it.postTest
+                                else -> null //in case postTest needs to be reset
+                            }
+                        )
                     }
                 }.transformToJsonString()
             }
@@ -306,6 +321,21 @@ class MainViewModel(private val savedStateHandle: SavedStateHandle): ViewModel()
 
     fun updateTempSheetsForInputGrades(event: UpdateTempClassSheetsForInputGrades) {
         when(event) {
+            is UpdateTempClassSheetsForInputGrades.EventGST -> {
+                _tempClassSheetsStateForInputGrades.update {
+                    it.toMutableList().apply {
+                        this.find { sheet ->
+                            sheet.classSection.persistenceId == event.sectionPersistenceId
+                        }?.let { thisSheet ->
+                            (thisSheet.maleStudents + thisSheet.femaleStudents).find { sList ->
+                                sList is StudentList.StudentDetails && sList.student.persistenceId == event.studentPersistenceId
+                            }?.let { thisSList ->
+                                (thisSList as StudentList.StudentDetails).student.gst = GroupScreeningTest(score = event.gstScore)
+                            }
+                        }
+                    }
+                }
+            }
             is UpdateTempClassSheetsForInputGrades.EventReadingTest -> {
                 _tempClassSheetsStateForInputGrades.update {
                     it.toMutableList().apply {
@@ -316,7 +346,12 @@ class MainViewModel(private val savedStateHandle: SavedStateHandle): ViewModel()
                                 sList is StudentList.StudentDetails && sList.student.persistenceId == event.studentPersistenceId
                             }?.let { thisSList ->
                                 when {
-                                    event.isPostTest -> (thisSList as StudentList.StudentDetails).student.postTest = event.newReadingTest
+                                    event.isPostTest -> {
+                                        (thisSList as StudentList.StudentDetails).student.let { student ->
+                                            student.hasPostTest = event.hasPostTest
+                                            student.postTest = event.newReadingTest
+                                        }
+                                    }
                                     else -> (thisSList as StudentList.StudentDetails).student.preTest = event.newReadingTest
                                 }
                             }

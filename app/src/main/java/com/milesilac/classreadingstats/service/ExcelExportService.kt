@@ -7,6 +7,7 @@ import android.os.Environment
 import android.provider.MediaStore
 import androidx.annotation.RequiresApi
 import com.milesilac.classreadingstats.model.ClassSheet
+import com.milesilac.classreadingstats.model.GroupScreeningTest
 import com.milesilac.classreadingstats.model.LearnerLevel
 import com.milesilac.classreadingstats.model.StudentList
 import com.milesilac.classreadingstats.model.calculateGrandOverallReadingProfile
@@ -78,15 +79,13 @@ fun exportNewFileToExcel(
                     cellStyle = cellStyle,
                     orPercentCellStyle = orPercentCellStyle,
                     rcPercentCellStyle = rcPercentCellStyle,
-                    studentPreGSTScore = student.preTest.groupScreeningTest.score,
-                    studentPreGSTComprehensionLevel = student.preTest.groupScreeningTest.comprehensionLevel.level,
-                    studentIsGSTPassed = student.preTest.shouldGradePassage().not(),
-                    studentPreORNumberOfMiscues = student.preTest.oralReading?.numberOfMiscues ?: -1.0,
-                    studentPreORTotalNumberOfWords = student.preTest.oralReading?.totalNumberOfWordsInSelection ?: -1.0,
-                    studentPreORPercentage = student.preTest.oralReading?.percentage ?: -1.0,
-                    studentPreORLevel = student.preTest.oralReading?.level ?: LearnerLevel.ERROR,
-                    studentPreRCPercentage = student.preTest.readingComprehension?.inputPercentage ?: -1.0,
-                    studentPreRCLevel = student.preTest.readingComprehension?.level ?: LearnerLevel.ERROR,
+                    studentGST = student.gst,
+                    studentPreORNumberOfMiscues = student.preTest.oralReading.numberOfMiscues,
+                    studentPreORTotalNumberOfWords = student.preTest.oralReading.totalNumberOfWordsInSelection,
+                    studentPreORPercentage = student.preTest.oralReading.percentage,
+                    studentPreORLevel = student.preTest.oralReading.level,
+                    studentPreRCPercentage = student.preTest.readingComprehension.inputPercentage,
+                    studentPreRCLevel = student.preTest.readingComprehension.level,
                     studentPostORNumberOfMiscues = student.postTest?.oralReading?.numberOfMiscues ?: -1.0,
                     studentPostORTotalNumberOfWords = student.postTest?.oralReading?.totalNumberOfWordsInSelection ?: -1.0,
                     studentPostORPercentage = student.postTest?.oralReading?.percentage ?: -1.0,
@@ -127,15 +126,13 @@ fun exportNewFileToExcel(
                     cellStyle = cellStyle,
                     orPercentCellStyle = orPercentCellStyle,
                     rcPercentCellStyle = rcPercentCellStyle,
-                    studentPreGSTScore = student.preTest.groupScreeningTest.score,
-                    studentPreGSTComprehensionLevel = student.preTest.groupScreeningTest.comprehensionLevel.level,
-                    studentIsGSTPassed = student.preTest.shouldGradePassage().not(),
-                    studentPreORNumberOfMiscues = student.preTest.oralReading?.numberOfMiscues ?: -1.0,
-                    studentPreORTotalNumberOfWords = student.preTest.oralReading?.totalNumberOfWordsInSelection ?: -1.0,
-                    studentPreORPercentage = student.preTest.oralReading?.percentage ?: -1.0,
-                    studentPreORLevel = student.preTest.oralReading?.level ?: LearnerLevel.ERROR,
-                    studentPreRCPercentage = student.preTest.readingComprehension?.inputPercentage ?: -1.0,
-                    studentPreRCLevel = student.preTest.readingComprehension?.level ?: LearnerLevel.ERROR,
+                    studentGST = student.gst,
+                    studentPreORNumberOfMiscues = student.preTest.oralReading.numberOfMiscues,
+                    studentPreORTotalNumberOfWords = student.preTest.oralReading.totalNumberOfWordsInSelection,
+                    studentPreORPercentage = student.preTest.oralReading.percentage,
+                    studentPreORLevel = student.preTest.oralReading.level,
+                    studentPreRCPercentage = student.preTest.readingComprehension.inputPercentage,
+                    studentPreRCLevel = student.preTest.readingComprehension.level,
                     studentPostORNumberOfMiscues = student.postTest?.oralReading?.numberOfMiscues ?: -1.0,
                     studentPostORTotalNumberOfWords = student.postTest?.oralReading?.totalNumberOfWordsInSelection ?: -1.0,
                     studentPostORPercentage = student.postTest?.oralReading?.percentage ?: -1.0,
@@ -507,9 +504,7 @@ fun addStudentGrades(
     cellStyle: CellStyle,
     orPercentCellStyle: CellStyle,
     rcPercentCellStyle: CellStyle,
-    studentPreGSTScore: Double,
-    studentPreGSTComprehensionLevel: String,
-    studentIsGSTPassed: Boolean,
+    studentGST: GroupScreeningTest,
     studentPreORNumberOfMiscues: Double,
     studentPreORTotalNumberOfWords: Double,
     studentPreORPercentage: Double,
@@ -523,13 +518,17 @@ fun addStudentGrades(
     studentPostRCPercentage: Double,
     studentPostRCLevel: LearnerLevel,
 ) {
+    val studentGSTScore = studentGST.score
+    val studentGSTComprehensionLevel = studentGST.comprehensionLevel.level
+    val studentIsGSTPassed = studentGST.shouldGradePassage().not()
+
     val studentRow = classSheet.getOrCreateRow(rowIndex)
     studentRow.createCell(12).apply {
-        setCellValue(studentPreGSTScore)
+        setCellValue(studentGSTScore)
         setCellStyle(cellStyle)
     }
     studentRow.createCell(13).apply {
-        setCellValue(studentPreGSTComprehensionLevel)
+        setCellValue(studentGSTComprehensionLevel)
         setCellStyle(cellStyle)
     }
     studentRow.createCell(14).apply {
