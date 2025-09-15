@@ -51,6 +51,7 @@ import com.milesilac.classreadingstats.model.StudentList
 import com.milesilac.classreadingstats.model.StudentSexOrient
 import com.milesilac.classreadingstats.model.test.emptyReadingTest
 import com.milesilac.classreadingstats.model.emptyStudent
+import com.milesilac.classreadingstats.model.getStudentsPerSection
 import com.milesilac.classreadingstats.model.initClassSection
 import com.milesilac.classreadingstats.model.initClassSheet
 import com.milesilac.classreadingstats.model.toSectionString
@@ -78,15 +79,11 @@ fun StudentDetailEditPage(
     onVisible: () -> Unit = {}
 ) {
     onVisible()
-    val currentSheet = currentSheets.find { it.classSection == student.section } ?: initClassSheet()
-    val students = (currentSheet.maleStudents + currentSheet.femaleStudents).mapNotNull {
-        if (it is StudentList.StudentDetails) it.student else null
-    }
     val hasIssues = listOf(
         student.name.isEmpty() to SaveErrorEvent.AddStudentErrorEvent.AddStudentName(),
         (student.section == initClassSection()) to SaveErrorEvent.AddStudentErrorEvent.PickSection(),
         (student.sex == StudentSexOrient.ERROR) to SaveErrorEvent.AddStudentErrorEvent.PickSexOrient(),
-        (students.find {
+        ((currentSheets.find { it.classSection == student.section } ?: initClassSheet()).getStudentsPerSection().find {
             it.name.trim().uppercase() == student.name.trim().uppercase() && it.sex == student.sex
         } != null) to SaveErrorEvent.AddStudentErrorEvent.ExistingStudent(),
     )

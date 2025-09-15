@@ -22,12 +22,16 @@ import androidx.compose.material.icons.twotone.Delete
 import androidx.compose.material.icons.twotone.Restore
 import androidx.compose.material.icons.twotone.Save
 import androidx.compose.material3.ButtonColors
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.SheetState
 import androidx.compose.material3.Text
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -42,16 +46,21 @@ import com.milesilac.classreadingstats.helpers.chooseOneModifier
 import com.milesilac.classreadingstats.helpers.nonScaledSp
 import com.milesilac.classreadingstats.model.ClassSection
 import com.milesilac.classreadingstats.model.ClassSheet
-import com.milesilac.classreadingstats.model.StudentList
+import com.milesilac.classreadingstats.model.getAllStudentDetailsList
 import com.milesilac.classreadingstats.model.toSectionString
+import com.milesilac.classreadingstats.ui.components.ConfirmDeleteListBottomSheet
 import com.milesilac.classreadingstats.ui.dummyStudentListsEightAmethyst
 import com.milesilac.classreadingstats.ui.dummyStudentListsEightDiamond
 import com.milesilac.classreadingstats.ui.theme.ProjectColors
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DeleteSectionsPage(
     currentSheets: List<ClassSheet> = listOf(),
     currentDeletePendingSheets: List<ClassSheet> = listOf(),
+    bottomSheetState: SheetState = rememberModalBottomSheetState(
+        skipPartiallyExpanded = true
+    ),
     onDeleteSectionEvent: (DeleteClassSheet) -> Unit = {},
     onSaveClick: () -> Unit = {},
     onBackClick: (DeleteClassSheet) -> Unit = {},
@@ -62,6 +71,7 @@ fun DeleteSectionsPage(
     var selectedDeletePendingSheets by rememberSaveable { mutableStateOf(setOf<ClassSection>()) }
     val isDeleteEnabled = selectedSheets.isNotEmpty()
     val isRestoreEnabled = selectedDeletePendingSheets.isNotEmpty()
+    var showDeleteSectionsBottomSheet by remember { mutableStateOf(false) }
 
     Column(
         modifier = Modifier
@@ -174,7 +184,10 @@ fun DeleteSectionsPage(
                                             chooseFirst = itemSelected,
                                             firstModifier = Modifier.background(
                                                 brush = Brush.horizontalGradient(
-                                                    colors = listOf(ProjectColors.OffViolet1, ProjectColors.OffViolet1)
+                                                    colors = listOf(
+                                                        ProjectColors.OffViolet1,
+                                                        ProjectColors.OffViolet1
+                                                    )
                                                 ),
                                                 alpha = 0.5F
                                             ),
@@ -202,10 +215,8 @@ fun DeleteSectionsPage(
                                             .weight(1F),
                                         color = Color.Black,
                                     )
-                                    val totalStudents = (sheet.maleStudents.filter { it is StudentList.StudentDetails } +
-                                            sheet.femaleStudents.filter { it is StudentList.StudentDetails }).size
                                     Text(
-                                        text = "$totalStudents students",
+                                        text = "${sheet.getAllStudentDetailsList().size} students",
                                         Modifier
                                             .weight(1F),
                                         color = Color.Black,
@@ -309,12 +320,13 @@ fun DeleteSectionsPage(
                                             }
                                         )
                                         .clickable {
-                                            selectedDeletePendingSheets = selectedDeletePendingSheets.toMutableSet().apply {
-                                                when {
-                                                    sheet.classSection in this -> remove(sheet.classSection)
-                                                    else -> add(sheet.classSection)
+                                            selectedDeletePendingSheets =
+                                                selectedDeletePendingSheets.toMutableSet().apply {
+                                                    when {
+                                                        sheet.classSection in this -> remove(sheet.classSection)
+                                                        else -> add(sheet.classSection)
+                                                    }
                                                 }
-                                            }
                                         }
                                         .padding(
                                             horizontal = 12.dp,
@@ -331,10 +343,8 @@ fun DeleteSectionsPage(
                                             else -> Color.Black
                                         },
                                     )
-                                    val totalStudents = (sheet.maleStudents.filter { it is StudentList.StudentDetails } +
-                                            sheet.femaleStudents.filter { it is StudentList.StudentDetails }).size
                                     Text(
-                                        text = "$totalStudents students",
+                                        text = "${sheet.getAllStudentDetailsList().size} students",
                                         Modifier
                                             .weight(1F),
                                         color = when {
@@ -476,7 +486,7 @@ fun DeleteSectionsPage(
                 horizontalArrangement = Arrangement.SpaceEvenly
             ) {
                 OutlinedButton(
-                    onClick = { onSaveClick() },
+                    onClick = { showDeleteSectionsBottomSheet = true },
                     modifier = Modifier,
                     colors = ButtonColors(
                         containerColor = Color.White,
@@ -533,6 +543,23 @@ fun DeleteSectionsPage(
             }
         }
     }
+    if (showDeleteSectionsBottomSheet) {
+        ConfirmDeleteListBottomSheet(
+            bottomSheetState = bottomSheetState,
+            listToDelete = currentDeletePendingSheets
+                .map { sheet ->
+                    Pair(
+                        sheet.classSection.toSectionString(isSpaced = true),
+                        "${sheet.getAllStudentDetailsList().size} students"
+                    )
+                }, //studentsToDelete,
+            onDismiss = { showDeleteSectionsBottomSheet = false },
+            onDeleteClick = {
+                showDeleteSectionsBottomSheet = false
+                onSaveClick()
+            }
+        )
+    }
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -541,6 +568,7 @@ fun DeleteSectionsPage(
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Preview
 @Composable
 fun DeleteSectionsPagePreview() {

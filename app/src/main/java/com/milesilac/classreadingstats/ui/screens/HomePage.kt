@@ -43,7 +43,7 @@ import com.milesilac.classreadingstats.model.hasStudents
 import com.milesilac.classreadingstats.model.initClassSection
 import com.milesilac.classreadingstats.model.toSectionString
 import com.milesilac.classreadingstats.ui.components.AnimatedBottomBar
-import com.milesilac.classreadingstats.ui.components.ConfirmDeleteStudentsBottomSheet
+import com.milesilac.classreadingstats.ui.components.ConfirmDeleteListBottomSheet
 import com.milesilac.classreadingstats.ui.components.HomePageBottomSheet
 import com.milesilac.classreadingstats.ui.components.TopInfoBar
 import com.milesilac.classreadingstats.ui.dummyStudentListsEightAmethyst
@@ -273,9 +273,15 @@ fun HomePage(
         )
     }
     if (showDeleteStudentsBottomSheet) {
-        ConfirmDeleteStudentsBottomSheet(
+        ConfirmDeleteListBottomSheet(
             bottomSheetState = bottomSheetState,
-            studentsToDelete = studentsToDelete,
+            listToDelete = studentsToDelete
+                .map { student ->
+                    Pair(
+                        student.section.toSectionString(isSpaced = true),
+                        student.name
+                    )
+                },
             onDismiss = { showDeleteStudentsBottomSheet = false },
             onDeleteClick = {
                 showDeleteStudentsBottomSheet = false

@@ -11,6 +11,7 @@ import com.milesilac.classreadingstats.model.Student
 import com.milesilac.classreadingstats.model.StudentList
 import com.milesilac.classreadingstats.model.StudentSexOrient
 import com.milesilac.classreadingstats.model.emptyStudent
+import com.milesilac.classreadingstats.model.getAllStudentDetailsList
 import com.milesilac.classreadingstats.model.initClassSheet
 import com.milesilac.classreadingstats.repository.StudentsRepository
 import com.milesilac.classreadingstats.ui.screens.DeleteClassSheet
@@ -287,8 +288,7 @@ class MainViewModel(private val savedStateHandle: SavedStateHandle): ViewModel()
                 sectionsWithCount = _tempDeletePendingClassSheetState.value.map { sheet ->
                     Pair(
                         sheet.classSection.persistenceId,
-                        (sheet.maleStudents.filter { it is StudentList.StudentDetails } +
-                                sheet.femaleStudents.filter { it is StudentList.StudentDetails }).isNotEmpty()
+                        sheet.getAllStudentDetailsList().isNotEmpty()
                     )
                 }
             )

@@ -47,9 +47,9 @@ import androidx.compose.ui.unit.sp
 import com.milesilac.classreadingstats.helpers.nonScaledSp
 import com.milesilac.classreadingstats.model.ClassSection
 import com.milesilac.classreadingstats.model.ClassSheet
-import com.milesilac.classreadingstats.model.level.GradeLevel
-import com.milesilac.classreadingstats.model.StudentList
+import com.milesilac.classreadingstats.model.getStudentsPerSection
 import com.milesilac.classreadingstats.model.initClassSheet
+import com.milesilac.classreadingstats.model.level.GradeLevel
 import com.milesilac.classreadingstats.ui.components.EditSectionNameDialog
 import com.milesilac.classreadingstats.ui.components.SaveErrorDialog
 import com.milesilac.classreadingstats.ui.components.SaveErrorEvent
@@ -86,9 +86,7 @@ fun AddSectionPage(
 //        (it as StudentList.StudentDetails).student
 //    } //test
 
-    val students = (tempClassSheet.maleStudents + tempClassSheet.femaleStudents).mapNotNull {
-        if (it is StudentList.StudentDetails) it.student else null
-    }
+    val students = tempClassSheet.getStudentsPerSection()
     Column(
         modifier = Modifier
             .background(

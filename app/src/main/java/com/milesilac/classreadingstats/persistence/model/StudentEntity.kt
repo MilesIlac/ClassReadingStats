@@ -80,7 +80,7 @@ fun StudentEntity.mapStudentEntity(classSection: ClassSection) = Student(
     }
 )
 
-fun List<StudentList>.mapStudentListToEntity(sectionId: Long): List<StudentEntity> {
+fun Sequence<StudentList>.mapStudentListToEntity(sectionId: Long): List<StudentEntity> {
     val studentEntities = mutableListOf<StudentEntity>()
     for (student in this) {
         if (student is StudentList.StudentDetails) {

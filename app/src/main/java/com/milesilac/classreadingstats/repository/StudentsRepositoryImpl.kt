@@ -60,7 +60,8 @@ class StudentsRepositoryImpl(): StudentsRepository {
                 else -> classSheet.classSection.persistenceId
             }
             studentsDBSource.updateStudents(
-                students = (classSheet.maleStudents + classSheet.femaleStudents).mapStudentListToEntity(sectionId = sectionPersistenceId)
+                students = (classSheet.maleStudents.asSequence() + classSheet.femaleStudents.asSequence())
+                    .mapStudentListToEntity(sectionId = sectionPersistenceId)
             )
         }
     }
