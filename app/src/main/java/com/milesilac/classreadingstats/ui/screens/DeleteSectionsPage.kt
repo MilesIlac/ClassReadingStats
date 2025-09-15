@@ -67,6 +67,7 @@ fun DeleteSectionsPage(
     onVisible: () -> Unit = {}
 ) {
     onVisible()
+    val hasDeletePendingSheets = currentDeletePendingSheets.isNotEmpty()
     var selectedSheets by rememberSaveable { mutableStateOf(setOf<ClassSection>()) }
     var selectedDeletePendingSheets by rememberSaveable { mutableStateOf(setOf<ClassSection>()) }
     val isDeleteEnabled = selectedSheets.isNotEmpty()
@@ -266,7 +267,7 @@ fun DeleteSectionsPage(
                         textAlign = TextAlign.Center
                     )
                 }
-                if (currentDeletePendingSheets.isNotEmpty()) {
+                if (hasDeletePendingSheets) {
                     LazyColumn(
                         modifier = Modifier
                             .background(color = ProjectColors.OffWhite4)
@@ -488,6 +489,7 @@ fun DeleteSectionsPage(
                 OutlinedButton(
                     onClick = { showDeleteSectionsBottomSheet = true },
                     modifier = Modifier,
+                    enabled = hasDeletePendingSheets,
                     colors = ButtonColors(
                         containerColor = Color.White,
                         contentColor = Color.Black,

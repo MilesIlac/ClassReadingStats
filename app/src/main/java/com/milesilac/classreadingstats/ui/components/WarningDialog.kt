@@ -30,7 +30,7 @@ import com.milesilac.classreadingstats.ui.theme.ProjectColors
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun WarningDialog(
-    event: WarningEvent = WarningEvent.ConfirmDeleteStudent(),
+    event: WarningEvent = WarningEvent.ConfirmSaveInputGrades(),
     onDismissDialog: () -> Unit = {},
     onOkayClick: () -> Unit = {},
 ) {
@@ -55,7 +55,7 @@ fun WarningDialogLayoutPreview() {
 
 @Composable
 fun WarningDialogLayout(
-    event: WarningEvent = WarningEvent.ConfirmDeleteStudent(),
+    event: WarningEvent = WarningEvent.ConfirmSaveInputGrades(),
     onOkayClick: () -> Unit = {},
     onBackClick: () -> Unit = {},
 ) {
@@ -91,9 +91,10 @@ fun WarningDialogLayout(
             val content = when (event) {
                 is WarningEvent.ConfirmEditPostTest -> event.message
                 is WarningEvent.ConfirmDeleteStudent -> event.message
+                is WarningEvent.ConfirmSaveInputGrades -> event.message
             }
             Text(
-                text = "Confirm $content?",
+                text = content,
                 modifier = Modifier
                     .padding(
                         horizontal = 8.dp,
@@ -180,9 +181,12 @@ fun WarningDialogLayoutLayoutPreview() {
 
 sealed class WarningEvent {
     data class ConfirmEditPostTest(
-        val message: String = "editing of Post-Test"
+        val message: String = "Confirm editing of Post-Test?"
     ) : WarningEvent()
     data class ConfirmDeleteStudent(
-        val message: String = "delete of this Student"
+        val message: String = "Confirm delete of this Student?"
+    ) : WarningEvent()
+    data class ConfirmSaveInputGrades(
+        val message: String = "Save changes? This will affect the whole workbook."
     ) : WarningEvent()
 }

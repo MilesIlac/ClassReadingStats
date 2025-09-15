@@ -42,18 +42,20 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.milesilac.classreadingstats.model.ClassSheet
+import com.milesilac.classreadingstats.model.StudentList
+import com.milesilac.classreadingstats.model.initClassSheet
 import com.milesilac.classreadingstats.model.test.OralReading
 import com.milesilac.classreadingstats.model.test.ReadingComprehension
 import com.milesilac.classreadingstats.model.test.ReadingTest
-import com.milesilac.classreadingstats.model.StudentList
 import com.milesilac.classreadingstats.model.test.emptyReadingTest
-import com.milesilac.classreadingstats.model.initClassSheet
 import com.milesilac.classreadingstats.model.toSectionString
 import com.milesilac.classreadingstats.ui.components.EditStudentGradesDialog
 import com.milesilac.classreadingstats.ui.components.EditStudentInfoDialog
 import com.milesilac.classreadingstats.ui.components.GradeEditType
 import com.milesilac.classreadingstats.ui.components.StudentGradeEditList
 import com.milesilac.classreadingstats.ui.components.StudentInfoType
+import com.milesilac.classreadingstats.ui.components.WarningDialog
+import com.milesilac.classreadingstats.ui.components.WarningEvent
 import com.milesilac.classreadingstats.ui.dummyStudentListsEightAmethyst
 import com.milesilac.classreadingstats.ui.dummyStudentListsEightDiamond
 import com.milesilac.classreadingstats.ui.theme.ProjectColors
@@ -89,6 +91,7 @@ fun EditStudentsGradesPage(
     var currentGradeEditType by rememberSaveable { mutableStateOf(GradeEditType.GST) }
     var showPickSectionDialog by rememberSaveable { mutableStateOf(false) }
     var showPickGradeTypeDialog by rememberSaveable { mutableStateOf(false) }
+    var showConfirmSaveChangesDialog by rememberSaveable { mutableStateOf(false) }
 
     Column(
         modifier = Modifier
@@ -261,13 +264,16 @@ fun EditStudentsGradesPage(
                                     .debounce(800L)
                                     .collect { gst ->
                                         // Trigger your side-effect here
-                                        onUpdateGrade(
-                                            UpdateTempClassSheetsForInputGrades.EventGST(
-                                                sectionPersistenceId = currentSheet.classSection.persistenceId,
-                                                studentPersistenceId = studentItem.student.persistenceId,
-                                                gstScore = runCatching { gst.toDouble() }.getOrElse { 0.0 }
+                                        val gstScore = runCatching { gst.toDouble() }.getOrElse { 0.0 }
+                                        if (studentItem.student.gst.score != gstScore) {
+                                            onUpdateGrade(
+                                                UpdateTempClassSheetsForInputGrades.EventGST(
+                                                    sectionPersistenceId = currentSheet.classSection.persistenceId,
+                                                    studentPersistenceId = studentItem.student.persistenceId,
+                                                    gstScore = gstScore
+                                                )
                                             )
-                                        )
+                                        }
                                     }
                             }
 
@@ -427,7 +433,7 @@ fun EditStudentsGradesPage(
                     }
                 }
                 OutlinedButton(
-                    onClick = { onSaveClick() },
+                    onClick = { showConfirmSaveChangesDialog = true },
                     modifier = Modifier,
                     colors = ButtonColors(
                         containerColor = Color.White,
@@ -515,6 +521,16 @@ fun EditStudentsGradesPage(
                         currentGradeEditType = selectedGradeType
                         showPickGradeTypeDialog = false
                     },
+                )
+            }
+            showConfirmSaveChangesDialog -> {
+                WarningDialog(
+                    event = WarningEvent.ConfirmSaveInputGrades(),
+                    onDismissDialog = { showConfirmSaveChangesDialog = false },
+                    onOkayClick = {
+                        showConfirmSaveChangesDialog = false
+                        onSaveClick()
+                    }
                 )
             }
         }
