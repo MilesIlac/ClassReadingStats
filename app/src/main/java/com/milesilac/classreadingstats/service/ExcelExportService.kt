@@ -88,7 +88,7 @@ fun exportNewFileToExcel(
                     studentPreRCLevel = student.preTest.readingComprehension.level,
                     studentPostORNumberOfMiscues = student.postTest?.oralReading?.numberOfMiscues ?: -1.0,
                     studentPostORTotalNumberOfWords = student.postTest?.oralReading?.totalNumberOfWordsInSelection ?: -1.0,
-                    studentPostORPercentage = student.postTest?.oralReading?.percentage ?: -1.0,
+                    studentPostORPercentage = student.postTest?.oralReading?.percentage ?: -0.01,
                     studentPostORLevel = student.postTest?.oralReading?.level ?: LearnerLevel.ERROR,
                     studentPostRCPercentage = student.postTest?.readingComprehension?.inputPercentage ?: -1.0,
                     studentPostRCLevel = student.postTest?.readingComprehension?.level ?: LearnerLevel.ERROR
@@ -135,7 +135,7 @@ fun exportNewFileToExcel(
                     studentPreRCLevel = student.preTest.readingComprehension.level,
                     studentPostORNumberOfMiscues = student.postTest?.oralReading?.numberOfMiscues ?: -1.0,
                     studentPostORTotalNumberOfWords = student.postTest?.oralReading?.totalNumberOfWordsInSelection ?: -1.0,
-                    studentPostORPercentage = student.postTest?.oralReading?.percentage ?: -1.0,
+                    studentPostORPercentage = student.postTest?.oralReading?.percentage ?: -0.01,
                     studentPostORLevel = student.postTest?.oralReading?.level ?: LearnerLevel.ERROR,
                     studentPostRCPercentage = student.postTest?.readingComprehension?.inputPercentage ?: -1.0,
                     studentPostRCLevel = student.postTest?.readingComprehension?.level ?: LearnerLevel.ERROR
