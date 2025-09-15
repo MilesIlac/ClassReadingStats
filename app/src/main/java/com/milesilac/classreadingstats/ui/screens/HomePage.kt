@@ -1,6 +1,5 @@
 package com.milesilac.classreadingstats.ui.screens
 
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -15,7 +14,6 @@ import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.OutlinedButton
@@ -28,6 +26,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
@@ -45,6 +44,7 @@ import com.milesilac.classreadingstats.model.toSectionString
 import com.milesilac.classreadingstats.ui.components.AnimatedBottomBar
 import com.milesilac.classreadingstats.ui.components.ConfirmDeleteListBottomSheet
 import com.milesilac.classreadingstats.ui.components.HomePageBottomSheet
+import com.milesilac.classreadingstats.ui.components.HomePageGradeLevelMenu
 import com.milesilac.classreadingstats.ui.components.TopInfoBar
 import com.milesilac.classreadingstats.ui.dummyStudentListsEightAmethyst
 import com.milesilac.classreadingstats.ui.dummyStudentListsEightDiamond
@@ -70,11 +70,28 @@ fun HomePage(
     onVisible: () -> Unit = {}
 ) {
     onVisible()
-    val pagerState = rememberPagerState(pageCount = { currentSheets.size })
-    var currentSection by remember(currentSheets) {
+    var currentGradeLevel by rememberSaveable(currentSheets) {
         mutableStateOf(
             runCatching {
-                currentSheets[0].classSection
+                currentSections[0].gradeLevel
+            }.getOrElse {
+                initClassSection().gradeLevel
+            }
+        )
+    }
+    var currentSheetsByGrade by remember(currentSheets) {
+        mutableStateOf(
+            currentSheets.filter {
+                it.classSection.gradeLevel == currentGradeLevel
+            }
+        )
+    }
+    val pagerState = rememberPagerState(pageCount = { currentSheetsByGrade.size })
+    val currentSectionsByGrade = currentSheetsByGrade.map { it.classSection }
+    var currentSection by remember(currentSectionsByGrade) {
+        mutableStateOf(
+            runCatching {
+                currentSectionsByGrade[0]
             }.getOrElse {
                 initClassSection()
             }
@@ -82,6 +99,7 @@ fun HomePage(
     }
 //    println("classInits homePager currentSheets size preLaunchEffect ${currentSheets.size}")
 //    println("classInits homePager currentSection $currentSection")
+    var showGradeLevelMenu by remember { mutableStateOf(false) }
     var showBottomSheet by remember { mutableStateOf(false) }
     var isDeleteMode by remember { mutableStateOf(false) }
     var showDeleteStudentsBottomSheet by remember { mutableStateOf(false) }
@@ -90,7 +108,7 @@ fun HomePage(
     val coroutineScope = rememberCoroutineScope()
 
     // Listen for page settling
-    LaunchedEffect(currentSheets) {
+    LaunchedEffect(currentSheetsByGrade) {
         snapshotFlow { pagerState.currentPage }
             .distinctUntilChanged()
             .collect { page ->
@@ -101,7 +119,7 @@ fun HomePage(
 //                    println("classInits homePager got target $page")
                     currentSection = runCatching {
 //                        println("classInits homePager section ${currentSheets[page].classSection}")
-                        currentSheets[page].classSection
+                        currentSheetsByGrade[page].classSection
                     }.getOrElse {
 //                        println("classInits homePager section reached else")
                         initClassSection()
@@ -127,9 +145,12 @@ fun HomePage(
                 isSpaced = true,
                 isSectionNameUpperCased = false
             ),
-            onExportClick = { onExportClick(currentSheets) }
+            onExportClick = {
+                showGradeLevelMenu = false
+                onExportClick(currentSheets)
+            }
         )
-        if (currentSheets.isNotEmpty()) {
+        if (currentSheetsByGrade.isNotEmpty()) {
             HorizontalPager(
                 state = pagerState,
                 modifier = Modifier
@@ -141,9 +162,12 @@ fun HomePage(
                 StudentListPage(
                     isDeleteMode = isDeleteMode,
                     studentIdsToDelete = studentIdsToDelete,
-                    maleStudents = currentSheets[page].maleStudents,
-                    femaleStudents = currentSheets[page].femaleStudents,
-                    onStudentEntryClick = onStudentEntryClick,
+                    maleStudents = currentSheetsByGrade[page].maleStudents,
+                    femaleStudents = currentSheetsByGrade[page].femaleStudents,
+                    onStudentEntryClick = {
+                        showGradeLevelMenu = false
+                        onStudentEntryClick(it)
+                    },
                     onCheckBoxClick = { student ->
                         studentsToDelete = studentsToDelete.toMutableList().apply {
                             when {
@@ -175,31 +199,28 @@ fun HomePage(
                 .background(color = ProjectColors.OffGreen1),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            OutlinedButton(
-                onClick = {},
-                modifier = Modifier
-                    .padding(horizontal = 6.dp),
-                enabled = currentSections.isNotEmpty(),
-                shape = RoundedCornerShape(8.dp),
-                colors = ButtonColors(
-                    containerColor = Color.Yellow,
-                    contentColor = Color.Black,
-                    disabledContainerColor = Color.Yellow,
-                    disabledContentColor = Color.Black
-                ),
-                border = BorderStroke(
-                    width = 4.dp,
-                    color = ProjectColors.OffOrange1
-                )
-            ) {
-                Text(
-                    text = when {
-                        currentSections.isNotEmpty() -> "${currentSections[0].gradeLevel.grade}"
-                        else -> "-"
-                    },
-                    modifier = Modifier,
-                )
-            }
+            HomePageGradeLevelMenu(
+                isExpanded = showGradeLevelMenu,
+                buttonText = when {
+                    currentSections.isNotEmpty() -> "${currentGradeLevel.grade}"
+                    else -> "-"
+                },
+                isButtonEnabled = currentSections.isNotEmpty(),
+                nonEmptyGrades = buildSet {
+                    for (currentSection in currentSections) {
+                        add(currentSection.gradeLevel)
+                    }
+                },
+                currentGradeLevel = currentGradeLevel,
+                onMenuVisibility = { showGradeLevelMenu = showGradeLevelMenu.not() },
+                onPick = {
+                    currentGradeLevel = it
+                    currentSheetsByGrade = currentSheets.filter { sheet ->
+                        sheet.classSection.gradeLevel == it
+                    }
+                    showGradeLevelMenu = false
+                }
+            )
             LazyRow(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -208,7 +229,7 @@ fun HomePage(
                 state = rememberLazyListState(),
                 horizontalArrangement = Arrangement.spacedBy(6.dp)
             ) {
-                itemsIndexed(items = currentSections) { index, section ->
+                itemsIndexed(items = currentSectionsByGrade) { index, section ->
                     //val selected = TODO
                     OutlinedButton(
                         onClick = {
@@ -236,8 +257,14 @@ fun HomePage(
         AnimatedBottomBar(
             isDeleteMode = isDeleteMode,
             isDeleteBtnEnabled = studentIdsToDelete.isNotEmpty(),
-            onManageClick = { showBottomSheet = true },
-            onDeleteClick = { showDeleteStudentsBottomSheet = true },
+            onManageClick = {
+                showGradeLevelMenu = false
+                showBottomSheet = true
+            },
+            onDeleteClick = {
+                showGradeLevelMenu = false
+                showDeleteStudentsBottomSheet = true
+            },
             onBackClick = {
                 isDeleteMode = false
                 studentsToDelete = listOf()
@@ -251,22 +278,27 @@ fun HomePage(
             hasSections = currentSections.isNotEmpty(),
             hasStudents = currentSheets.hasStudents(),
             onAddSectionClick = {
+                showGradeLevelMenu = false
                 showBottomSheet = false
                 onAddSectionClick()
             },
             onAddStudentClick = {
+                showGradeLevelMenu = false
                 showBottomSheet = false
                 onAddStudentClick()
             },
             onDeleteSectionsClick = {
+                showGradeLevelMenu = false
                 showBottomSheet = false
                 onDeleteSectionsClick()
             },
             onDeleteStudentsClick = {
+                showGradeLevelMenu = false
                 showBottomSheet = false
                 isDeleteMode = true
             },
             onEditGradesClick = {
+                showGradeLevelMenu = false
                 showBottomSheet = false
                 onEditGradesClick(currentSection.persistenceId)
             }

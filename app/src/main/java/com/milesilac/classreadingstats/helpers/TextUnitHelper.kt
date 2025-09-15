@@ -8,3 +8,7 @@ import androidx.compose.ui.unit.sp
 val TextUnit.nonScaledSp
     @Composable
     get() = (this.value / LocalDensity.current.fontScale).sp
+
+val Int.pxToDp
+    @Composable
+    get() = with(LocalDensity.current) { this@pxToDp.toDp() }
