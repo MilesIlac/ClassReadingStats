@@ -26,7 +26,11 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -42,6 +46,8 @@ import com.milesilac.classreadingstats.model.Student
 import com.milesilac.classreadingstats.model.StudentList
 import com.milesilac.classreadingstats.model.level.calculateLearnerOverallReadingProfile
 import com.milesilac.classreadingstats.model.toSectionString
+import com.milesilac.classreadingstats.ui.components.WarningDialog
+import com.milesilac.classreadingstats.ui.components.WarningEvent
 import com.milesilac.classreadingstats.ui.dummyStudentListsEightAmethyst
 import com.milesilac.classreadingstats.ui.theme.ProjectColors
 import kotlinx.coroutines.launch
@@ -51,13 +57,14 @@ fun StudentDetailsPage(
     student: Student,
     onEditClick: () -> Unit = {},
     onBackClick: () -> Unit = {},
-    onDelete: (Student) -> Unit = {},
+    onDelete: (Long) -> Unit = {},
     onVisible: () -> Unit = {}
 ) {
     onVisible()
     val hasPostTest = student.hasPostTest
     val pagerState = rememberPagerState(pageCount = { if (hasPostTest) 2 else 1 })
     val coroutineScope = rememberCoroutineScope()
+    var showDeleteStudentDialog by rememberSaveable { mutableStateOf(false) }
 
     val readingProfilePreTest = calculateLearnerOverallReadingProfile(
         isGSTPassed = student.gst.shouldGradePassage().not(),
@@ -142,9 +149,7 @@ fun StudentDetailsPage(
                 IconButton(
                     modifier = Modifier
                         .align(Alignment.BottomEnd),
-                    onClick = {
-                        onDelete(student)
-                    },
+                    onClick = { showDeleteStudentDialog = true },
                 ) {
                     Icon(
                         imageVector = Icons.TwoTone.Delete,
@@ -368,6 +373,21 @@ fun StudentDetailsPage(
                     }
                 }
             }
+        }
+    }
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+    ) {
+        if (showDeleteStudentDialog) {
+            WarningDialog(
+                event = WarningEvent.ConfirmDeleteStudent(),
+                onDismissDialog = { showDeleteStudentDialog = false },
+                onOkayClick = {
+                    showDeleteStudentDialog = false
+                    onDelete(student.persistenceId)
+                }
+            )
         }
     }
 }

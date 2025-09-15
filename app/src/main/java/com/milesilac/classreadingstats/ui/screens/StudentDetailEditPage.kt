@@ -55,12 +55,13 @@ import com.milesilac.classreadingstats.model.getStudentsPerSection
 import com.milesilac.classreadingstats.model.initClassSection
 import com.milesilac.classreadingstats.model.initClassSheet
 import com.milesilac.classreadingstats.model.toSectionString
-import com.milesilac.classreadingstats.ui.components.EditPostTestDialog
+import com.milesilac.classreadingstats.ui.components.WarningDialog
 import com.milesilac.classreadingstats.ui.components.EditStudentInfoDialog
 import com.milesilac.classreadingstats.ui.components.EditStudentNameDialog
 import com.milesilac.classreadingstats.ui.components.SaveErrorDialog
 import com.milesilac.classreadingstats.ui.components.SaveErrorEvent
 import com.milesilac.classreadingstats.ui.components.StudentInfoType
+import com.milesilac.classreadingstats.ui.components.WarningEvent
 import com.milesilac.classreadingstats.ui.dummyStudentListsEightAmethyst
 import com.milesilac.classreadingstats.ui.theme.ProjectColors
 import kotlinx.coroutines.delay
@@ -529,7 +530,8 @@ fun StudentDetailEditPage(
                 )
             }
             showEditPostTestDialog -> {
-                EditPostTestDialog(
+                WarningDialog(
+                    event = WarningEvent.ConfirmEditPostTest(),
                     onDismissDialog = { showEditPostTestDialog = false },
                     onOkayClick = {
                         hasPostTest = true

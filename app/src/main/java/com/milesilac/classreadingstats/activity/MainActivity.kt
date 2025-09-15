@@ -189,8 +189,9 @@ class MainActivity : AppCompatActivity() {
                             navController.navigateUp()
                             viewModel.updateTempStudent(event = StudentDetailEditEvent.EventReset())
                         },
-                        onDelete = { student ->
-
+                        onDelete = { studentPersistenceId ->
+                            navController.navigateUp()
+                            viewModel.deleteStudents(studentPersistenceIds = listOf(studentPersistenceId))
                         },
                         onVisible = {
                             if (WindowCompat.getInsetsController(window, window.decorView).isAppearanceLightNavigationBars.not()) {

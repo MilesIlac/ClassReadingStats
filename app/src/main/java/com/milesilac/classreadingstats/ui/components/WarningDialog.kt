@@ -29,7 +29,8 @@ import com.milesilac.classreadingstats.ui.theme.ProjectColors
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun EditPostTestDialog(
+fun WarningDialog(
+    event: WarningEvent = WarningEvent.ConfirmDeleteStudent(),
     onDismissDialog: () -> Unit = {},
     onOkayClick: () -> Unit = {},
 ) {
@@ -38,7 +39,8 @@ fun EditPostTestDialog(
             onDismissDialog()
         }
     ) {
-        EditPostTestDialogLayout(
+        WarningDialogLayout(
+            event = event,
             onOkayClick = onOkayClick,
             onBackClick = onDismissDialog
         )
@@ -47,12 +49,13 @@ fun EditPostTestDialog(
 
 @Preview
 @Composable
-fun EditPostTestDialogPreview() {
-    EditPostTestDialog()
+fun WarningDialogLayoutPreview() {
+    WarningDialog()
 }
 
 @Composable
-fun EditPostTestDialogLayout(
+fun WarningDialogLayout(
+    event: WarningEvent = WarningEvent.ConfirmDeleteStudent(),
     onOkayClick: () -> Unit = {},
     onBackClick: () -> Unit = {},
 ) {
@@ -85,8 +88,12 @@ fun EditPostTestDialogLayout(
                 .clip(shape = RoundedCornerShape(8.dp))
                 .fillMaxWidth(),
         ) {
+            val content = when (event) {
+                is WarningEvent.ConfirmEditPostTest -> event.message
+                is WarningEvent.ConfirmDeleteStudent -> event.message
+            }
             Text(
-                text = "Confirm editing of Post-Test?",
+                text = "Confirm $content?",
                 modifier = Modifier
                     .padding(
                         horizontal = 8.dp,
@@ -167,6 +174,15 @@ fun EditPostTestDialogLayout(
 
 @Preview
 @Composable
-fun EditPostTestDialogLayoutPreview() {
-    EditPostTestDialogLayout()
+fun WarningDialogLayoutLayoutPreview() {
+    WarningDialogLayout()
+}
+
+sealed class WarningEvent {
+    data class ConfirmEditPostTest(
+        val message: String = "editing of Post-Test"
+    ) : WarningEvent()
+    data class ConfirmDeleteStudent(
+        val message: String = "delete of this Student"
+    ) : WarningEvent()
 }
