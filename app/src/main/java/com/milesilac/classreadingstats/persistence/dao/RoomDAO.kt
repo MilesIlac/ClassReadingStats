@@ -15,7 +15,7 @@ interface RoomDAO {
     @Query("SELECT * FROM sections")
     fun getAllSections(): Flow<List<SectionEntity>>
 
-    @Query("SELECT * FROM students")
+    @Query("SELECT * FROM students ORDER BY student_name ASC")
     fun getAllStudents(): Flow<List<StudentEntity>>
 
     @Transaction

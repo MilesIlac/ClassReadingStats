@@ -66,4 +66,11 @@ inline fun String.inputFullCheckForDecimalString(
 
 fun String.isAllLetters() = this.all { it.isLetter() || it.isWhitespace() }
 
+fun String.inputFullCheckForStudentName(): String {
+    return when {
+        this.trim().all { it.isLetter().not() } -> ""
+        else -> this.trim()
+    }
+}
+
 fun String.capitalizeMaybeWithTrim() = trim().replaceFirstChar { if (it.isLowerCase()) it.titlecase(getDefault()) else it.toString() }

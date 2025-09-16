@@ -23,6 +23,8 @@ import com.milesilac.classreadingstats.helpers.nonScaledSp
 import com.milesilac.classreadingstats.model.Student
 import com.milesilac.classreadingstats.model.StudentList
 import com.milesilac.classreadingstats.model.StudentSexOrient
+import com.milesilac.classreadingstats.model.mapToStudentPersistenceIds
+import com.milesilac.classreadingstats.model.mapToStudents
 import com.milesilac.classreadingstats.ui.components.SectionHeader
 import com.milesilac.classreadingstats.ui.components.StudentEntry
 import com.milesilac.classreadingstats.ui.dummyStudentListsEightAmethyst
@@ -45,16 +47,8 @@ fun StudentListPage(
     var femaleList by remember(femaleStudents) { mutableStateOf(femaleStudents) }
     val maleCount = maleStudents.count { it is StudentList.StudentDetails && it.student.sex == StudentSexOrient.MALE }
     val femaleCount = femaleStudents.count { it is StudentList.StudentDetails && it.student.sex == StudentSexOrient.FEMALE }
-    val mappedMaleStudents = maleStudents.filter {
-        it is StudentList.StudentDetails
-    }.map {
-        (it as StudentList.StudentDetails).student.persistenceId
-    }
-    val mappedFemaleStudents = femaleStudents.filter {
-        it is StudentList.StudentDetails
-    }.map {
-        (it as StudentList.StudentDetails).student.persistenceId
-    }
+    val mappedMaleStudents = maleStudents.mapToStudentPersistenceIds()
+    val mappedFemaleStudents = maleStudents.mapToStudentPersistenceIds()
     val maleHeaderCheckBoxChecked = when {
         mappedMaleStudents.isEmpty() -> false
         else -> studentIdsToDelete.containsAll(mappedMaleStudents)
@@ -146,11 +140,7 @@ fun StudentListPage(
                 onHeaderCheckBoxClick = { isChecked ->
                     onHeaderCheckBoxClick(
                         isChecked,
-                        maleList.filter {
-                            it is StudentList.StudentDetails
-                        }.map {
-                            (it as StudentList.StudentDetails).student
-                        }
+                        maleList.mapToStudents()
                     )
                 }
             )
@@ -168,11 +158,7 @@ fun StudentListPage(
                 onHeaderCheckBoxClick = { isChecked ->
                     onHeaderCheckBoxClick(
                         isChecked,
-                        femaleList.filter {
-                            it is StudentList.StudentDetails
-                        }.map {
-                            (it as StudentList.StudentDetails).student
-                        }
+                        femaleList.mapToStudents()
                     )
                 }
             )
