@@ -38,8 +38,10 @@ import androidx.compose.ui.unit.dp
 import com.milesilac.classreadingstats.model.ClassSection
 import com.milesilac.classreadingstats.model.ClassSheet
 import com.milesilac.classreadingstats.model.Student
+import com.milesilac.classreadingstats.model.StudentToDeleteBundle
 import com.milesilac.classreadingstats.model.hasStudents
 import com.milesilac.classreadingstats.model.initClassSection
+import com.milesilac.classreadingstats.model.prepareStudentsToDelete
 import com.milesilac.classreadingstats.model.toSectionString
 import com.milesilac.classreadingstats.ui.components.AnimatedBottomBar
 import com.milesilac.classreadingstats.ui.components.ConfirmDeleteListBottomSheet
@@ -60,7 +62,7 @@ fun HomePage(
     onAddSectionClick: () -> Unit = {},
     onAddStudentClick: () -> Unit = {},
     onDeleteSectionsClick: () -> Unit = {},
-    onDeleteStudentsClick: (List<Long>) -> Unit = {},
+    onDeleteStudentsClick: (List<StudentToDeleteBundle>) -> Unit = {},
     onEditGradesClick: (Long) -> Unit = {},
     onStudentEntryClick: (Student) -> Unit = {},
     onExportClick: (List<ClassSheet>) -> Unit = {},
@@ -105,6 +107,7 @@ fun HomePage(
     var showDeleteStudentsBottomSheet by remember { mutableStateOf(false) }
     var studentsToDelete by remember { mutableStateOf(listOf<Student>()) }
     val studentIdsToDelete = studentsToDelete.map { it.persistenceId }
+    val studentBundlesToDelete = studentsToDelete.prepareStudentsToDelete()
     val coroutineScope = rememberCoroutineScope()
 
     // Listen for page settling
@@ -318,7 +321,7 @@ fun HomePage(
             onDeleteClick = {
                 showDeleteStudentsBottomSheet = false
                 isDeleteMode = false
-                onDeleteStudentsClick(studentIdsToDelete)
+                onDeleteStudentsClick(studentBundlesToDelete)
                 studentsToDelete = listOf()
             }
         )

@@ -44,6 +44,7 @@ import com.milesilac.classreadingstats.helpers.nonScaledSp
 import com.milesilac.classreadingstats.model.level.LearnerLevel
 import com.milesilac.classreadingstats.model.Student
 import com.milesilac.classreadingstats.model.StudentList
+import com.milesilac.classreadingstats.model.StudentToDeleteBundle
 import com.milesilac.classreadingstats.model.level.calculateLearnerOverallReadingProfile
 import com.milesilac.classreadingstats.model.toSectionString
 import com.milesilac.classreadingstats.ui.components.WarningDialog
@@ -57,7 +58,7 @@ fun StudentDetailsPage(
     student: Student,
     onEditClick: () -> Unit = {},
     onBackClick: () -> Unit = {},
-    onDelete: (Long) -> Unit = {},
+    onDelete: (StudentToDeleteBundle) -> Unit = {},
     onVisible: () -> Unit = {}
 ) {
     onVisible()
@@ -385,7 +386,13 @@ fun StudentDetailsPage(
                 onDismissDialog = { showDeleteStudentDialog = false },
                 onOkayClick = {
                     showDeleteStudentDialog = false
-                    onDelete(student.persistenceId)
+                    onDelete(
+                        StudentToDeleteBundle(
+                            classSection = student.section,
+                            sexOrient = student.sex,
+                            studentPersistenceIds = listOf(student.persistenceId)
+                        )
+                    )
                 }
             )
         }

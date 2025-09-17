@@ -1,5 +1,6 @@
 package com.milesilac.classreadingstats
 
+import com.milesilac.classreadingstats.model.StudentSexOrient
 import com.milesilac.classreadingstats.persistence.AppDatabase
 import com.milesilac.classreadingstats.persistence.model.SectionEntity
 import com.milesilac.classreadingstats.persistence.model.StudentEntity
@@ -21,6 +22,11 @@ class StudentsDBSource() {
     suspend fun updateSection(section: SectionEntity) = roomDAO.updateSection(section = section)
 
     suspend fun updateStudents(students: List<StudentEntity>) = roomDAO.updateStudents(students = students)
+
+    suspend fun getSameListStudents(
+        sectionId: Long,
+        sex: StudentSexOrient
+    ) = roomDAO.getSameListStudents(sectionId = sectionId, sex = sex)
 
     suspend fun deleteSection(sectionId: Long) = roomDAO.deleteSection(sectionId = sectionId)
 

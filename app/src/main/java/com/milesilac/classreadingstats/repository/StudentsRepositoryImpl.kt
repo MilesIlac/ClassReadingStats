@@ -4,11 +4,14 @@ import com.milesilac.classreadingstats.StudentsDBSource
 import com.milesilac.classreadingstats.model.ClassSection
 import com.milesilac.classreadingstats.model.ClassSheet
 import com.milesilac.classreadingstats.model.Student
+import com.milesilac.classreadingstats.model.StudentToDeleteBundle
 import com.milesilac.classreadingstats.persistence.model.SectionEntity
 import com.milesilac.classreadingstats.persistence.model.StudentEntity
+import com.milesilac.classreadingstats.persistence.model.addStudentEntityWithOrderId
 import com.milesilac.classreadingstats.persistence.model.mapPartitionForStudentList
 import com.milesilac.classreadingstats.persistence.model.mapStudentEntity
 import com.milesilac.classreadingstats.persistence.model.mapStudentListToEntity
+import com.milesilac.classreadingstats.persistence.model.updateRemainingStudentEntitiesOrderId
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
 
@@ -76,25 +79,47 @@ class StudentsRepositoryImpl(): StudentsRepository {
         )
     }
 
-    override suspend fun updateStudent(student: Student) {
+    override suspend fun updateStudent(student: Student, hasSortOperation: Boolean) {
         studentsDBSource.updateStudents(
-            students = listOf(
-                StudentEntity(
-                    studentRoomId = student.persistenceId,
-                    sectionRoomId = student.section.persistenceId,
-                    orderId = student.orderId,
-                    studentName = student.name,
-                    sex = student.sex,
-                    hasPostTest = student.hasPostTest,
-                    gstScore = student.gst.score,
-                    preORTotalNumberOfWords = student.preTest.oralReading.totalNumberOfWordsInSelection,
-                    preORNumberOfMiscues = student.preTest.oralReading.numberOfMiscues,
-                    preRCInputPercentage = student.preTest.readingComprehension.inputPercentage,
-                    postORTotalNumberOfWords = student.postTest?.oralReading?.totalNumberOfWordsInSelection,
-                    postORNumberOfMiscues = student.postTest?.oralReading?.numberOfMiscues,
-                    postRCInputPercentage = student.postTest?.readingComprehension?.inputPercentage
+            students = when {
+                hasSortOperation -> studentsDBSource.getSameListStudents(
+                    sectionId = student.section.persistenceId,
+                    sex = student.sex
+                ).addStudentEntityWithOrderId(
+                    studentEntity = StudentEntity(
+                        studentRoomId = student.persistenceId,
+                        sectionRoomId = student.section.persistenceId,
+                        orderId = student.orderId,
+                        studentName = student.name,
+                        sex = student.sex,
+                        hasPostTest = student.hasPostTest,
+                        gstScore = student.gst.score,
+                        preORTotalNumberOfWords = student.preTest.oralReading.totalNumberOfWordsInSelection,
+                        preORNumberOfMiscues = student.preTest.oralReading.numberOfMiscues,
+                        preRCInputPercentage = student.preTest.readingComprehension.inputPercentage,
+                        postORTotalNumberOfWords = student.postTest?.oralReading?.totalNumberOfWordsInSelection,
+                        postORNumberOfMiscues = student.postTest?.oralReading?.numberOfMiscues,
+                        postRCInputPercentage = student.postTest?.readingComprehension?.inputPercentage
+                    )
                 )
-            )
+                else -> listOf(
+                    StudentEntity(
+                        studentRoomId = student.persistenceId,
+                        sectionRoomId = student.section.persistenceId,
+                        orderId = student.orderId,
+                        studentName = student.name,
+                        sex = student.sex,
+                        hasPostTest = student.hasPostTest,
+                        gstScore = student.gst.score,
+                        preORTotalNumberOfWords = student.preTest.oralReading.totalNumberOfWordsInSelection,
+                        preORNumberOfMiscues = student.preTest.oralReading.numberOfMiscues,
+                        preRCInputPercentage = student.preTest.readingComprehension.inputPercentage,
+                        postORTotalNumberOfWords = student.postTest?.oralReading?.totalNumberOfWordsInSelection,
+                        postORNumberOfMiscues = student.postTest?.oralReading?.numberOfMiscues,
+                        postRCInputPercentage = student.postTest?.readingComprehension?.inputPercentage
+                    )
+                )
+            }
         )
     }
 
@@ -107,8 +132,18 @@ class StudentsRepositoryImpl(): StudentsRepository {
         }
     }
 
-    override suspend fun deleteStudentsByRoomId(studentIds: List<Long>) {
-        studentsDBSource.deleteStudentsByRoomId(studentIds = studentIds)
+    override suspend fun deleteStudentsByRoomId(studentBundlesToDelete: List<StudentToDeleteBundle>) {
+        studentBundlesToDelete.forEach { studentToDeleteBundle ->
+            studentsDBSource.updateStudents(
+                students = studentsDBSource.getSameListStudents(
+                    sectionId = studentToDeleteBundle.classSection.persistenceId,
+                    sex = studentToDeleteBundle.sexOrient
+                ).updateRemainingStudentEntitiesOrderId(
+                    studentIdsToDelete = studentToDeleteBundle.studentPersistenceIds
+                )
+            )
+            studentsDBSource.deleteStudentsByRoomId(studentIds = studentToDeleteBundle.studentPersistenceIds)
+        }
     }
 
 }

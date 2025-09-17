@@ -105,3 +105,25 @@ fun Student.mapStudent(sectionId: Long) = StudentEntity(
     postORNumberOfMiscues = this.postTest?.oralReading?.numberOfMiscues,
     postRCInputPercentage = this.postTest?.readingComprehension?.inputPercentage
 )
+
+fun List<StudentEntity>.addStudentEntityWithOrderId(studentEntity: StudentEntity): List<StudentEntity> {
+    val newList = mutableListOf<StudentEntity>()
+    this.asSequence()
+        .plus(studentEntity)
+        .sortedBy { it.studentName }
+        .forEachIndexed { index, studentEntity ->
+            newList.add(studentEntity.copy(orderId = (index + 1).toDouble()))
+        }
+    return newList
+}
+
+fun List<StudentEntity>.updateRemainingStudentEntitiesOrderId(studentIdsToDelete: List<Long>): List<StudentEntity> {
+    val newList = mutableListOf<StudentEntity>()
+    this.asSequence()
+        .filter { it.studentRoomId !in studentIdsToDelete }
+        .sortedBy { it.studentName }
+        .forEachIndexed { index, studentEntity ->
+            newList.add(studentEntity.copy(orderId = (index + 1).toDouble()))
+        }
+    return newList
+}

@@ -4,6 +4,7 @@ import androidx.room.Dao
 import androidx.room.Query
 import androidx.room.Transaction
 import androidx.room.Upsert
+import com.milesilac.classreadingstats.model.StudentSexOrient
 import com.milesilac.classreadingstats.persistence.model.SectionEntity
 import com.milesilac.classreadingstats.persistence.model.StudentEntity
 import com.milesilac.classreadingstats.persistence.model.StudentRelationship
@@ -27,6 +28,9 @@ interface RoomDAO {
 
     @Upsert
     suspend fun updateStudents(students: List<StudentEntity>)
+
+    @Query("SELECT * FROM students WHERE section_room_id = :sectionId AND sex = :sex")
+    suspend fun getSameListStudents(sectionId: Long, sex: StudentSexOrient): List<StudentEntity>
 
     @Query("DELETE FROM sections WHERE section_room_id = :sectionId")
     suspend fun deleteSection(sectionId: Long)

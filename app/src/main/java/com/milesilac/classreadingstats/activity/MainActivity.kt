@@ -73,8 +73,8 @@ class MainActivity : AppCompatActivity() {
                         onDeleteSectionsClick = {
                             navController.navigate(Routes.RouteDeleteSections)
                         },
-                        onDeleteStudentsClick = { studentPersistenceIds ->
-                            viewModel.deleteStudents(studentPersistenceIds = studentPersistenceIds)
+                        onDeleteStudentsClick = { studentBundlesToDelete ->
+                            viewModel.deleteStudents(studentBundlesToDelete = studentBundlesToDelete)
                         },
                         onEditGradesClick = { currentSectionId ->
                             navController.navigate(
@@ -189,9 +189,9 @@ class MainActivity : AppCompatActivity() {
                             navController.navigateUp()
                             viewModel.updateTempStudent(event = StudentDetailEditEvent.EventReset())
                         },
-                        onDelete = { studentPersistenceId ->
+                        onDelete = { studentBundleToDelete ->
                             navController.navigateUp()
-                            viewModel.deleteStudents(studentPersistenceIds = listOf(studentPersistenceId))
+                            viewModel.deleteStudents(studentBundlesToDelete = listOf(studentBundleToDelete))
                         },
                         onVisible = {
                             if (WindowCompat.getInsetsController(window, window.decorView).isAppearanceLightNavigationBars.not()) {

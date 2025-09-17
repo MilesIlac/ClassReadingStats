@@ -10,6 +10,8 @@ import com.milesilac.classreadingstats.model.test.GroupScreeningTest
 import com.milesilac.classreadingstats.model.Student
 import com.milesilac.classreadingstats.model.StudentList
 import com.milesilac.classreadingstats.model.StudentSexOrient
+import com.milesilac.classreadingstats.model.StudentToDeleteBundle
+import com.milesilac.classreadingstats.model.addStudentWithOrderId
 import com.milesilac.classreadingstats.model.emptyStudent
 import com.milesilac.classreadingstats.model.getAllStudentDetailsList
 import com.milesilac.classreadingstats.model.initClassSheet
@@ -101,18 +103,14 @@ class MainViewModel(private val savedStateHandle: SavedStateHandle): ViewModel()
                     StudentSexOrient.MALE -> {
                         savedStateHandle[TEMP_CLASS_SHEET] = tempClassSheetState.value.let {
                             it.copy(
-                                maleStudents = it.maleStudents.toMutableList().apply {
-                                    add(StudentList.StudentDetails(student = student))
-                                }
+                                maleStudents = it.maleStudents.addStudentWithOrderId(student = student)
                             )
                         }.transformToJsonString()
                     }
                     StudentSexOrient.FEMALE -> {
                         savedStateHandle[TEMP_CLASS_SHEET] = tempClassSheetState.value.let {
                             it.copy(
-                                femaleStudents = it.femaleStudents.toMutableList().apply {
-                                    add(StudentList.StudentDetails(student = student))
-                                }
+                                femaleStudents = it.femaleStudents.addStudentWithOrderId(student = student)
                             )
                         }.transformToJsonString()
                     }
@@ -155,7 +153,7 @@ class MainViewModel(private val savedStateHandle: SavedStateHandle): ViewModel()
 
     fun updateLocalSourceStudent(withTempStudentUpdate: Boolean) {
         viewModelScope.launch {
-            repository.updateStudent(student = tempStudentState.value)
+            repository.updateStudent(student = tempStudentState.value, hasSortOperation = false)
         }.invokeOnCompletion {
             getLocalSourceStudent(
                 studentPersistenceId = tempStudentState.value.persistenceId,
@@ -221,7 +219,7 @@ class MainViewModel(private val savedStateHandle: SavedStateHandle): ViewModel()
 
     fun saveCurrentTempStudent() {
         viewModelScope.launch {
-            repository.updateStudent(student = tempStudentState.value)
+            repository.updateStudent(student = tempStudentState.value, hasSortOperation = true)
         }.invokeOnCompletion {
             savedStateHandle[TEMP_STUDENT] = emptyStudent().transformToJsonString()
         }
@@ -298,10 +296,10 @@ class MainViewModel(private val savedStateHandle: SavedStateHandle): ViewModel()
         }
     }
 
-    fun deleteStudents(studentPersistenceIds: List<Long>) {
+    fun deleteStudents(studentBundlesToDelete: List<StudentToDeleteBundle>) {
         getPersistenceStudentJob?.cancel() //to avoid existing getStudent Flow crash
         viewModelScope.launch {
-            repository.deleteStudentsByRoomId(studentIds = studentPersistenceIds)
+            repository.deleteStudentsByRoomId(studentBundlesToDelete = studentBundlesToDelete)
         }
     }
 

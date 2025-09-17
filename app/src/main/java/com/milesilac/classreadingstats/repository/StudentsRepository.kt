@@ -2,6 +2,7 @@ package com.milesilac.classreadingstats.repository
 
 import com.milesilac.classreadingstats.model.ClassSheet
 import com.milesilac.classreadingstats.model.Student
+import com.milesilac.classreadingstats.model.StudentToDeleteBundle
 import kotlinx.coroutines.flow.Flow
 
 interface StudentsRepository {
@@ -11,11 +12,11 @@ interface StudentsRepository {
 
     fun getStudent(studentId: Long): Flow<Student>
 
-    suspend fun updateStudent(student: Student)
+    suspend fun updateStudent(student: Student, hasSortOperation: Boolean)
 
     suspend fun deleteSections(sectionsWithCount: List<Pair<Long, Boolean>>)
 
-    suspend fun deleteStudentsByRoomId(studentIds: List<Long>)
+    suspend fun deleteStudentsByRoomId(studentBundlesToDelete: List<StudentToDeleteBundle>)
 
     companion object {
         @Volatile

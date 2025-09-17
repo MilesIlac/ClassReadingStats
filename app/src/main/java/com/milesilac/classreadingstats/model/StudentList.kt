@@ -21,3 +21,16 @@ fun List<StudentList>.mapToStudents() = this
 
 fun List<StudentList>.mapToStudentPersistenceIds() = this
     .mapNotNull { if (it is StudentList.StudentDetails) it.student.persistenceId else null } //StudentList details transformed to StudentPersistenceIds
+
+fun List<StudentList>.addStudentWithOrderId(student: Student): List<StudentList> {
+    val newList = mutableListOf<StudentList>(this[0])
+    this.asSequence()
+        .filter { it is StudentList.StudentDetails }
+        .plus(StudentList.StudentDetails(student = student))
+        .sortedBy { (it as StudentList.StudentDetails).student.name }
+        .forEachIndexed { index, studentList ->
+            (studentList as StudentList.StudentDetails).student.orderId = (index + 1).toDouble()
+            newList.add(studentList)
+        }
+    return newList
+}
