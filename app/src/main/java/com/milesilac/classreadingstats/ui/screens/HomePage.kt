@@ -1,5 +1,6 @@
 package com.milesilac.classreadingstats.ui.screens
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -233,7 +234,7 @@ fun HomePage(
                 horizontalArrangement = Arrangement.spacedBy(6.dp)
             ) {
                 itemsIndexed(items = currentSectionsByGrade) { index, section ->
-                    //val selected = TODO
+                    val selected = section == currentSection
                     OutlinedButton(
                         onClick = {
                             coroutineScope.launch {
@@ -241,11 +242,22 @@ fun HomePage(
                             }
                         },
                         modifier = Modifier,
+                        enabled = selected.not(),
                         colors = ButtonColors(
-                            containerColor = Color.White,
+                            containerColor = ProjectColors.OffWhite1,
                             contentColor = Color.Black,
-                            disabledContainerColor = Color.Gray,
+                            disabledContainerColor = Color.Yellow,
                             disabledContentColor = Color.White
+                        ),
+                        border = BorderStroke(
+                            width = when {
+                                selected -> 4.0.dp
+                                else -> 2.0.dp
+                            },
+                            color = when {
+                                selected -> ProjectColors.OffOrange1
+                                else -> Color.Gray
+                            }
                         )
                     ) {
                         Text(

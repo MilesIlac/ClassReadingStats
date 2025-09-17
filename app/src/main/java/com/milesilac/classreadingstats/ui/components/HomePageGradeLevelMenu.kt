@@ -1,5 +1,12 @@
 package com.milesilac.classreadingstats.ui.components
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.spring
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -51,12 +58,24 @@ fun HomePageGradeLevelMenu(
     Box(
         modifier = Modifier
     ) {
-        if (isExpanded) {
-            Popup(
-                onDismissRequest = {},
-                offset = IntOffset(0, y = -negativeOffset),
-                properties = PopupProperties(
-//                    clippingEnabled = false
+        Popup(
+            onDismissRequest = {},
+            offset = IntOffset(0, y = -negativeOffset),
+            properties = PopupProperties()
+        ) {
+            AnimatedVisibility(
+                visible = isExpanded,
+                enter = fadeIn(
+                    animationSpec = spring(stiffness = 600F),
+                ) + slideInVertically(
+                    initialOffsetY = { fullHeight -> fullHeight },
+                    animationSpec = tween(durationMillis = 300)
+                ),
+                exit = fadeOut(
+                    animationSpec = spring(stiffness = 600F),
+                ) + slideOutVertically(
+                    targetOffsetY = { fullHeight -> fullHeight },
+                    animationSpec = tween(durationMillis = 300)
                 )
             ) {
                 PopupMenuLayout(
