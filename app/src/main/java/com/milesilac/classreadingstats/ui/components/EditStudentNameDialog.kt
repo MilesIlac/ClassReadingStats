@@ -36,7 +36,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.milesilac.classreadingstats.helpers.capitalizeMaybeWithTrim
+import com.milesilac.classreadingstats.helpers.capitalizeMaybe
 import com.milesilac.classreadingstats.helpers.inputFullCheckForStudentName
 import com.milesilac.classreadingstats.ui.theme.ProjectColors
 
@@ -100,7 +100,7 @@ fun EditStudentNameDialogLayout(
 
     var inputLastName by remember { mutableStateOf(lastName) }
     var inputFirstNameEtc by remember { mutableStateOf(firstNameEtc) }
-    val currentPreviewName = "$inputLastName, $inputFirstNameEtc".inputFullCheckForStudentName()
+    val currentPreviewName = "${inputLastName.trim()}, ${inputFirstNameEtc.trim()}".inputFullCheckForStudentName()
 
     Column(
         modifier = Modifier
@@ -120,7 +120,7 @@ fun EditStudentNameDialogLayout(
         OutlinedTextField(
             value = inputLastName,
             onValueChange = { newValue ->
-                inputLastName = newValue.capitalizeMaybeWithTrim()
+                inputLastName = newValue.capitalizeMaybe()
             },
             modifier = Modifier
                 .fillMaxWidth(),
@@ -150,7 +150,7 @@ fun EditStudentNameDialogLayout(
         OutlinedTextField(
             value = inputFirstNameEtc,
             onValueChange = { newValue ->
-                inputFirstNameEtc = newValue.capitalizeMaybeWithTrim()
+                inputFirstNameEtc = newValue.capitalizeMaybe()
             },
             modifier = Modifier
                 .fillMaxWidth(),
@@ -218,7 +218,7 @@ fun EditStudentNameDialogLayout(
             OutlinedButton(
                 onClick = { onOkayClick(currentPreviewName) },
                 modifier = Modifier,
-                enabled = inputLastName.isNotEmpty() && inputFirstNameEtc.isNotEmpty(),
+                enabled = inputLastName.trim().isNotEmpty() && inputFirstNameEtc.trim().isNotEmpty(),
                 shape = RoundedCornerShape(12.dp),
                 colors = buttonColors,
                 border = BorderStroke(

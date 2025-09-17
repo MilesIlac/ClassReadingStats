@@ -29,7 +29,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.milesilac.classreadingstats.helpers.capitalizeMaybeWithTrim
+import com.milesilac.classreadingstats.helpers.capitalizeMaybe
 import com.milesilac.classreadingstats.helpers.isAllLetters
 import com.milesilac.classreadingstats.ui.theme.ProjectColors
 
@@ -84,7 +84,7 @@ fun EditSectionNameDialogLayout(
             value = inputName,
             onValueChange = { newValue ->
                 if (newValue.isAllLetters()) {
-                    inputName = newValue.capitalizeMaybeWithTrim()
+                    inputName = newValue.capitalizeMaybe()
                 }
             },
             modifier = Modifier
@@ -120,9 +120,7 @@ fun EditSectionNameDialogLayout(
         )
         Spacer(modifier = Modifier.height(4.dp))
         OutlinedButton(
-            onClick = {
-                onOkayClick(inputName.trim())
-            },
+            onClick = { onOkayClick(inputName.trim()) },
             modifier = Modifier,
             shape = RoundedCornerShape(12.dp),
             colors = ButtonColors(

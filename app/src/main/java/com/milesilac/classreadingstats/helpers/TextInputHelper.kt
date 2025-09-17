@@ -73,4 +73,4 @@ fun String.inputFullCheckForStudentName(): String {
     }
 }
 
-fun String.capitalizeMaybeWithTrim() = trim().replaceFirstChar { if (it.isLowerCase()) it.titlecase(getDefault()) else it.toString() }
+fun String.capitalizeMaybe() = replaceFirstChar { if (it.isLowerCase()) it.titlecase(getDefault()) else it.toString() }

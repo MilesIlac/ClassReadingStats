@@ -429,6 +429,9 @@ fun StudentDetailEditPage(
                 OutlinedButton(
                     onClick = {
                         when {
+                            studentEditType == StudentEditType.EDIT && hasIssues.indexOfFirst {
+                                it.first
+                            } == 3 -> onSaveClick()
                             hasIssues.any { it.first } -> showSaveErrorDialog = true
                             else -> onSaveClick()
                         }
