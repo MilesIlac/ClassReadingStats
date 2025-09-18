@@ -23,6 +23,8 @@ import com.milesilac.classreadingstats.helpers.nonScaledSp
 import com.milesilac.classreadingstats.model.Student
 import com.milesilac.classreadingstats.model.StudentList
 import com.milesilac.classreadingstats.model.StudentSexOrient
+import com.milesilac.classreadingstats.model.level.LearnerLevel
+import com.milesilac.classreadingstats.model.level.calculateLearnerOverallReadingProfile
 import com.milesilac.classreadingstats.model.mapToStudentPersistenceIds
 import com.milesilac.classreadingstats.model.mapToStudents
 import com.milesilac.classreadingstats.ui.components.SectionHeader
@@ -213,6 +215,7 @@ private fun LazyListScope.manageItem(
                         reorderableItemScope = this,
                         isDragging = isDragging,
                         textString = "${studentItem.student.orderId.toInt()} ${studentItem.student.name}".trim(),
+                        learnerLevels = studentItem.student.collectReadingProfiles(),
                         onStudentDetailsCheck = { onStudentEntryClick(studentItem.student) },
                         onCheckBoxClick = { onCheckBoxClick(studentItem.student) }
                     )
@@ -245,4 +248,20 @@ fun EmptyWorkbookPage(modifier: Modifier = Modifier) {
 @Composable
 fun EmptyWorkbookPagePreview() {
     EmptyWorkbookPage()
+}
+
+fun Student.collectReadingProfiles(): List<LearnerLevel> {
+    val studentPreTestOverallReadingProfile = calculateLearnerOverallReadingProfile(
+        isGSTPassed = this.gst.shouldGradePassage().not(),
+        orLevel = this.preTest.oralReading.level,
+        rcLevel = this.preTest.readingComprehension.level
+    )
+    val studentPostTestOverallReadingProfile = calculateLearnerOverallReadingProfile(
+        orLevel = this.postTest?.oralReading?.level ?: LearnerLevel.ERROR,
+        rcLevel = this.postTest?.readingComprehension?.level ?: LearnerLevel.ERROR
+    )
+    return listOf(
+        studentPreTestOverallReadingProfile,
+        studentPostTestOverallReadingProfile
+    )
 }
