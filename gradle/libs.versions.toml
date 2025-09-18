@@ -1,26 +1,26 @@
 [versions]
 #Plugins
-agp = "8.11.1"
-kotlin = "2.2.10"
+agp = "8.11.2"
+kotlin = "2.2.20"
 ksp = "2.2.10-2.0.2"
 
 # Core
 coreKtx = "1.17.0"
-lifecycleVersion = "2.9.3"
-activity-compose = "1.10.1"
+lifecycleVersion = "2.9.4"
+activity-compose = "1.11.0"
 appcompat = "1.7.1"
 material = "1.14.0-alpha04"
 constraintlayout = "2.2.1"
-navigationVersion = "2.9.3"
+navigationVersion = "2.9.4"
 
 # Serialization
 serialization = "1.9.0"
 
 # Compose
-compose-bom = "2025.08.01"
+compose-bom = "2025.09.00"
 
 # Room
-room = "2.7.2"
+room = "2.8.0"
 
 #Calvin-LL Reorderable
 calvin-reorderable = "3.0.0"
