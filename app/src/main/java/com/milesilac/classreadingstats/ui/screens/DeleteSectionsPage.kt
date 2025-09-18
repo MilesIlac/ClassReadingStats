@@ -1,5 +1,6 @@
 package com.milesilac.classreadingstats.ui.screens
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -67,6 +68,7 @@ fun DeleteSectionsPage(
     onVisible: () -> Unit = {}
 ) {
     onVisible()
+    BackHandler { onBackClick(DeleteClassSheet.EventReset) }
     val hasDeletePendingSheets = currentDeletePendingSheets.isNotEmpty()
     var selectedSheets by rememberSaveable { mutableStateOf(setOf<ClassSection>()) }
     var selectedDeletePendingSheets by rememberSaveable { mutableStateOf(setOf<ClassSection>()) }

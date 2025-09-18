@@ -1,5 +1,6 @@
 package com.milesilac.classreadingstats.ui.screens
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -67,6 +68,7 @@ fun AddSectionPage(
     onVisible: () -> Unit = {}
 ) {
     onVisible()
+    BackHandler { onBackClick(UpdateTempClassSheetForAddSection.EventDelete) }
     val selectedGradeLevel = tempClassSheet.classSection.gradeLevel
     val inputSectionName = tempClassSheet.classSection.sectionName
     val hasIssues = listOf(

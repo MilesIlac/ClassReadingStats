@@ -1,5 +1,6 @@
 package com.milesilac.classreadingstats.ui.screens
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -80,6 +81,7 @@ fun StudentDetailEditPage(
     onVisible: () -> Unit = {}
 ) {
     onVisible()
+    BackHandler { onBackClick(student.section) }
     val hasIssues = listOf(
         student.name.isEmpty() to ErrorEvent.AddStudentSaveErrorEvent.AddStudentName(),
         (student.section == initClassSection()) to ErrorEvent.AddStudentSaveErrorEvent.PickSection(),

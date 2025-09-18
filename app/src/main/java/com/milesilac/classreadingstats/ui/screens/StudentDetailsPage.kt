@@ -1,5 +1,6 @@
 package com.milesilac.classreadingstats.ui.screens
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -65,6 +66,7 @@ fun StudentDetailsPage(
     onVisible: () -> Unit = {}
 ) {
     onVisible()
+    BackHandler { onBackClick() }
     val hasIssues = listOf(
         isDeleteMode to ErrorEvent.WhileDeleteModeEditErrorEvent(),
     )
