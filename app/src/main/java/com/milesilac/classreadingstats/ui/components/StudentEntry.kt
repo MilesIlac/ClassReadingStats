@@ -1,6 +1,5 @@
 package com.milesilac.classreadingstats.ui.components
 
-import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
@@ -21,7 +20,6 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.minimumInteractiveComponentSize
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -37,22 +35,17 @@ import com.milesilac.classreadingstats.model.StudentList
 import com.milesilac.classreadingstats.model.level.LearnerLevel
 import com.milesilac.classreadingstats.ui.dummyStudentListsEightAmethyst
 import com.milesilac.classreadingstats.ui.theme.ProjectColors
-import sh.calvin.reorderable.ReorderableCollectionItemScope
 import kotlin.enums.enumEntries
 
 @Composable
 fun StudentEntry(
     isDeleteMode: Boolean = false,
     isChecked: Boolean = false,
-    reorderableItemScope: ReorderableCollectionItemScope? = null,
-    isDragging: Boolean = true,
     textString: String,
     learnerLevels: List<LearnerLevel> = listOf(),
     onStudentDetailsCheck: () -> Unit = {},
     onCheckBoxClick: () -> Unit = {},
 ) {
-    val elevation by animateDpAsState(if (isDragging) 4.dp else 0.dp)
-
     Surface(
         modifier = Modifier
             .chooseOneModifier(
@@ -68,7 +61,6 @@ fun StudentEntry(
             .fillMaxWidth(),
         color = ProjectColors.OffWhite4,
 //        border = BorderStroke(1.dp, ProjectColors.OffRed4), //to test listItem height
-        shadowElevation = elevation
     ) {
         Row(
             modifier = Modifier

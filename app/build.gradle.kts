@@ -90,9 +90,6 @@ dependencies {
     implementation(libs.androidx.room.paging)
     testImplementation(libs.androidx.room.testing)
 
-    // CALVIN-LL REORDERABLE
-    implementation(libs.reorderable.list.items)
-
     // APACHE POI
     implementation(libs.apache.poi)
     implementation(libs.apache.poi.ooxml)
