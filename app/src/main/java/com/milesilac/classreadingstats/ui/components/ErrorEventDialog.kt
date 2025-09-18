@@ -28,8 +28,8 @@ import com.milesilac.classreadingstats.ui.theme.ProjectColors
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SaveErrorDialog(
-    errorEvents: List<SaveErrorEvent> = listOf(),
+fun ErrorEventDialog(
+    errorEvents: List<ErrorEvent> = listOf(),
     onDismissDialog: () -> Unit = {},
 ) {
     BasicAlertDialog(
@@ -37,7 +37,7 @@ fun SaveErrorDialog(
             onDismissDialog()
         }
     ) {
-        SaveErrorDialogLayout(
+        ErrorEventDialogLayout(
             errorEvents = errorEvents,
             onBackClick = onDismissDialog
         )
@@ -46,13 +46,13 @@ fun SaveErrorDialog(
 
 @Preview
 @Composable
-fun SaveErrorDialogPreview() {
-    SaveErrorDialog()
+fun ErrorEventDialogPreview() {
+    ErrorEventDialog()
 }
 
 @Composable
-fun SaveErrorDialogLayout(
-    errorEvents: List<SaveErrorEvent> = listOf(SaveErrorEvent.AddSectionErrorEvent.AddSectionName()),
+fun ErrorEventDialogLayout(
+    errorEvents: List<ErrorEvent> = listOf(ErrorEvent.AddSectionSaveErrorEvent.AddSectionName()),
     onBackClick: () -> Unit = {},
 ) {
     val entryColor = ProjectColors.OffWhite4
@@ -99,7 +99,7 @@ fun SaveErrorDialogLayout(
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         when (error) {
-                            is SaveErrorEvent.AddSectionErrorEvent.AddGradeLevel -> {
+                            is ErrorEvent.AddSectionSaveErrorEvent.AddGradeLevel -> {
                                 Text(
                                     text = error.errorMessage,
                                     Modifier
@@ -107,7 +107,7 @@ fun SaveErrorDialogLayout(
                                     color = entryColor,
                                 )
                             }
-                            is SaveErrorEvent.AddSectionErrorEvent.AddSectionName -> {
+                            is ErrorEvent.AddSectionSaveErrorEvent.AddSectionName -> {
                                 Text(
                                     text = error.errorMessage,
                                     Modifier
@@ -115,7 +115,7 @@ fun SaveErrorDialogLayout(
                                     color = entryColor,
                                 )
                             }
-                            is SaveErrorEvent.AddSectionErrorEvent.ExistingSection -> {
+                            is ErrorEvent.AddSectionSaveErrorEvent.ExistingSection -> {
                                 Text(
                                     text = error.errorMessage,
                                     Modifier
@@ -123,7 +123,7 @@ fun SaveErrorDialogLayout(
                                     color = entryColor,
                                 )
                             }
-                            is SaveErrorEvent.AddStudentErrorEvent.AddStudentName -> {
+                            is ErrorEvent.AddStudentSaveErrorEvent.AddStudentName -> {
                                 Text(
                                     text = error.errorMessage,
                                     Modifier
@@ -131,7 +131,7 @@ fun SaveErrorDialogLayout(
                                     color = entryColor,
                                 )
                             }
-                            is SaveErrorEvent.AddStudentErrorEvent.PickSection -> {
+                            is ErrorEvent.AddStudentSaveErrorEvent.PickSection -> {
                                 Text(
                                     text = error.errorMessage,
                                     Modifier
@@ -139,7 +139,7 @@ fun SaveErrorDialogLayout(
                                     color = entryColor,
                                 )
                             }
-                            is SaveErrorEvent.AddStudentErrorEvent.PickSexOrient -> {
+                            is ErrorEvent.AddStudentSaveErrorEvent.PickSexOrient -> {
                                 Text(
                                     text = error.errorMessage,
                                     Modifier
@@ -147,7 +147,15 @@ fun SaveErrorDialogLayout(
                                     color = entryColor,
                                 )
                             }
-                            is SaveErrorEvent.AddStudentErrorEvent.ExistingStudent -> {
+                            is ErrorEvent.AddStudentSaveErrorEvent.ExistingStudent -> {
+                                Text(
+                                    text = error.errorMessage,
+                                    Modifier
+                                        .weight(1F),
+                                    color = entryColor,
+                                )
+                            }
+                            is ErrorEvent.WhileDeleteModeEditErrorEvent -> {
                                 Text(
                                     text = error.errorMessage,
                                     Modifier
@@ -201,34 +209,37 @@ fun SaveErrorDialogLayout(
 
 @Preview
 @Composable
-fun SaveErrorDialogLayoutPreview() {
-    SaveErrorDialogLayout()
+fun ErrorEventDialogLayoutPreview() {
+    ErrorEventDialogLayout()
 }
 
-sealed class SaveErrorEvent {
-    sealed class AddSectionErrorEvent : SaveErrorEvent() {
+sealed class ErrorEvent {
+    sealed class AddSectionSaveErrorEvent : ErrorEvent() {
         data class AddGradeLevel(
             val errorMessage: String = "Please pick a Grade Level"
-        ) : AddSectionErrorEvent()
+        ) : AddSectionSaveErrorEvent()
         data class AddSectionName(
             val errorMessage: String = "Input Section Name is blank"
-        ) : AddSectionErrorEvent()
+        ) : AddSectionSaveErrorEvent()
         data class ExistingSection(
             val errorMessage: String = "Input Section already exists"
-        ) : AddSectionErrorEvent()
+        ) : AddSectionSaveErrorEvent()
     }
-    sealed class AddStudentErrorEvent : SaveErrorEvent() {
+    sealed class AddStudentSaveErrorEvent : ErrorEvent() {
         data class AddStudentName(
             val errorMessage: String = "Input Student Name is blank"
-        ) : AddStudentErrorEvent()
+        ) : AddStudentSaveErrorEvent()
         data class PickSection(
             val errorMessage: String = "Please pick a Section"
-        ) : AddStudentErrorEvent()
+        ) : AddStudentSaveErrorEvent()
         data class PickSexOrient(
             val errorMessage: String = "Please pick if Student is Male or Female"
-        ) : AddStudentErrorEvent()
+        ) : AddStudentSaveErrorEvent()
         data class ExistingStudent(
             val errorMessage: String = "Student may already exist in this Section; For conflicting names, please add a number at the end to differentiate"
-        ) : AddStudentErrorEvent()
+        ) : AddStudentSaveErrorEvent()
     }
+    data class WhileDeleteModeEditErrorEvent(
+        val errorMessage: String = "You are currently deleting students. You may edit student after exiting delete mode."
+    ) : ErrorEvent()
 }

@@ -48,7 +48,11 @@ fun StudentListPage(
     val maleCount = maleStudents.count { it is StudentList.StudentDetails && it.student.sex == StudentSexOrient.MALE }
     val femaleCount = femaleStudents.count { it is StudentList.StudentDetails && it.student.sex == StudentSexOrient.FEMALE }
     val mappedMaleStudents = maleStudents.mapToStudentPersistenceIds()
-    val mappedFemaleStudents = maleStudents.mapToStudentPersistenceIds()
+    val mappedFemaleStudents = femaleStudents.mapToStudentPersistenceIds()
+//    println("classInits mappedMaleStudents ${mappedMaleStudents}")
+//    println("classInits mappedFemaleStudents ${mappedFemaleStudents}")
+//    println("classInits allMaleIds in delete ${studentIdsToDelete.containsAll(mappedMaleStudents)}")
+//    println("classInits allFemaleIds in delete ${studentIdsToDelete.containsAll(mappedFemaleStudents)}")
     val maleHeaderCheckBoxChecked = when {
         mappedMaleStudents.isEmpty() -> false
         else -> studentIdsToDelete.containsAll(mappedMaleStudents)

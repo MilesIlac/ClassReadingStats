@@ -58,8 +58,8 @@ import com.milesilac.classreadingstats.model.toSectionString
 import com.milesilac.classreadingstats.ui.components.WarningDialog
 import com.milesilac.classreadingstats.ui.components.EditStudentInfoDialog
 import com.milesilac.classreadingstats.ui.components.EditStudentNameDialog
-import com.milesilac.classreadingstats.ui.components.SaveErrorDialog
-import com.milesilac.classreadingstats.ui.components.SaveErrorEvent
+import com.milesilac.classreadingstats.ui.components.ErrorEventDialog
+import com.milesilac.classreadingstats.ui.components.ErrorEvent
 import com.milesilac.classreadingstats.ui.components.StudentInfoType
 import com.milesilac.classreadingstats.ui.components.WarningEvent
 import com.milesilac.classreadingstats.ui.dummyStudentListsEightAmethyst
@@ -81,12 +81,12 @@ fun StudentDetailEditPage(
 ) {
     onVisible()
     val hasIssues = listOf(
-        student.name.isEmpty() to SaveErrorEvent.AddStudentErrorEvent.AddStudentName(),
-        (student.section == initClassSection()) to SaveErrorEvent.AddStudentErrorEvent.PickSection(),
-        (student.sex == StudentSexOrient.ERROR) to SaveErrorEvent.AddStudentErrorEvent.PickSexOrient(),
+        student.name.isEmpty() to ErrorEvent.AddStudentSaveErrorEvent.AddStudentName(),
+        (student.section == initClassSection()) to ErrorEvent.AddStudentSaveErrorEvent.PickSection(),
+        (student.sex == StudentSexOrient.ERROR) to ErrorEvent.AddStudentSaveErrorEvent.PickSexOrient(),
         ((currentSheets.find { it.classSection == student.section } ?: initClassSheet()).getStudentsPerSection().find {
             it.name.trim().uppercase() == student.name.trim().uppercase() && it.sex == student.sex
-        } != null) to SaveErrorEvent.AddStudentErrorEvent.ExistingStudent(),
+        } != null) to ErrorEvent.AddStudentSaveErrorEvent.ExistingStudent(),
     )
     var hasPostTest by rememberSaveable { mutableStateOf(student.hasPostTest) }
     val pagerState = rememberPagerState(pageCount = { if (hasPostTest) 2 else 1 })
@@ -550,7 +550,7 @@ fun StudentDetailEditPage(
                 val currentIssues = hasIssues.mapNotNull {
                     if (it.first) it.second else null
                 }
-                SaveErrorDialog(
+                ErrorEventDialog(
                     errorEvents = currentIssues,
                     onDismissDialog = { showSaveErrorDialog = false }
                 )

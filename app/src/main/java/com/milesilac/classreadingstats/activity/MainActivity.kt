@@ -48,6 +48,8 @@ class MainActivity : AppCompatActivity() {
             val tempRemainingClassSheets by viewModel.tempRemainingClassSheetState.collectAsStateWithLifecycle()
             val tempDeletePendingClassSheets by viewModel.tempDeletePendingClassSheetState.collectAsStateWithLifecycle()
 
+            val tempStudentsToDelete by viewModel.tempStudentsToDeleteState.collectAsStateWithLifecycle()
+
             val tempStudentState by viewModel.tempStudentState.collectAsStateWithLifecycle()
             val localStudent by viewModel.localStudentState.collectAsStateWithLifecycle()
 
@@ -58,6 +60,8 @@ class MainActivity : AppCompatActivity() {
                     HomePage(
                         currentSheets = currentSheets,
                         currentSections = currentSections,
+                        studentsToDelete = tempStudentsToDelete,
+                        onUpdateStudentsToDelete = { viewModel.updateTempStudentsToDelete(event = it) },
                         onAddSectionClick = {
                             navController.navigate(Routes.RouteAddSection)
                         },
@@ -83,9 +87,9 @@ class MainActivity : AppCompatActivity() {
                                 )
                             )
                         },
-                        onStudentEntryClick = { student ->
+                        onStudentEntryClick = { isDeleteMode, student ->
                             viewModel.getLocalSourceStudent(studentPersistenceId = student.persistenceId)
-                            navController.navigate(Routes.RouteStudentDetails)
+                            navController.navigate(Routes.RouteStudentDetails(isDeleteMode = isDeleteMode))
                         },
                         onExportClick = { currentSheetLists ->
                             exportNewFileToExcel(
@@ -175,7 +179,9 @@ class MainActivity : AppCompatActivity() {
                     )
                 }
                 composable<Routes.RouteStudentDetails> { backStackEntry ->
+                    val routeStudentDetails: Routes.RouteStudentDetails = backStackEntry.toRoute()
                     StudentDetailsPage(
+                        isDeleteMode = routeStudentDetails.isDeleteMode,
                         student = localStudent,
                         onEditClick = {
                             navController.navigate(
@@ -264,7 +270,7 @@ private sealed class Routes {
     data class RouteEditGrades(val currentSectionId: Long) : Routes()
 
     @kotlinx.serialization.Serializable
-    data object RouteStudentDetails : Routes()
+    data class RouteStudentDetails(val isDeleteMode: Boolean) : Routes()
 
     @kotlinx.serialization.Serializable
     data class RouteStudentDetailEdit(

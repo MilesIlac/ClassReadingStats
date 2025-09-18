@@ -47,6 +47,8 @@ import com.milesilac.classreadingstats.model.StudentList
 import com.milesilac.classreadingstats.model.StudentToDeleteBundle
 import com.milesilac.classreadingstats.model.level.calculateLearnerOverallReadingProfile
 import com.milesilac.classreadingstats.model.toSectionString
+import com.milesilac.classreadingstats.ui.components.ErrorEvent
+import com.milesilac.classreadingstats.ui.components.ErrorEventDialog
 import com.milesilac.classreadingstats.ui.components.WarningDialog
 import com.milesilac.classreadingstats.ui.components.WarningEvent
 import com.milesilac.classreadingstats.ui.dummyStudentListsEightAmethyst
@@ -55,6 +57,7 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun StudentDetailsPage(
+    isDeleteMode: Boolean = false,
     student: Student,
     onEditClick: () -> Unit = {},
     onBackClick: () -> Unit = {},
@@ -62,10 +65,14 @@ fun StudentDetailsPage(
     onVisible: () -> Unit = {}
 ) {
     onVisible()
+    val hasIssues = listOf(
+        isDeleteMode to ErrorEvent.WhileDeleteModeEditErrorEvent(),
+    )
     val hasPostTest = student.hasPostTest
     val pagerState = rememberPagerState(pageCount = { if (hasPostTest) 2 else 1 })
     val coroutineScope = rememberCoroutineScope()
     var showDeleteStudentDialog by rememberSaveable { mutableStateOf(false) }
+    var showEditErrorDialog by rememberSaveable { mutableStateOf(false) }
 
     val readingProfilePreTest = calculateLearnerOverallReadingProfile(
         isGSTPassed = student.gst.shouldGradePassage().not(),
@@ -147,16 +154,18 @@ fun StudentDetailsPage(
                         )
                     }
                 }
-                IconButton(
-                    modifier = Modifier
-                        .align(Alignment.BottomEnd),
-                    onClick = { showDeleteStudentDialog = true },
-                ) {
-                    Icon(
-                        imageVector = Icons.TwoTone.Delete,
-                        contentDescription = "More",
-                        tint = ProjectColors.OffWhite4
-                    )
+                if (isDeleteMode.not()) {
+                    IconButton(
+                        modifier = Modifier
+                            .align(Alignment.BottomEnd),
+                        onClick = { showDeleteStudentDialog = true },
+                    ) {
+                        Icon(
+                            imageVector = Icons.TwoTone.Delete,
+                            contentDescription = "Delete Student",
+                            tint = ProjectColors.OffWhite4
+                        )
+                    }
                 }
             }
         }
@@ -319,10 +328,18 @@ fun StudentDetailsPage(
                 horizontalArrangement = Arrangement.SpaceEvenly
             ) {
                 OutlinedButton(
-                    onClick = { onEditClick() },
+                    onClick = {
+                        when {
+                            hasIssues.any { it.first } -> showEditErrorDialog = true
+                            else -> onEditClick()
+                        }
+                    },
                     modifier = Modifier,
                     colors = ButtonColors(
-                        containerColor = Color.White,
+                        containerColor = when {
+                            isDeleteMode -> Color.Gray
+                            else -> Color.White
+                        },
                         contentColor = Color.Black,
                         disabledContainerColor = Color.Gray,
                         disabledContentColor = Color.White
@@ -380,21 +397,32 @@ fun StudentDetailsPage(
         modifier = Modifier
             .fillMaxSize()
     ) {
-        if (showDeleteStudentDialog) {
-            WarningDialog(
-                event = WarningEvent.ConfirmDeleteStudent(),
-                onDismissDialog = { showDeleteStudentDialog = false },
-                onOkayClick = {
-                    showDeleteStudentDialog = false
-                    onDelete(
-                        StudentToDeleteBundle(
-                            classSection = student.section,
-                            sexOrient = student.sex,
-                            studentPersistenceIds = listOf(student.persistenceId)
+        when {
+            showDeleteStudentDialog -> {
+                WarningDialog(
+                    event = WarningEvent.ConfirmDeleteStudent(),
+                    onDismissDialog = { showDeleteStudentDialog = false },
+                    onOkayClick = {
+                        showDeleteStudentDialog = false
+                        onDelete(
+                            StudentToDeleteBundle(
+                                classSection = student.section,
+                                sexOrient = student.sex,
+                                studentPersistenceIds = listOf(student.persistenceId)
+                            )
                         )
-                    )
+                    }
+                )
+            }
+            showEditErrorDialog -> {
+                val currentIssues = hasIssues.mapNotNull {
+                    if (it.first) it.second else null
                 }
-            )
+                ErrorEventDialog(
+                    errorEvents = currentIssues,
+                    onDismissDialog = { showEditErrorDialog = false }
+                )
+            }
         }
     }
 }

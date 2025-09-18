@@ -60,12 +60,14 @@ import kotlinx.coroutines.launch
 fun HomePage(
     currentSheets: List<ClassSheet> = listOf(),
     currentSections: List<ClassSection> = listOf(),
+    studentsToDelete: List<Student> = listOf(),
+    onUpdateStudentsToDelete: (UpdateHomePageStudentsToDelete) -> Unit = {},
     onAddSectionClick: () -> Unit = {},
     onAddStudentClick: () -> Unit = {},
     onDeleteSectionsClick: () -> Unit = {},
     onDeleteStudentsClick: (List<StudentToDeleteBundle>) -> Unit = {},
     onEditGradesClick: (Long) -> Unit = {},
-    onStudentEntryClick: (Student) -> Unit = {},
+    onStudentEntryClick: (Boolean, Student) -> Unit = { _,_ -> },
     onExportClick: (List<ClassSheet>) -> Unit = {},
     bottomSheetState: SheetState = rememberModalBottomSheetState(
         skipPartiallyExpanded = true
@@ -104,10 +106,10 @@ fun HomePage(
 //    println("classInits homePager currentSection $currentSection")
     var showGradeLevelMenu by remember { mutableStateOf(false) }
     var showBottomSheet by remember { mutableStateOf(false) }
-    var isDeleteMode by remember { mutableStateOf(false) }
+    var isDeleteMode by rememberSaveable { mutableStateOf(false) }
     var showDeleteStudentsBottomSheet by remember { mutableStateOf(false) }
-    var studentsToDelete by remember { mutableStateOf(listOf<Student>()) }
     val studentIdsToDelete = studentsToDelete.map { it.persistenceId }
+//    println("classInits studentIdsToDelete $studentIdsToDelete")
     val studentBundlesToDelete = studentsToDelete.prepareStudentsToDelete()
     val coroutineScope = rememberCoroutineScope()
 
@@ -168,25 +170,22 @@ fun HomePage(
                     studentIdsToDelete = studentIdsToDelete,
                     maleStudents = currentSheetsByGrade[page].maleStudents,
                     femaleStudents = currentSheetsByGrade[page].femaleStudents,
-                    onStudentEntryClick = {
+                    onStudentEntryClick = { student ->
                         showGradeLevelMenu = false
-                        onStudentEntryClick(it)
+                        onStudentEntryClick(isDeleteMode, student)
                     },
                     onCheckBoxClick = { student ->
-                        studentsToDelete = studentsToDelete.toMutableList().apply {
-                            when {
-                                student in this -> remove(student)
-                                else -> add(student)
-                            }
-                        }
+                        onUpdateStudentsToDelete(
+                            UpdateHomePageStudentsToDelete.EventOneEdit(student = student)
+                        )
                     },
                     onHeaderCheckBoxClick = { isChecked, students ->
-                        studentsToDelete = studentsToDelete.toMutableList().apply {
-                            when {
-                                isChecked -> addAll(students)
-                                else -> removeAll(students)
-                            }
-                        }
+                        onUpdateStudentsToDelete(
+                            UpdateHomePageStudentsToDelete.EventBatchEdit(
+                                isChecked = isChecked,
+                                students = students
+                            )
+                        )
                     }
                 )
             }
@@ -282,7 +281,7 @@ fun HomePage(
             },
             onBackClick = {
                 isDeleteMode = false
-                studentsToDelete = listOf()
+                onUpdateStudentsToDelete(UpdateHomePageStudentsToDelete.EventReset)
             }
         )
     }
@@ -334,7 +333,7 @@ fun HomePage(
                 showDeleteStudentsBottomSheet = false
                 isDeleteMode = false
                 onDeleteStudentsClick(studentBundlesToDelete)
-                studentsToDelete = listOf()
+                onUpdateStudentsToDelete(UpdateHomePageStudentsToDelete.EventReset)
             }
         )
     }
@@ -356,4 +355,13 @@ fun HomePagePreview() {
         currentSheets = currentSheets,
         currentSections = currentSections
     )
+}
+
+sealed class UpdateHomePageStudentsToDelete {
+    data object EventReset : UpdateHomePageStudentsToDelete()
+    data class EventOneEdit(val student: Student) : UpdateHomePageStudentsToDelete()
+    data class EventBatchEdit(
+        val isChecked: Boolean,
+        val students: List<Student>
+    ) : UpdateHomePageStudentsToDelete()
 }

@@ -18,6 +18,7 @@ import com.milesilac.classreadingstats.model.initClassSheet
 import com.milesilac.classreadingstats.repository.StudentsRepository
 import com.milesilac.classreadingstats.ui.screens.DeleteClassSheet
 import com.milesilac.classreadingstats.ui.screens.StudentDetailEditEvent
+import com.milesilac.classreadingstats.ui.screens.UpdateHomePageStudentsToDelete
 import com.milesilac.classreadingstats.ui.screens.UpdateTempClassSheetForAddSection
 import com.milesilac.classreadingstats.ui.screens.UpdateTempClassSheetsForInputGrades
 import kotlinx.coroutines.Job
@@ -44,6 +45,7 @@ class MainViewModel(private val savedStateHandle: SavedStateHandle): ViewModel()
         private const val TEMP_CLASS_SHEET = "tempClassSheet"
         private const val TEMP_STUDENT = "tempStudent"
         private const val TEMP_LOCAL_STUDENT = "tempLocalStudent"
+        private const val TEMP_STUDENTS_TO_DELETE = "tempStudentsToDelete"
     }
 
     var getPersistenceStudentJob: Job? = null
@@ -291,8 +293,48 @@ class MainViewModel(private val savedStateHandle: SavedStateHandle): ViewModel()
                 }
             )
         }.invokeOnCompletion {
-//            _tempRemainingClassSheetState.update { _classSheetsState.value }
             _tempDeletePendingClassSheetState.update { listOf() }
+        }
+    }
+
+    private val _tempStudentsToDeleteState = savedStateHandle.getMutableStateFlow<String?>(
+        TEMP_STUDENTS_TO_DELETE, null
+    )
+    val tempStudentsToDeleteState = _tempStudentsToDeleteState
+        .filterNotNull()
+        .map { thisString ->
+            thisString.transformFromJsonString<List<Student>>()
+        }
+        .stateInWhileSubscribed(
+            initialValue = listOf()
+        )
+
+    fun updateTempStudentsToDelete(event: UpdateHomePageStudentsToDelete) {
+        when(event) {
+            UpdateHomePageStudentsToDelete.EventReset -> {
+                savedStateHandle[TEMP_STUDENTS_TO_DELETE] = listOf<Student>().transformToJsonString()
+            }
+            is UpdateHomePageStudentsToDelete.EventOneEdit -> {
+                savedStateHandle[TEMP_STUDENTS_TO_DELETE] = tempStudentsToDeleteState.value.toMutableList().apply {
+//                    println("classInits currentStudentsToDelete $this")
+//                    println("classInits currentStudent ${event.student}")
+                    when {
+                        event.student in this -> remove(event.student)
+                        else -> add(event.student)
+                    }
+                }.transformToJsonString()
+            }
+            is UpdateHomePageStudentsToDelete.EventBatchEdit -> {
+                savedStateHandle[TEMP_STUDENTS_TO_DELETE] = tempStudentsToDeleteState.value.toMutableList().apply {
+//                    println("classInits currentStudentsToDelete $this")
+//                    println("classInits isChecked ${event.isChecked}")
+//                    println("classInits currentStudent ${event.students}")
+                    when {
+                        event.isChecked -> addAll(event.students)
+                        else -> removeAll(event.students)
+                    }
+                }.transformToJsonString()
+            }
         }
     }
 

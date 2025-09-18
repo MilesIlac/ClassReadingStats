@@ -51,8 +51,8 @@ import com.milesilac.classreadingstats.model.getStudentsPerSection
 import com.milesilac.classreadingstats.model.initClassSheet
 import com.milesilac.classreadingstats.model.level.GradeLevel
 import com.milesilac.classreadingstats.ui.components.EditSectionNameDialog
-import com.milesilac.classreadingstats.ui.components.SaveErrorDialog
-import com.milesilac.classreadingstats.ui.components.SaveErrorEvent
+import com.milesilac.classreadingstats.ui.components.ErrorEventDialog
+import com.milesilac.classreadingstats.ui.components.ErrorEvent
 import com.milesilac.classreadingstats.ui.theme.ProjectColors
 import kotlin.enums.enumEntries
 
@@ -70,11 +70,11 @@ fun AddSectionPage(
     val selectedGradeLevel = tempClassSheet.classSection.gradeLevel
     val inputSectionName = tempClassSheet.classSection.sectionName
     val hasIssues = listOf(
-        (selectedGradeLevel == GradeLevel.ERROR) to SaveErrorEvent.AddSectionErrorEvent.AddGradeLevel(),
-        inputSectionName.isEmpty() to SaveErrorEvent.AddSectionErrorEvent.AddSectionName(),
+        (selectedGradeLevel == GradeLevel.ERROR) to ErrorEvent.AddSectionSaveErrorEvent.AddGradeLevel(),
+        inputSectionName.isEmpty() to ErrorEvent.AddSectionSaveErrorEvent.AddSectionName(),
         (currentSections.find { it.gradeLevel == selectedGradeLevel
                 && it.sectionName.trim().uppercase() == inputSectionName.trim().uppercase()
-        } != null) to SaveErrorEvent.AddSectionErrorEvent.ExistingSection()
+        } != null) to ErrorEvent.AddSectionSaveErrorEvent.ExistingSection()
     )
     val hasGradeAndSection = selectedGradeLevel != GradeLevel.ERROR && inputSectionName.isNotEmpty()
     var showEditDialog by rememberSaveable { mutableStateOf(false) }
@@ -530,7 +530,7 @@ fun AddSectionPage(
             val currentIssues = hasIssues.mapNotNull {
                 if (it.first) it.second else null
             }
-            SaveErrorDialog(
+            ErrorEventDialog(
                 errorEvents = currentIssues,
                 onDismissDialog = { showSaveErrorDialog = false }
             )

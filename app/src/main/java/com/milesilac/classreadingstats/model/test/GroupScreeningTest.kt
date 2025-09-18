@@ -5,7 +5,7 @@ import com.milesilac.classreadingstats.model.level.calculateComprehensionLevel
 import kotlinx.serialization.Serializable
 
 @Serializable
-class GroupScreeningTest(
+data class GroupScreeningTest(
     var score: Double,
 ) {
     val comprehensionLevel: ComprehensionLevel
