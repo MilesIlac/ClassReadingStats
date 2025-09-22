@@ -96,4 +96,7 @@ dependencies {
 
     // TESSERACT4ANDROID (OPENMP)
     implementation(libs.tesseract.android)
+
+    // OPENCV
+    implementation(libs.opencv)
 }

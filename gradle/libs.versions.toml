@@ -2,7 +2,7 @@
 # Plugins
 agp = "8.11.2"
 kotlin = "2.2.20"
-ksp = "2.2.10-2.0.2"
+ksp = "2.2.20-2.0.3"
 
 # Core
 coreKtx = "1.17.0"
@@ -27,6 +27,9 @@ poi-version = "5.4.1"
 
 # TesseractOCR for Android
 tesseract4android-version = "4.9.0"
+
+# OpenCV
+opencv-version = "4.12.0"
 
 # Testing Dependencies
 junit = "4.13.2"
@@ -78,6 +81,9 @@ apache-poi-ooxml = { module = "org.apache.poi:poi-ooxml", version.ref = "poi-ver
 
 # TesseractOCR for Android (OpenMP)
 tesseract-android = { module = "cz.adaptech.tesseract4android:tesseract4android-openmp", version.ref = "tesseract4android-version" }
+
+# OpenCV
+opencv = { module = "org.opencv:opencv", version.ref = "opencv-version" }
 
 # Testing Dependencies
 junit = { group = "junit", name = "junit", version.ref = "junit" }
