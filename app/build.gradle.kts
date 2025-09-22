@@ -93,4 +93,7 @@ dependencies {
     // APACHE POI
     implementation(libs.apache.poi)
     implementation(libs.apache.poi.ooxml)
+
+    // TESSERACT4ANDROID (OPENMP)
+    implementation(libs.tesseract.android)
 }

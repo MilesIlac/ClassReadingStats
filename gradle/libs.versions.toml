@@ -1,5 +1,5 @@
 [versions]
-#Plugins
+# Plugins
 agp = "8.11.2"
 kotlin = "2.2.20"
 ksp = "2.2.10-2.0.2"
@@ -22,8 +22,11 @@ compose-bom = "2025.09.00"
 # Room
 room = "2.8.0"
 
-#Apache POI
+# Apache POI
 poi-version = "5.4.1"
+
+# TesseractOCR for Android
+tesseract4android-version = "4.9.0"
 
 # Testing Dependencies
 junit = "4.13.2"
@@ -69,9 +72,12 @@ androidx-room-ktx-coroutines = { module = "androidx.room:room-ktx", version.ref 
 androidx-room-paging = { module = "androidx.room:room-paging", version.ref = "room" }
 androidx-room-testing = { module = "androidx.room:room-testing", version.ref = "room" }
 
-#Apache POI
+# Apache POI
 apache-poi = { module = "org.apache.poi:poi", version.ref = "poi-version" }
 apache-poi-ooxml = { module = "org.apache.poi:poi-ooxml", version.ref = "poi-version" }
+
+# TesseractOCR for Android (OpenMP)
+tesseract-android = { module = "cz.adaptech.tesseract4android:tesseract4android-openmp", version.ref = "tesseract4android-version" }
 
 # Testing Dependencies
 junit = { group = "junit", name = "junit", version.ref = "junit" }
