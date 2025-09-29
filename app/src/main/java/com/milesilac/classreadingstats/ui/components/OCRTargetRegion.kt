@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -52,6 +53,17 @@ fun OCRTargetRegion(
             var boxWidthPx by remember { mutableFloatStateOf((maxWidthPx - boxOffset.x)) }
             var boxHeightPx by remember { mutableFloatStateOf(50F) }
             var handleWidthHeightPx by remember { mutableFloatStateOf(50F) }
+
+            LaunchedEffect(Unit) {
+                onBoxChange(
+                    RectF(
+                        boxOffset.x + paddingFloat,
+                        boxOffset.y + paddingFloat,
+                        (boxOffset.x + boxWidthPx + paddingFloat),
+                        (boxOffset.y + boxHeightPx + paddingFloat)
+                    ) //paddingFloat ensures correctness
+                )
+            }
 
             // Draggable main box
             Box(

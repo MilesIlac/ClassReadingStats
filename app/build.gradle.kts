@@ -94,9 +94,13 @@ dependencies {
     implementation(libs.apache.poi)
     implementation(libs.apache.poi.ooxml)
 
-    // TESSERACT4ANDROID (OPENMP)
-    implementation(libs.tesseract.android)
+    // CAMERAX
+    implementation(libs.androidx.camera)
+    implementation(libs.androidx.camera.lifecycle)
+    implementation(libs.androidx.camera.video)
+    implementation(libs.androidx.camera.view)
+    implementation(libs.androidx.camera.extensions)
 
-    // OPENCV
-    implementation(libs.opencv)
+    // GOOGLE ML-KIT TEXT RECOGNITION
+    implementation(libs.google.mlkit.text.recognition)
 }
