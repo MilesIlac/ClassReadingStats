@@ -75,7 +75,7 @@ fun HomePage(
     onVisible: () -> Unit = {}
 ) {
     onVisible()
-    var currentGradeLevel by rememberSaveable(currentSheets) {
+    var currentGradeLevel by remember(currentSheets) {
         mutableStateOf(
             runCatching {
                 currentSections[0].gradeLevel
