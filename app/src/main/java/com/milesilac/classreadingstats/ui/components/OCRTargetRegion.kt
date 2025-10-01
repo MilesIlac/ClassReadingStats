@@ -12,6 +12,9 @@ import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.twotone.OpenInFull
+import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -19,7 +22,9 @@ import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
@@ -46,13 +51,12 @@ fun OCRTargetRegion(
                 .fillMaxSize()
 //                .border(2.dp, Color.Red), //for debugging padding
         ) {
-
             val maxWidthPx = maxWidth.dpToFloat
             val maxHeightPx = maxHeight.dpToFloat
             var boxOffset by remember { mutableStateOf(Offset(0F, maxHeightPx/2)) }
             var boxWidthPx by remember { mutableFloatStateOf((maxWidthPx - boxOffset.x)) }
             var boxHeightPx by remember { mutableFloatStateOf(50F) }
-            var handleWidthHeightPx by remember { mutableFloatStateOf(50F) }
+            val handleWidthHeightPx = 70F
 
             LaunchedEffect(Unit) {
                 onBoxChange(
@@ -93,19 +97,19 @@ fun OCRTargetRegion(
             )
 
             // Resizable handle (bottom-right corner)
-            val handleOffsetX = (boxOffset.x + (boxWidthPx - ((handleWidthHeightPx / 2) + 2.dp.value)))
-            val handleOffsetY = (boxOffset.y + (boxHeightPx - ((handleWidthHeightPx / 2) + 2.dp.value)))
+            val lowRightHandleOffsetX = (
+                    boxOffset.x + (boxWidthPx - ((handleWidthHeightPx / 2) + 2.dp.value))
+            ).toInt()
+            val lowRightHandleOffsetY = (
+                    boxOffset.y + (boxHeightPx - ((handleWidthHeightPx / 2) + 2.dp.value))
+            ).toInt()
             Box(
                 modifier = Modifier
-                    .offset {
-                        IntOffset(
-                            handleOffsetX.toInt(),
-                            handleOffsetY.toInt(),
-                        )
-                    }
+                    .offset { IntOffset(lowRightHandleOffsetX, lowRightHandleOffsetY) }
                     .width(handleWidthHeightPx.pxToDp)
                     .height(handleWidthHeightPx.pxToDp)
                     .background(Color.Green, shape = CircleShape)
+                    .padding(4.dp)
                     .pointerInput(Unit) {
                         detectDragGestures { change, dragAmount ->
                             val newWidth = (boxWidthPx + dragAmount.x)
@@ -124,8 +128,15 @@ fun OCRTargetRegion(
                                 ) //paddingFloat ensures correctness
                             )
                         }
-                    }
-            )
+                    },
+                contentAlignment = Alignment.Center
+            ) {
+                Icon(
+                    Icons.TwoTone.OpenInFull,
+                    contentDescription = "Resize",
+                    modifier = Modifier.rotate(90F),
+                )
+            }
         }
     }
 }
