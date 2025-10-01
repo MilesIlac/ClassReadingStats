@@ -56,7 +56,7 @@ fun OCRTargetRegion(
             var boxOffset by remember { mutableStateOf(Offset(0F, maxHeightPx/2)) }
             var boxWidthPx by remember { mutableFloatStateOf((maxWidthPx - boxOffset.x)) }
             var boxHeightPx by remember { mutableFloatStateOf(50F) }
-            val handleWidthHeightPx = 70F
+            val handleWidthHeightPx = 100F
 
             LaunchedEffect(Unit) {
                 onBoxChange(

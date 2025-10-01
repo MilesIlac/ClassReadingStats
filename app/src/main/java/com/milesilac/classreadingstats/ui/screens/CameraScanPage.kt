@@ -18,6 +18,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
@@ -44,6 +45,7 @@ import androidx.lifecycle.compose.LocalLifecycleOwner
 import com.google.mlkit.vision.common.InputImage
 import com.google.mlkit.vision.text.TextRecognition
 import com.google.mlkit.vision.text.latin.TextRecognizerOptions
+import com.milesilac.classreadingstats.ui.components.EditStudentNameDialogLayout
 import com.milesilac.classreadingstats.ui.components.OCRTargetRegion
 import com.milesilac.classreadingstats.ui.theme.ProjectColors
 import kotlin.math.hypot
@@ -55,6 +57,7 @@ fun CameraScanPage(
     onScan: (Bitmap, String) -> Unit = { _,_ -> },
     context: Context = LocalContext.current,
     lifecycleOwner: LifecycleOwner = LocalLifecycleOwner.current,
+    onUpdate: (StudentDetailEditEvent) -> Unit = {},
     onBackClick: () -> Unit = {},
     onVisible: () -> Unit = {},
 ) {
@@ -126,7 +129,10 @@ fun CameraScanPage(
         }
     }
 
-    Column {
+    Column(
+        modifier = Modifier
+            .systemBarsPadding()
+    ) {
         Box(
             modifier = Modifier
                 .weight(1F)
@@ -168,6 +174,21 @@ fun CameraScanPage(
             }
         }
         when (scanEvent) {
+            CameraScanEvent.AddStudentName -> {
+                val names = runCatching {
+                    currentMLKitText.split(",", limit = 2)
+                }.getOrElse { listOf("","") }
+                val lastName = names.getOrNull(0) ?: ""
+                val firstNameEtc = names.getOrNull(1) ?: ""
+                EditStudentNameDialogLayout(
+                    isScanMode = true,
+                    lastName = lastName,
+                    firstNameEtc = firstNameEtc,
+                    onOkayClick = {
+                        onUpdate(StudentDetailEditEvent.EventName(studentName = it))
+                    }
+                )
+            }
             CameraScanEvent.None -> {
                 Box(
                     modifier = Modifier
@@ -201,7 +222,15 @@ fun CameraScanPagePreview() {
 }
 
 sealed class CameraScanEvent {
+    data object AddStudentName: CameraScanEvent()
     data object None: CameraScanEvent()
+}
+
+fun String.toCameraScanEvent(): CameraScanEvent {
+    return when (this.uppercase()) {
+        "ADD_STUDENT_NAME" -> CameraScanEvent.AddStudentName
+        else -> CameraScanEvent.None
+    }
 }
 
 

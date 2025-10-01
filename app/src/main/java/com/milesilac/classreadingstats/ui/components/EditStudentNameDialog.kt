@@ -24,6 +24,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -37,6 +38,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.milesilac.classreadingstats.helpers.capitalizeMaybe
+import com.milesilac.classreadingstats.helpers.checkIfAddOtherModifier
 import com.milesilac.classreadingstats.helpers.inputFullCheckForStudentName
 import com.milesilac.classreadingstats.ui.theme.ProjectColors
 
@@ -74,22 +76,30 @@ fun EditStudentNameDialogPreview() {
 
 @Composable
 fun EditStudentNameDialogLayout(
+    isScanMode: Boolean = false,
     lastName: String = "",
     firstNameEtc: String = "",
     onOkayClick: (String) -> Unit = {},
 ) {
+    var isLocked by rememberSaveable { mutableStateOf(false) }
+
     val focusManager = LocalFocusManager.current
     val textFieldColors = OutlinedTextFieldDefaults.colors(
         focusedTextColor = ProjectColors.OffWhite4,
         unfocusedTextColor = ProjectColors.OffWhite4,
+        disabledTextColor = ProjectColors.OffWhite4,
         focusedContainerColor = ProjectColors.OffAquaGreen1,
         unfocusedContainerColor = ProjectColors.OffAquaGreen1,
+        disabledContainerColor = ProjectColors.OffAquaGreen1,
         focusedBorderColor = ProjectColors.OffWhite4,
         unfocusedBorderColor = ProjectColors.OffWhite4,
+        disabledBorderColor = ProjectColors.OffWhite4,
         focusedLabelColor = ProjectColors.OffWhite4,
         unfocusedLabelColor = ProjectColors.OffWhite4,
+        disabledLabelColor = ProjectColors.OffWhite4,
         focusedPlaceholderColor = ProjectColors.OffWhite4,
         unfocusedPlaceholderColor = ProjectColors.OffWhite4,
+        disabledPlaceholderColor = ProjectColors.OffWhite4,
     )
     val buttonColors = ButtonColors(
         containerColor = ProjectColors.OffAquaGreen1,
@@ -98,8 +108,28 @@ fun EditStudentNameDialogLayout(
         disabledContentColor = ProjectColors.OffGreen2
     )
 
-    var inputLastName by remember { mutableStateOf(lastName) }
-    var inputFirstNameEtc by remember { mutableStateOf(firstNameEtc) }
+    var inputLastName by remember(
+        when {
+            isScanMode -> {
+                when {
+                    isLocked -> true
+                    else -> lastName
+                }
+            }
+            else -> true
+        }
+    ) { mutableStateOf(lastName) }
+    var inputFirstNameEtc by remember(
+        when {
+            isScanMode -> {
+                when {
+                    isLocked -> true
+                    else -> firstNameEtc
+                }
+            }
+            else -> true
+        }
+    ) { mutableStateOf(firstNameEtc) }
     val currentPreviewName = "${inputLastName.trim()}, ${inputFirstNameEtc.trim()}".inputFullCheckForStudentName()
 
     Column(
@@ -109,8 +139,16 @@ fun EditStudentNameDialogLayout(
                 shape = RoundedCornerShape(24.dp)
             )
             .clip(shape = RoundedCornerShape(24.dp))
+            .checkIfAddOtherModifier(
+                shouldAddOtherModifier = isScanMode,
+                otherModifier = Modifier.height(360.dp)
+            )
             .padding(12.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = when {
+            isScanMode -> Arrangement.Center
+            else -> Arrangement.Top
+        }
     ) {
         Text(
             text = "Edit Student Name",
@@ -124,6 +162,7 @@ fun EditStudentNameDialogLayout(
             },
             modifier = Modifier
                 .fillMaxWidth(),
+            enabled = isScanMode.not(),
             label = {
                 Text(
                     text = "Last Name"
@@ -154,6 +193,7 @@ fun EditStudentNameDialogLayout(
             },
             modifier = Modifier
                 .fillMaxWidth(),
+            enabled = isScanMode.not(),
             label = {
                 Text(
                     text = "First Name, etc..."
@@ -180,10 +220,14 @@ fun EditStudentNameDialogLayout(
         Text(
             text = "Preview: $currentPreviewName",
             modifier = Modifier
-                .fillMaxWidth(),
+                .fillMaxWidth()
+                .checkIfAddOtherModifier(
+                    shouldAddOtherModifier = isScanMode,
+                    otherModifier = Modifier.weight(1F)
+                ),
             color = ProjectColors.OffWhite4,
             fontSize = 16.sp,
-            textAlign = TextAlign.Center
+            textAlign = TextAlign.Center,
         )
         Spacer(modifier = Modifier.height(4.dp))
         Row(
@@ -191,28 +235,33 @@ fun EditStudentNameDialogLayout(
             horizontalArrangement = Arrangement.spacedBy(20.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            OutlinedButton(
-                onClick = {},
-                modifier = Modifier,
-                shape = RoundedCornerShape(12.dp),
-                colors = buttonColors,
-                border = BorderStroke(
-                    width = 1.dp,
-                    color = ProjectColors.OffWhite4
-                ),
-                contentPadding = PaddingValues(
-                    horizontal = 16.dp,
-                    vertical = 8.dp
-                )
-            ) {
-                Row(
+            if (isScanMode) {
+                OutlinedButton(
+                    onClick = { isLocked = isLocked.not() },
                     modifier = Modifier,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Text(
-                        text = "SCAN",
-                        modifier = Modifier,
+                    shape = RoundedCornerShape(12.dp),
+                    colors = buttonColors,
+                    border = BorderStroke(
+                        width = 1.dp,
+                        color = ProjectColors.OffWhite4
+                    ),
+                    contentPadding = PaddingValues(
+                        horizontal = 16.dp,
+                        vertical = 8.dp
                     )
+                ) {
+                    Row(
+                        modifier = Modifier,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text(
+                            text = when {
+                                isLocked -> "UNLOCK"
+                                else -> "LOCK"
+                            },
+                            modifier = Modifier,
+                        )
+                    }
                 }
             }
             OutlinedButton(
@@ -247,5 +296,7 @@ fun EditStudentNameDialogLayout(
 @Preview
 @Composable
 fun EditStudentNameDialogLayoutPreview() {
-    EditStudentNameDialogLayout()
+    EditStudentNameDialogLayout(
+        isScanMode = true
+    )
 }

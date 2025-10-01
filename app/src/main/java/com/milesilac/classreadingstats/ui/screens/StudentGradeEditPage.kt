@@ -3,17 +3,14 @@ package com.milesilac.classreadingstats.ui.screens
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -38,11 +35,11 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.milesilac.classreadingstats.helpers.inputFullCheckForDecimalString
 import com.milesilac.classreadingstats.helpers.inputFullCheckForIntString
+import com.milesilac.classreadingstats.model.StudentList
 import com.milesilac.classreadingstats.model.test.GroupScreeningTest
 import com.milesilac.classreadingstats.model.test.OralReading
 import com.milesilac.classreadingstats.model.test.ReadingComprehension
 import com.milesilac.classreadingstats.model.test.ReadingTest
-import com.milesilac.classreadingstats.model.StudentList
 import com.milesilac.classreadingstats.ui.dummyStudentListsEightAmethyst
 import com.milesilac.classreadingstats.ui.theme.ProjectColors
 import kotlinx.coroutines.flow.debounce
@@ -194,25 +191,6 @@ fun StudentGradeEditPage(
                         singleLine = true,
                         shape = RoundedCornerShape(12.dp),
                     )
-                    Spacer(modifier = Modifier.width(12.dp))
-                    OutlinedButton(
-                        onClick = {
-
-                        },
-                        modifier = Modifier
-                            .padding(top = 8.dp)
-                    ) {
-                        Text(
-                            text = "Scan",
-                            modifier = Modifier
-                                .padding(
-                                    vertical = 4.dp
-                                ),
-                            color = Color.Black,
-                            fontSize = 16.sp,
-                            textAlign = TextAlign.Center
-                        )
-                    }
                 }
                 Text(
                     text = "Comprehension Level: ${gst.comprehensionLevel.level}",
@@ -301,25 +279,6 @@ fun StudentGradeEditPage(
                         singleLine = true,
                         shape = RoundedCornerShape(12.dp),
                     )
-                    Spacer(modifier = Modifier.width(12.dp))
-                    OutlinedButton(
-                        onClick = {
-
-                        },
-                        modifier = Modifier
-                            .padding(top = 8.dp)
-                    ) {
-                        Text(
-                            text = "Scan",
-                            modifier = Modifier
-                                .padding(
-                                    vertical = 4.dp
-                                ),
-                            color = Color.Black,
-                            fontSize = 16.sp,
-                            textAlign = TextAlign.Center
-                        )
-                    }
                 }
                 Row(
                     verticalAlignment = Alignment.CenterVertically
@@ -359,25 +318,6 @@ fun StudentGradeEditPage(
                         singleLine = true,
                         shape = RoundedCornerShape(12.dp),
                     )
-                    Spacer(modifier = Modifier.width(12.dp))
-                    OutlinedButton(
-                        onClick = {
-
-                        },
-                        modifier = Modifier
-                            .padding(top = 8.dp)
-                    ) {
-                        Text(
-                            text = "Scan",
-                            modifier = Modifier
-                                .padding(
-                                    vertical = 4.dp
-                                ),
-                            color = Color.Black,
-                            fontSize = 16.sp,
-                            textAlign = TextAlign.Center
-                        )
-                    }
                 }
                 Text(
                     text = "Percentage: %.2f".format(oralReadingPercentage),
@@ -471,25 +411,6 @@ fun StudentGradeEditPage(
                         singleLine = true,
                         shape = RoundedCornerShape(12.dp),
                     )
-                    Spacer(modifier = Modifier.width(12.dp))
-                    OutlinedButton(
-                        onClick = {
-
-                        },
-                        modifier = Modifier
-                            .padding(top = 8.dp)
-                    ) {
-                        Text(
-                            text = "Scan",
-                            modifier = Modifier
-                                .padding(
-                                    vertical = 4.dp
-                                ),
-                            color = Color.Black,
-                            fontSize = 16.sp,
-                            textAlign = TextAlign.Center
-                        )
-                    }
                 }
                 Text(
                     text = "Learner Level: ${readingComprehensionLearnerLevel.level}",

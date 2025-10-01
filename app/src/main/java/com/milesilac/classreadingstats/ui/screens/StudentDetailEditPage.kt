@@ -7,6 +7,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -20,6 +21,7 @@ import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.twotone.Close
+import androidx.compose.material.icons.twotone.DocumentScanner
 import androidx.compose.material.icons.twotone.Edit
 import androidx.compose.material.icons.twotone.Save
 import androidx.compose.material3.ButtonColors
@@ -76,6 +78,7 @@ fun StudentDetailEditPage(
     currentSheets: List<ClassSheet> = listOf(),
     classSections: List<ClassSection> = listOf(),
     onUpdate: (StudentDetailEditEvent) -> Unit = {},
+    onScanClick: (String) -> Unit = {},
     onSaveClick: () -> Unit = {},
     onBackClick: (ClassSection) -> Unit = {},
     onVisible: () -> Unit = {}
@@ -165,11 +168,11 @@ fun StudentDetailEditPage(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text(
-                        text = "Student Name:",
+                        text = "Student\nName:",
                         modifier = Modifier,
                         color = ProjectColors.OffWhite4,
                         fontSize = 16.sp.nonScaledSp,
-                        textAlign = TextAlign.Center
+                        textAlign = TextAlign.Start
                     )
                     Spacer(modifier = Modifier.width(16.dp))
                     Text(
@@ -181,40 +184,85 @@ fun StudentDetailEditPage(
                         overflow = TextOverflow.Ellipsis
                     )
                     Spacer(modifier = Modifier.width(16.dp))
-                    OutlinedButton(
-                        onClick = {
-                            showStudentNameEditDialog = true
-                        },
-                        modifier = Modifier,
-                        shape = RoundedCornerShape(12.dp),
-                        colors = ButtonColors(
-                            containerColor = ProjectColors.OffGreen2,
-                            contentColor = ProjectColors.OffWhite4,
-                            disabledContainerColor = ProjectColors.OffGreen2,
-                            disabledContentColor = ProjectColors.OffWhite4
-                        ),
-                        border = BorderStroke(
-                            width = 1.dp,
-                            color = ProjectColors.OffWhite4
-                        ),
-                        contentPadding = PaddingValues(
-                            horizontal = 16.dp,
-                            vertical = 8.dp
-                        )
+                    Column(
+                        modifier = Modifier
+                            .width(IntrinsicSize.Max),
+                        horizontalAlignment = Alignment.CenterHorizontally
                     ) {
-                        Row(
-                            modifier = Modifier,
-                            verticalAlignment = Alignment.CenterVertically
+                        OutlinedButton(
+                            onClick = {
+                                showStudentNameEditDialog = false
+                                onScanClick("ADD_STUDENT_NAME")
+                            },
+                            modifier = Modifier
+                                .fillMaxWidth(),
+                            shape = RoundedCornerShape(12.dp),
+                            colors = ButtonColors(
+                                containerColor = ProjectColors.OffGreen2,
+                                contentColor = ProjectColors.OffWhite4,
+                                disabledContainerColor = ProjectColors.OffGreen2,
+                                disabledContentColor = ProjectColors.OffWhite4
+                            ),
+                            border = BorderStroke(
+                                width = 1.dp,
+                                color = ProjectColors.OffWhite4
+                            ),
+                            contentPadding = PaddingValues(
+                                horizontal = 16.dp,
+                                vertical = 8.dp
+                            )
                         ) {
-                            Icon(
-                                imageVector = Icons.TwoTone.Edit,
-                                contentDescription = "Edit",
-                            )
-                            Spacer(modifier = Modifier.width(8.dp))
-                            Text(
-                                text = "Edit",
+                            Row(
                                 modifier = Modifier,
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Icon(
+                                    imageVector = Icons.TwoTone.DocumentScanner,
+                                    contentDescription = "Scan",
+                                )
+                                Spacer(modifier = Modifier.width(8.dp))
+                                Text(
+                                    text = "Scan",
+                                    modifier = Modifier,
+                                )
+                            }
+                        }
+                        OutlinedButton(
+                            onClick = {
+                                showStudentNameEditDialog = true
+                            },
+                            modifier = Modifier
+                                .fillMaxWidth(),
+                            shape = RoundedCornerShape(12.dp),
+                            colors = ButtonColors(
+                                containerColor = ProjectColors.OffGreen2,
+                                contentColor = ProjectColors.OffWhite4,
+                                disabledContainerColor = ProjectColors.OffGreen2,
+                                disabledContentColor = ProjectColors.OffWhite4
+                            ),
+                            border = BorderStroke(
+                                width = 1.dp,
+                                color = ProjectColors.OffWhite4
+                            ),
+                            contentPadding = PaddingValues(
+                                horizontal = 16.dp,
+                                vertical = 8.dp
                             )
+                        ) {
+                            Row(
+                                modifier = Modifier,
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Icon(
+                                    imageVector = Icons.TwoTone.Edit,
+                                    contentDescription = "Edit",
+                                )
+                                Spacer(modifier = Modifier.width(8.dp))
+                                Text(
+                                    text = "Edit",
+                                    modifier = Modifier,
+                                )
+                            }
                         }
                     }
                 }
