@@ -78,7 +78,7 @@ fun StudentDetailEditPage(
     currentSheets: List<ClassSheet> = listOf(),
     classSections: List<ClassSection> = listOf(),
     onUpdate: (StudentDetailEditEvent) -> Unit = {},
-    onScanClick: (String) -> Unit = {},
+    onScanClick: (CameraScanEvent) -> Unit = {},
     onSaveClick: () -> Unit = {},
     onBackClick: (ClassSection) -> Unit = {},
     onVisible: () -> Unit = {}
@@ -192,7 +192,7 @@ fun StudentDetailEditPage(
                         OutlinedButton(
                             onClick = {
                                 showStudentNameEditDialog = false
-                                onScanClick("ADD_STUDENT_NAME")
+                                onScanClick(CameraScanEvent.AddStudentName)
                             },
                             modifier = Modifier
                                 .fillMaxWidth(),

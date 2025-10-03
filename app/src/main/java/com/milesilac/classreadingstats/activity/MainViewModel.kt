@@ -15,12 +15,16 @@ import com.milesilac.classreadingstats.model.addStudentWithOrderId
 import com.milesilac.classreadingstats.model.emptyStudent
 import com.milesilac.classreadingstats.model.getAllStudentDetailsList
 import com.milesilac.classreadingstats.model.initClassSheet
+import com.milesilac.classreadingstats.model.test.OralReading
+import com.milesilac.classreadingstats.model.test.ReadingComprehension
 import com.milesilac.classreadingstats.repository.StudentsRepository
+import com.milesilac.classreadingstats.ui.screens.CameraScanEvent
 import com.milesilac.classreadingstats.ui.screens.DeleteClassSheet
 import com.milesilac.classreadingstats.ui.screens.StudentDetailEditEvent
 import com.milesilac.classreadingstats.ui.screens.UpdateHomePageStudentsToDelete
 import com.milesilac.classreadingstats.ui.screens.UpdateTempClassSheetForAddSection
 import com.milesilac.classreadingstats.ui.screens.UpdateTempClassSheetsForInputGrades
+import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -49,6 +53,7 @@ class MainViewModel(private val savedStateHandle: SavedStateHandle): ViewModel()
     }
 
     var getPersistenceStudentJob: Job? = null
+    var lookupTextJob: Job? = null
 
     private fun <T> Flow<T>.stateInWhileSubscribed(initialValue: T): StateFlow<T> {
         return stateIn(
@@ -58,21 +63,15 @@ class MainViewModel(private val savedStateHandle: SavedStateHandle): ViewModel()
         )
     }
 
+    private var currentCameraScanEvent: CameraScanEvent = CameraScanEvent.None
+    fun getCameraScanEvent() = currentCameraScanEvent
+    fun updateCurrentCameraScanEvent(scanEvent: CameraScanEvent) {
+        currentCameraScanEvent = scanEvent
+    }
+
     private val repository = StudentsRepository.getInstance()
 
-    private val _classSheetsState = MutableStateFlow(listOf<ClassSheet>())
-    val classSheetsState = _classSheetsState
-        .onStart {
-            viewModelScope.launch {
-                repository.getClassSheets().collect { classSheets ->
-//                    println("classInits classSheetsState: flowing")
-                    _classSheetsState.update { classSheets }
-                }
-            }
-        }
-        .stateInWhileSubscribed(
-            initialValue = listOf()
-        )
+    val classSheetsState = repository.getClassSheets().stateInWhileSubscribed(initialValue = listOf())
 
     private val _tempClassSheetState = savedStateHandle.getMutableStateFlow<String?>(TEMP_CLASS_SHEET, null)
     val tempClassSheetState = _tempClassSheetState
@@ -276,7 +275,7 @@ class MainViewModel(private val savedStateHandle: SavedStateHandle): ViewModel()
                 }
             }
             DeleteClassSheet.EventReset -> {
-                _tempRemainingClassSheetState.update { _classSheetsState.value }
+                _tempRemainingClassSheetState.update { classSheetsState.value }
                 _tempDeletePendingClassSheetState.update { listOf() }
             }
         }
@@ -316,8 +315,6 @@ class MainViewModel(private val savedStateHandle: SavedStateHandle): ViewModel()
             }
             is UpdateHomePageStudentsToDelete.EventOneEdit -> {
                 savedStateHandle[TEMP_STUDENTS_TO_DELETE] = tempStudentsToDeleteState.value.toMutableList().apply {
-//                    println("classInits currentStudentsToDelete $this")
-//                    println("classInits currentStudent ${event.student}")
                     when {
                         event.student in this -> remove(event.student)
                         else -> add(event.student)
@@ -326,9 +323,6 @@ class MainViewModel(private val savedStateHandle: SavedStateHandle): ViewModel()
             }
             is UpdateHomePageStudentsToDelete.EventBatchEdit -> {
                 savedStateHandle[TEMP_STUDENTS_TO_DELETE] = tempStudentsToDeleteState.value.toMutableList().apply {
-//                    println("classInits currentStudentsToDelete $this")
-//                    println("classInits isChecked ${event.isChecked}")
-//                    println("classInits currentStudent ${event.students}")
                     when {
                         event.isChecked -> addAll(event.students)
                         else -> removeAll(event.students)
@@ -367,10 +361,131 @@ class MainViewModel(private val savedStateHandle: SavedStateHandle): ViewModel()
                         this.find { sheet ->
                             sheet.classSection.persistenceId == event.sectionPersistenceId
                         }?.let { thisSheet ->
-                            (thisSheet.maleStudents + thisSheet.femaleStudents).find { sList ->
-                                sList is StudentList.StudentDetails && sList.student.persistenceId == event.studentPersistenceId
-                            }?.let { thisSList ->
-                                (thisSList as StudentList.StudentDetails).student.gst = GroupScreeningTest(score = event.gstScore)
+                            val sheetStudents = thisSheet.maleStudents + thisSheet.femaleStudents
+                            event.studentInputs.forEach { (studentPersistenceId, gstScore) ->
+                                sheetStudents.find { sList ->
+                                    sList is StudentList.StudentDetails && sList.student.persistenceId == studentPersistenceId
+                                }?.let { thisSList ->
+                                    (thisSList as StudentList.StudentDetails).student = thisSList.student.copy(gst = GroupScreeningTest(score = gstScore))
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            is UpdateTempClassSheetsForInputGrades.EventORTotalWords -> {
+                _tempClassSheetsStateForInputGrades.update {
+                    it.toMutableList().apply {
+                        this.find { sheet ->
+                            sheet.classSection.persistenceId == event.sectionPersistenceId
+                        }?.let { thisSheet ->
+                            val sheetStudents = thisSheet.maleStudents + thisSheet.femaleStudents
+                            event.studentInputs.forEach { (studentPersistenceId, hasPostTest, isPostTest, orTotalWords) ->
+                                sheetStudents.find { sList ->
+                                    sList is StudentList.StudentDetails && sList.student.persistenceId == studentPersistenceId
+                                }?.let { thisSList ->
+                                    when {
+                                        isPostTest -> {
+                                            (thisSList as StudentList.StudentDetails).student = thisSList.student.copy(
+                                                hasPostTest = hasPostTest,
+                                                postTest = thisSList.student.postTest?.copy(
+                                                    oralReading = OralReading(
+                                                        totalNumberOfWordsInSelection = orTotalWords,
+                                                        numberOfMiscues = thisSList.student.postTest?.oralReading?.numberOfMiscues ?: -1.0
+                                                    )
+                                                )
+                                            )
+                                        }
+                                        else -> {
+                                            (thisSList as StudentList.StudentDetails).student = thisSList.student.copy(
+                                                preTest = thisSList.student.preTest.copy(
+                                                    oralReading = OralReading(
+                                                        totalNumberOfWordsInSelection = orTotalWords,
+                                                        numberOfMiscues = thisSList.student.preTest.oralReading.numberOfMiscues
+                                                    )
+                                                )
+                                            )
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            is UpdateTempClassSheetsForInputGrades.EventORMiscues -> {
+                _tempClassSheetsStateForInputGrades.update {
+                    it.toMutableList().apply {
+                        this.find { sheet ->
+                            sheet.classSection.persistenceId == event.sectionPersistenceId
+                        }?.let { thisSheet ->
+                            val sheetStudents = thisSheet.maleStudents + thisSheet.femaleStudents
+                            event.studentInputs.forEach { (studentPersistenceId, hasPostTest, isPostTest, orMiscues) ->
+                                sheetStudents.find { sList ->
+                                    sList is StudentList.StudentDetails && sList.student.persistenceId == studentPersistenceId
+                                }?.let { thisSList ->
+                                    when {
+                                        isPostTest -> {
+                                            (thisSList as StudentList.StudentDetails).student = thisSList.student.copy(
+                                                hasPostTest = hasPostTest,
+                                                postTest = thisSList.student.postTest?.copy(
+                                                    oralReading = OralReading(
+                                                        totalNumberOfWordsInSelection = thisSList.student.postTest?.oralReading?.totalNumberOfWordsInSelection ?: -1.0,
+                                                        numberOfMiscues = orMiscues
+                                                    )
+                                                )
+                                            )
+                                        }
+                                        else -> {
+                                            (thisSList as StudentList.StudentDetails).student = thisSList.student.copy(
+                                                preTest = thisSList.student.preTest.copy(
+                                                    oralReading = OralReading(
+                                                        totalNumberOfWordsInSelection = thisSList.student.preTest.oralReading.totalNumberOfWordsInSelection,
+                                                        numberOfMiscues = orMiscues
+                                                    )
+                                                )
+                                            )
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            is UpdateTempClassSheetsForInputGrades.EventRCInputPercentage -> {
+                _tempClassSheetsStateForInputGrades.update {
+                    it.toMutableList().apply {
+                        this.find { sheet ->
+                            sheet.classSection.persistenceId == event.sectionPersistenceId
+                        }?.let { thisSheet ->
+                            val sheetStudents = thisSheet.maleStudents + thisSheet.femaleStudents
+                            event.studentInputs.forEach { (studentPersistenceId, hasPostTest, isPostTest, rcPercentage) ->
+                                sheetStudents.find { sList ->
+                                    sList is StudentList.StudentDetails && sList.student.persistenceId == studentPersistenceId
+                                }?.let { thisSList ->
+                                    when {
+                                        isPostTest -> {
+                                            (thisSList as StudentList.StudentDetails).student = thisSList.student.copy(
+                                                hasPostTest = hasPostTest,
+                                                postTest = thisSList.student.postTest?.copy(
+                                                    readingComprehension = ReadingComprehension(
+                                                        inputPercentage = rcPercentage
+                                                    )
+                                                )
+                                            )
+                                        }
+                                        else -> {
+                                            (thisSList as StudentList.StudentDetails).student = thisSList.student.copy(
+                                                preTest = thisSList.student.preTest.copy(
+                                                    readingComprehension = ReadingComprehension(
+                                                        inputPercentage = rcPercentage
+                                                    )
+                                                )
+                                            )
+                                        }
+                                    }
+                                }
                             }
                         }
                     }
@@ -387,12 +502,14 @@ class MainViewModel(private val savedStateHandle: SavedStateHandle): ViewModel()
                             }?.let { thisSList ->
                                 when {
                                     event.isPostTest -> {
-                                        (thisSList as StudentList.StudentDetails).student.let { student ->
-                                            student.hasPostTest = event.hasPostTest
-                                            student.postTest = event.newReadingTest
-                                        }
+                                        (thisSList as StudentList.StudentDetails).student = thisSList.student.copy(
+                                            hasPostTest = event.hasPostTest,
+                                            postTest = event.newReadingTest
+                                        )
                                     }
-                                    else -> (thisSList as StudentList.StudentDetails).student.preTest = event.newReadingTest
+                                    else -> (thisSList as StudentList.StudentDetails).student = thisSList.student.copy(
+                                        preTest = event.newReadingTest
+                                    )
                                 }
                             }
                         }
@@ -405,6 +522,41 @@ class MainViewModel(private val savedStateHandle: SavedStateHandle): ViewModel()
     fun updateClassSheetsForInputGrades() {
         viewModelScope.launch {
             repository.saveClassSheets(classSheets = _tempClassSheetsStateForInputGrades.value)
+        }
+    }
+    val suggestTexts = repository.getLookupPairs().stateInWhileSubscribed(initialValue = listOf())
+
+    fun processList(
+        sectionPersistenceId: Long,
+        inputSet: Set<Pair<String,String>>
+    ) {
+        when (lookupTextJob) {
+            null -> {
+                lookupTextJob = viewModelScope.launch(
+                    CoroutineExceptionHandler { context, throwable ->
+                        println("classInits processOCRBitmap error: ${throwable.message}")
+                    }
+                ) {
+                    repository.lookupStudents(
+                        sectionPersistenceId = sectionPersistenceId,
+                        studentNamePairs = inputSet
+                    )
+                }
+            }
+            else -> {
+                if (lookupTextJob?.isCompleted == true) {
+                    lookupTextJob = viewModelScope.launch(
+                        CoroutineExceptionHandler { context, throwable ->
+                            println("classInits processOCRBitmap error: ${throwable.message}")
+                        }
+                    ) {
+                        repository.lookupStudents(
+                            sectionPersistenceId = sectionPersistenceId,
+                            studentNamePairs = inputSet
+                        )
+                    }
+                }
+            }
         }
     }
 }

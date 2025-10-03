@@ -11,28 +11,37 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.BasicAlertDialog
 import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.RadioButton
+import androidx.compose.material3.RadioButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.milesilac.classreadingstats.ui.theme.ProjectColors
+import kotlin.enums.enumEntries
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun WarningDialog(
-    event: WarningEvent = WarningEvent.ConfirmSaveInputGrades(),
+    event: WarningEvent = WarningEvent.PickORParameter(),
     onDismissDialog: () -> Unit = {},
-    onOkayClick: () -> Unit = {},
+    onOkayClick: (OralReadingParam) -> Unit = {},
 ) {
     BasicAlertDialog(
         onDismissRequest = {
@@ -55,10 +64,19 @@ fun WarningDialogLayoutPreview() {
 
 @Composable
 fun WarningDialogLayout(
-    event: WarningEvent = WarningEvent.ConfirmSaveInputGrades(),
-    onOkayClick: () -> Unit = {},
+    event: WarningEvent = WarningEvent.PickORParameter(),
+    onOkayClick: (OralReadingParam) -> Unit = {},
     onBackClick: () -> Unit = {},
 ) {
+    var selectedORParam by remember { mutableStateOf(OralReadingParam.NONE) }
+
+    val radioButtonColors = RadioButtonDefaults.colors(
+        selectedColor = Color.Black,
+        unselectedColor = Color.Black,
+        disabledSelectedColor = Color.LightGray,
+        disabledUnselectedColor = Color.LightGray
+    )
+
     Column(
         modifier = Modifier
             .background(
@@ -87,10 +105,12 @@ fun WarningDialogLayout(
                 )
                 .clip(shape = RoundedCornerShape(8.dp))
                 .fillMaxWidth(),
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
             val content = when (event) {
                 is WarningEvent.ConfirmEditPostTest -> event.message
                 is WarningEvent.ConfirmDeleteStudent -> event.message
+                is WarningEvent.PickORParameter -> event.message
                 is WarningEvent.ConfirmSaveInputGrades -> event.message
             }
             Text(
@@ -104,6 +124,48 @@ fun WarningDialogLayout(
                 color = Color.Black,
                 textAlign = TextAlign.Center
             )
+            if (event is WarningEvent.PickORParameter) {
+                Column(
+                    modifier = Modifier,
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    val params = enumEntries<OralReadingParam>().filterNot { it == OralReadingParam.NONE }
+                    params.forEach { param ->
+                        Row(
+                            modifier = Modifier
+                                .selectable(
+                                    selected = (selectedORParam == param),
+                                    role = Role.RadioButton,
+                                    onClick = {
+                                        selectedORParam = when (selectedORParam) {
+                                            param -> OralReadingParam.NONE
+                                            else -> param
+                                        }
+                                    },
+                                )
+                                .fillMaxWidth(),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            RadioButton(
+                                selected = (selectedORParam == param),
+                                onClick = null, // null recommended for accessibility with screen readers,
+                                modifier = Modifier
+                                    .padding(start = 16.dp),
+                                colors = radioButtonColors
+                            )
+                            Text(
+                                text = param.typeLabel,
+                                modifier = Modifier
+                                    .padding(
+                                        horizontal = 8.dp,
+                                        vertical = 16.dp
+                                    ),
+                                color = Color.Black
+                            )
+                        }
+                    }
+                }
+            }
         }
         Spacer(modifier = Modifier.height(4.dp))
         Row(
@@ -112,14 +174,18 @@ fun WarningDialogLayout(
             verticalAlignment = Alignment.CenterVertically
         ) {
             OutlinedButton(
-                onClick = { onOkayClick() },
+                onClick = { onOkayClick(selectedORParam) },
                 modifier = Modifier,
+                enabled = when (event) {
+                    is WarningEvent.PickORParameter -> selectedORParam != OralReadingParam.NONE
+                    else -> true
+                },
                 shape = RoundedCornerShape(12.dp),
                 colors = ButtonColors(
                     containerColor = ProjectColors.OffOrange3,
                     contentColor = ProjectColors.OffGreen4,
-                    disabledContainerColor = ProjectColors.OffOrange3,
-                    disabledContentColor = ProjectColors.OffGreen4
+                    disabledContainerColor = ProjectColors.OffBrown1,
+                    disabledContentColor = ProjectColors.OffBrown2
                 ),
                 border = BorderStroke(
                     width = 1.dp,
@@ -186,7 +252,16 @@ sealed class WarningEvent {
     data class ConfirmDeleteStudent(
         val message: String = "Confirm delete of this Student?"
     ) : WarningEvent()
+    data class PickORParameter(
+        val message: String = "Which Oral Reading parameter will you input?"
+    ) : WarningEvent()
     data class ConfirmSaveInputGrades(
         val message: String = "Save changes? This will affect the whole workbook."
     ) : WarningEvent()
+}
+
+enum class OralReadingParam(val typeLabel: String) {
+    TOTAL_WORDS("Total Number of Words"),
+    TOTAL_MISCUES("Number of Miscues"),
+    NONE("")
 }

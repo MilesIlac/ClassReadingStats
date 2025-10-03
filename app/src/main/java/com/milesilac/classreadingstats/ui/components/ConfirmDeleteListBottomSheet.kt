@@ -32,6 +32,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.milesilac.classreadingstats.helpers.chooseOneModifier
 import com.milesilac.classreadingstats.model.StudentList
 import com.milesilac.classreadingstats.model.toSectionString
 import com.milesilac.classreadingstats.ui.dummyStudentListsEightAmethyst
@@ -54,18 +55,21 @@ fun ConfirmDeleteListBottomSheet(
         }
     ) {
         // Sheet content
-        ConfirmDeleteListBottomSheetLayout(
-            listToDelete = listToDelete,
-            onDeleteClick = onDeleteClick,
+        ConfirmAddDeleteListBottomSheetLayout(
+            confirmType = ConfirmListType.DELETE,
+            list = listToDelete,
+            onConfirmClick = onDeleteClick,
             onBackClick = onDismiss
         )
     }
 }
 
 @Composable
-fun ConfirmDeleteListBottomSheetLayout(
-    listToDelete: List<Pair<String,String>> = listOf(),
-    onDeleteClick: () -> Unit = {},
+fun ConfirmAddDeleteListBottomSheetLayout(
+    confirmType: ConfirmListType = ConfirmListType.ADD,
+    sectionString: String = "",
+    list: List<Pair<String,String>> = listOf(),
+    onConfirmClick: () -> Unit = {},
     onBackClick: () -> Unit = {},
 ) {
     val buttonColors = ButtonColors(
@@ -77,14 +81,27 @@ fun ConfirmDeleteListBottomSheetLayout(
 
     Column(
         modifier = Modifier
-            .background(color = ProjectColors.OffGreen1)
+            .chooseOneModifier(
+                chooseFirst = confirmType == ConfirmListType.ADD,
+                firstModifier = Modifier
+                    .background(
+                        color = ProjectColors.OffGreen1,
+                        shape = RoundedCornerShape(24.dp)
+                    )
+                    .clip(shape = RoundedCornerShape(24.dp))
+                    .height(360.dp),
+                secondModifier = Modifier.background(color = ProjectColors.OffGreen1)
+            )
             .navigationBarsPadding()
             .padding(horizontal = 16.dp, vertical = 20.dp)
             .fillMaxWidth(),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         Text(
-            text = "Delete the following entries?",
+            text = when (confirmType) {
+                ConfirmListType.ADD -> "Current detected students of\n$sectionString"
+                ConfirmListType.DELETE -> "Delete the following entries?"
+            },
             modifier = Modifier,
             color = ProjectColors.OffWhite4,
             fontSize = 20.sp,
@@ -93,7 +110,11 @@ fun ConfirmDeleteListBottomSheetLayout(
         Spacer(modifier = Modifier.height(16.dp))
         LazyColumn(
             modifier = Modifier
-                .heightIn(min = 100.dp, max = 360.dp)
+                .chooseOneModifier(
+                    chooseFirst = confirmType == ConfirmListType.ADD,
+                    firstModifier = Modifier.weight(1F),
+                    secondModifier = Modifier.heightIn(min = 100.dp, max = 360.dp)
+                )
                 .background(
                     color = ProjectColors.OffGreen2,
                     shape = RoundedCornerShape(8.dp)
@@ -107,7 +128,7 @@ fun ConfirmDeleteListBottomSheetLayout(
                 .padding(12.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp),
         ) {
-            listToDelete.forEach { listItem ->
+            list.forEach { listItem ->
                 item {
                     Row(
                         modifier = Modifier,
@@ -137,12 +158,17 @@ fun ConfirmDeleteListBottomSheetLayout(
             horizontalArrangement = Arrangement.spacedBy(12.dp)
         ) {
             Button(
-                onClick = { onDeleteClick() },
+                onClick = { onConfirmClick() },
                 modifier = Modifier
                     .weight(1F),
                 colors = buttonColors
             ) {
-                Text(text = "Delete")
+                Text(
+                    text = when (confirmType) {
+                        ConfirmListType.ADD -> "Okay"
+                        ConfirmListType.DELETE -> "Delete"
+                    }
+                )
             }
             Button(
                 onClick = { onBackClick() },
@@ -170,7 +196,11 @@ fun ConfirmDeleteStudentsBottomSheetPreview() {
             )
         }
         .toList()
-    ConfirmDeleteListBottomSheetLayout(
-        listToDelete = students
+    ConfirmAddDeleteListBottomSheetLayout(
+        list = students
     )
+}
+
+enum class ConfirmListType {
+    ADD, DELETE
 }

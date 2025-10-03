@@ -41,6 +41,7 @@ fun OCRTargetRegion(
 ) {
     val padding = 20.dp
     val paddingFloat = padding.dpToFloat
+    val initHeight = 100F
     Box(
         modifier = Modifier
             .padding(padding)
@@ -55,7 +56,7 @@ fun OCRTargetRegion(
             val maxHeightPx = maxHeight.dpToFloat
             var boxOffset by remember { mutableStateOf(Offset(0F, maxHeightPx/2)) }
             var boxWidthPx by remember { mutableFloatStateOf((maxWidthPx - boxOffset.x)) }
-            var boxHeightPx by remember { mutableFloatStateOf(50F) }
+            var boxHeightPx by remember { mutableFloatStateOf(initHeight) }
             val handleWidthHeightPx = 100F
 
             LaunchedEffect(Unit) {
@@ -113,10 +114,10 @@ fun OCRTargetRegion(
                     .pointerInput(Unit) {
                         detectDragGestures { change, dragAmount ->
                             val newWidth = (boxWidthPx + dragAmount.x)
-                                .coerceIn(300f, maxWidthPx - boxOffset.x)
+                                .coerceIn(300F, maxWidthPx - boxOffset.x)
                             boxWidthPx = newWidth
                             val newHeight = (boxHeightPx + dragAmount.y)
-                                .coerceIn(50f, maxHeightPx - boxOffset.y)
+                                .coerceIn(50F, maxHeightPx - boxOffset.y)
                             boxHeightPx = newHeight
 
                             onBoxChange(

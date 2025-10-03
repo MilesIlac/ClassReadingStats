@@ -12,6 +12,13 @@ interface StudentsRepository {
 
     fun getStudent(studentId: Long): Flow<Student>
 
+    fun getLookupPairs(): Flow<List<StudentWithScannedGrade>>
+
+    suspend fun lookupStudents(
+        sectionPersistenceId: Long,
+        studentNamePairs: Set<Pair<String,String>>
+    )
+
     suspend fun updateStudent(student: Student, hasSortOperation: Boolean)
 
     suspend fun deleteSections(sectionsWithCount: List<Pair<Long, Boolean>>)

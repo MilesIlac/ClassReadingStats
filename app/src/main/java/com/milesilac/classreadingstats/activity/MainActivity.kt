@@ -16,8 +16,10 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
+import com.milesilac.classreadingstats.model.initClassSection
 import com.milesilac.classreadingstats.service.exportNewFileToExcel
 import com.milesilac.classreadingstats.ui.screens.AddSectionPage
+import com.milesilac.classreadingstats.ui.screens.CameraScanPage
 import com.milesilac.classreadingstats.ui.screens.DeleteSectionsPage
 import com.milesilac.classreadingstats.ui.screens.EditStudentsGradesPage
 import com.milesilac.classreadingstats.ui.screens.HomePage
@@ -54,6 +56,8 @@ class MainActivity : AppCompatActivity() {
             val localStudent by viewModel.localStudentState.collectAsStateWithLifecycle()
 
             val tempClassSheetsForInputGrades by viewModel.tempClassSheetsStateForInputGrades.collectAsStateWithLifecycle()
+
+            val suggestTexts by viewModel.suggestTexts.collectAsStateWithLifecycle()
 
             NavHost(navController = navController, startDestination = Routes.RouteHome) {
                 composable<Routes.RouteHome> {
@@ -166,6 +170,10 @@ class MainActivity : AppCompatActivity() {
                         onUpdateGrade = {
                             viewModel.updateTempSheetsForInputGrades(event = it)
                         },
+                        onScanClick = { scanEvent, sectionPersistenceId  ->
+                            viewModel.updateCurrentCameraScanEvent(scanEvent = scanEvent)
+                            navController.navigate(Routes.RouteCamera(currentSectionId = sectionPersistenceId))
+                        },
                         onSaveClick = {
                             navController.navigateUp()
                             viewModel.updateClassSheetsForInputGrades()
@@ -215,6 +223,10 @@ class MainActivity : AppCompatActivity() {
                         currentSheets = currentSheets,
                         classSections = currentSections,
                         onUpdate = { viewModel.updateTempStudent(event = it) },
+                        onScanClick = { scanEvent ->
+                            viewModel.updateCurrentCameraScanEvent(scanEvent = scanEvent)
+                            navController.navigate(Routes.RouteCamera())
+                        },
                         onSaveClick = {
                             when {
                                 routeStudentDetailEdit.studentEditType == StudentEditType.EDIT -> {
@@ -250,6 +262,39 @@ class MainActivity : AppCompatActivity() {
                         }
                     )
                 }
+                composable<Routes.RouteCamera> { backStackEntry ->
+                    val routeCamera: Routes.RouteCamera = backStackEntry.toRoute()
+                    val currentSection = currentSections.find {
+                        it.persistenceId == routeCamera.currentSectionId
+                    } ?: initClassSection()
+                    CameraScanPage(
+                        scanEvent = viewModel.getCameraScanEvent(),
+                        section = currentSection,
+                        detectedList = suggestTexts,
+                        onScan = { inputSet ->
+                            viewModel.processList(
+                                sectionPersistenceId = routeCamera.currentSectionId,
+                                inputSet = inputSet
+                            )
+                        },
+                        onUpdateName = {
+                            viewModel.updateTempStudent(event = it)
+                            navController.navigateUp()
+                        },
+                        onUpdateGrade = {
+                            viewModel.updateTempSheetsForInputGrades(event = it)
+                            navController.navigateUp()
+                        },
+                        onBackClick = {
+                            navController.navigateUp()
+                        },
+                        onVisible = {
+                            if (WindowCompat.getInsetsController(window, window.decorView).isAppearanceLightNavigationBars) {
+                                WindowCompat.getInsetsController(window, window.decorView).isAppearanceLightNavigationBars = false
+                            }
+                        }
+                    )
+                }
                 // Add more destinations similarly.
             }
         }
@@ -276,5 +321,8 @@ private sealed class Routes {
     data class RouteStudentDetailEdit(
         val studentEditType: StudentEditType,
         val isFromAddSectionPage: Boolean
-    ) : Routes() //complex classes crash NavGraph
+    ) : Routes()
+
+    @kotlinx.serialization.Serializable
+    data class RouteCamera(val currentSectionId: Long = -1L) : Routes()
 }

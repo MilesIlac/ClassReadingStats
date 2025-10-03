@@ -53,6 +53,7 @@ import com.milesilac.classreadingstats.model.toSectionString
 import com.milesilac.classreadingstats.ui.components.EditStudentGradesDialog
 import com.milesilac.classreadingstats.ui.components.EditStudentInfoDialog
 import com.milesilac.classreadingstats.ui.components.GradeEditType
+import com.milesilac.classreadingstats.ui.components.OralReadingParam
 import com.milesilac.classreadingstats.ui.components.StudentGradeEditList
 import com.milesilac.classreadingstats.ui.components.StudentInfoType
 import com.milesilac.classreadingstats.ui.components.WarningDialog
@@ -68,7 +69,7 @@ fun EditStudentsGradesPage(
     sheets: List<ClassSheet>,
     currentSectionId: Long,
     onUpdateGrade: (UpdateTempClassSheetsForInputGrades) -> Unit = {},
-    onScanClick: () -> Unit = {},
+    onScanClick: (CameraScanEvent, Long) -> Unit = { _, _ -> },
     onSaveClick: () -> Unit = {},
     onBackClick: () -> Unit = {},
     onVisible: () -> Unit = {}
@@ -93,6 +94,7 @@ fun EditStudentsGradesPage(
     var currentGradeEditType by rememberSaveable { mutableStateOf(GradeEditType.GST) }
     var showPickSectionDialog by rememberSaveable { mutableStateOf(false) }
     var showPickGradeTypeDialog by rememberSaveable { mutableStateOf(false) }
+    var showPickORParamDialog by rememberSaveable { mutableStateOf(false) }
     var showConfirmSaveChangesDialog by rememberSaveable { mutableStateOf(false) }
 
     Column(
@@ -224,14 +226,14 @@ fun EditStudentsGradesPage(
                 when (studentItem) {
                     is StudentList.Header -> {}
                     is StudentList.StudentDetails -> {
-                        item {
-                            var inputGST by rememberSaveable(studentItem.student) { mutableStateOf("${studentItem.student.gst.score.toInt()}") }
-                            var inputORTotalWordsPreTest by rememberSaveable(studentItem.student) { mutableStateOf("${studentItem.student.preTest.oralReading.totalNumberOfWordsInSelection.toInt()}") }
-                            var inputORMiscuesPreTest by rememberSaveable(studentItem.student) { mutableStateOf("${studentItem.student.preTest.oralReading.numberOfMiscues.toInt()}") }
-                            var inputRCPreTest by rememberSaveable(studentItem.student) { mutableStateOf("${studentItem.student.preTest.readingComprehension.inputPercentage}") }
-                            var inputORTotalWordsPostTest by rememberSaveable(studentItem.student) { mutableStateOf("${(studentItem.student.postTest?.oralReading?.totalNumberOfWordsInSelection ?: -1.0).toInt()}") }
-                            var inputORMiscuesPostTest by rememberSaveable(studentItem.student) { mutableStateOf("${(studentItem.student.postTest?.oralReading?.numberOfMiscues ?: -1.0).toInt()}") }
-                            var inputRCPostTest by rememberSaveable(studentItem.student) { mutableStateOf("${(studentItem.student.postTest?.readingComprehension?.inputPercentage ?: -1.0)}") }
+                        item(studentItem.student.persistenceId) {
+                            var inputGST by remember { mutableStateOf("${studentItem.student.gst.score.toInt()}") }
+                            var inputORTotalWordsPreTest by remember { mutableStateOf("${studentItem.student.preTest.oralReading.totalNumberOfWordsInSelection.toInt()}") }
+                            var inputORMiscuesPreTest by remember { mutableStateOf("${studentItem.student.preTest.oralReading.numberOfMiscues.toInt()}") }
+                            var inputRCPreTest by remember { mutableStateOf("${studentItem.student.preTest.readingComprehension.inputPercentage}") }
+                            var inputORTotalWordsPostTest by remember { mutableStateOf("${(studentItem.student.postTest?.oralReading?.totalNumberOfWordsInSelection ?: -1.0).toInt()}") }
+                            var inputORMiscuesPostTest by remember { mutableStateOf("${(studentItem.student.postTest?.oralReading?.numberOfMiscues ?: -1.0).toInt()}") }
+                            var inputRCPostTest by remember { mutableStateOf("${(studentItem.student.postTest?.readingComprehension?.inputPercentage ?: -1.0)}") }
                             val newReadingTestPre by remember {
                                 derivedStateOf {
                                     ReadingTest(
@@ -271,8 +273,12 @@ fun EditStudentsGradesPage(
                                             onUpdateGrade(
                                                 UpdateTempClassSheetsForInputGrades.EventGST(
                                                     sectionPersistenceId = currentSheet.classSection.persistenceId,
-                                                    studentPersistenceId = studentItem.student.persistenceId,
-                                                    gstScore = gstScore
+                                                    studentInputs = listOf(
+                                                        StudentWithGSTScore(
+                                                            studentPersistenceId = studentItem.student.persistenceId,
+                                                            gstScore = gstScore
+                                                        )
+                                                    ),
                                                 )
                                             )
                                         }
@@ -408,7 +414,29 @@ fun EditStudentsGradesPage(
                 horizontalArrangement = Arrangement.SpaceEvenly
             ) {
                 OutlinedButton(
-                    onClick = {},
+                    onClick = {
+                        when {
+                            currentGradeEditType == GradeEditType.OR -> { showPickORParamDialog = true }
+                            else -> {
+                                onScanClick(
+                                    when (currentGradeEditType) {
+                                        GradeEditType.GST -> { CameraScanEvent.EditInputGrades.InputGST }
+                                        GradeEditType.RC -> {
+                                            CameraScanEvent.EditInputGrades.InputRCInputPercentage(
+                                                testEditType = currentTest,
+                                                hasPostTest = when (currentTest) {
+                                                    TestEditType.PRETEST -> null
+                                                    TestEditType.POSTTEST -> hasPostTest
+                                                }
+                                            )
+                                        }
+                                        else -> { CameraScanEvent.None }
+                                    },
+                                    currentSectionId
+                                )
+                            }
+                        }
+                    },
                     modifier = Modifier,
                     colors = ButtonColors(
                         containerColor = Color.White,
@@ -525,6 +553,42 @@ fun EditStudentsGradesPage(
                     },
                 )
             }
+            showPickORParamDialog -> {
+                WarningDialog(
+                    event = WarningEvent.PickORParameter(),
+                    onDismissDialog = { showPickORParamDialog = false },
+                    onOkayClick = { orParam ->
+                        showPickORParamDialog = false
+                        when (orParam) {
+                            OralReadingParam.TOTAL_WORDS -> {
+                                onScanClick(
+                                    CameraScanEvent.EditInputGrades.InputORTotalWords(
+                                        testEditType = currentTest,
+                                        hasPostTest = when (currentTest) {
+                                            TestEditType.PRETEST -> null
+                                            TestEditType.POSTTEST -> hasPostTest
+                                        }
+                                    ),
+                                    currentSectionId
+                                )
+                            }
+                            OralReadingParam.TOTAL_MISCUES -> {
+                                onScanClick(
+                                    CameraScanEvent.EditInputGrades.InputORTotalMiscues(
+                                        testEditType = currentTest,
+                                        hasPostTest = when (currentTest) {
+                                            TestEditType.PRETEST -> null
+                                            TestEditType.POSTTEST -> hasPostTest
+                                        }
+                                    ),
+                                    currentSectionId
+                                )
+                            }
+                            OralReadingParam.NONE -> {}
+                        }
+                    }
+                )
+            }
             showConfirmSaveChangesDialog -> {
                 WarningDialog(
                     event = WarningEvent.ConfirmSaveInputGrades(),
@@ -556,9 +620,24 @@ fun EditStudentsGradesPagePreview() {
 sealed class UpdateTempClassSheetsForInputGrades {
     data class EventGST(
         val sectionPersistenceId: Long,
-        val studentPersistenceId: Long,
-        val gstScore: Double
+        val studentInputs: List<StudentWithGSTScore>
     ) : UpdateTempClassSheetsForInputGrades()
+
+    data class EventORTotalWords(
+        val sectionPersistenceId: Long,
+        val studentInputs: List<StudentWithNewORTotalWords>
+    ) : UpdateTempClassSheetsForInputGrades()
+
+    data class EventORMiscues(
+        val sectionPersistenceId: Long,
+        val studentInputs: List<StudentWithNewORMiscues>
+    ) : UpdateTempClassSheetsForInputGrades()
+
+    data class EventRCInputPercentage(
+        val sectionPersistenceId: Long,
+        val studentInputs: List<StudentWithNewRCInputPercentage>
+    ) : UpdateTempClassSheetsForInputGrades()
+
     data class EventReadingTest(
         val sectionPersistenceId: Long,
         val studentPersistenceId: Long,
@@ -567,3 +646,29 @@ sealed class UpdateTempClassSheetsForInputGrades {
         val newReadingTest: ReadingTest
     ) : UpdateTempClassSheetsForInputGrades()
 }
+
+data class StudentWithGSTScore(
+    var studentPersistenceId: Long,
+    var gstScore: Double
+)
+
+data class StudentWithNewORTotalWords(
+    var studentPersistenceId: Long,
+    var hasPostTest: Boolean,
+    var isPostTest: Boolean,
+    var orTotalWords: Double
+)
+
+data class StudentWithNewORMiscues(
+    var studentPersistenceId: Long,
+    var hasPostTest: Boolean,
+    var isPostTest: Boolean,
+    var orMiscues: Double
+)
+
+data class StudentWithNewRCInputPercentage(
+    var studentPersistenceId: Long,
+    var hasPostTest: Boolean,
+    var isPostTest: Boolean,
+    var rcPercentage: Double
+)

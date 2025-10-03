@@ -80,6 +80,7 @@ fun EditStudentNameDialogLayout(
     lastName: String = "",
     firstNameEtc: String = "",
     onOkayClick: (String) -> Unit = {},
+    onBackClick: () -> Unit = {},
 ) {
     var isLocked by rememberSaveable { mutableStateOf(false) }
 
@@ -287,6 +288,32 @@ fun EditStudentNameDialogLayout(
                         text = "OKAY",
                         modifier = Modifier,
                     )
+                }
+            }
+            if (isScanMode) {
+                OutlinedButton(
+                    onClick = { onBackClick() },
+                    modifier = Modifier,
+                    shape = RoundedCornerShape(12.dp),
+                    colors = buttonColors,
+                    border = BorderStroke(
+                        width = 1.dp,
+                        color = ProjectColors.OffWhite4
+                    ),
+                    contentPadding = PaddingValues(
+                        horizontal = 16.dp,
+                        vertical = 8.dp
+                    )
+                ) {
+                    Row(
+                        modifier = Modifier,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text(
+                            text = "BACK",
+                            modifier = Modifier,
+                        )
+                    }
                 }
             }
         }

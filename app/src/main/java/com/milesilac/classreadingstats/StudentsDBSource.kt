@@ -28,6 +28,10 @@ class StudentsDBSource() {
         sex: StudentSexOrient
     ) = roomDAO.getSameListStudents(sectionId = sectionId, sex = sex)
 
+    suspend fun getSameListStudents(
+        sectionId: Long,
+    ) = roomDAO.getSameListStudents(sectionId = sectionId)
+
     suspend fun deleteSection(sectionId: Long) = roomDAO.deleteSection(sectionId = sectionId)
 
     suspend fun deleteSectionStudents(sectionId: Long) = roomDAO.deleteSectionStudents(sectionId = sectionId)

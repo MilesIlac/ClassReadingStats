@@ -103,4 +103,10 @@ dependencies {
 
     // GOOGLE ML-KIT TEXT RECOGNITION
     implementation(libs.google.mlkit.text.recognition)
+
+    // OPENCV
+    implementation(libs.opencv)
+
+    // FUZZY WUZZY KOTLIN
+    implementation(libs.fuzzy.wuzzy.kotlin)
 }

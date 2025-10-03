@@ -1,5 +1,6 @@
 package com.milesilac.classreadingstats.repository
 
+import com.frosch2010.fuzzywuzzy_kotlin.FuzzySearch
 import com.milesilac.classreadingstats.StudentsDBSource
 import com.milesilac.classreadingstats.model.ClassSection
 import com.milesilac.classreadingstats.model.ClassSheet
@@ -12,8 +13,12 @@ import com.milesilac.classreadingstats.persistence.model.mapPartitionForStudentL
 import com.milesilac.classreadingstats.persistence.model.mapStudentEntity
 import com.milesilac.classreadingstats.persistence.model.mapStudentListToEntity
 import com.milesilac.classreadingstats.persistence.model.updateRemainingStudentEntitiesOrderId
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.update
 
 class StudentsRepositoryImpl(): StudentsRepository {
 
@@ -22,6 +27,8 @@ class StudentsRepositoryImpl(): StudentsRepository {
     }
 
     private val studentsDBSource = StudentsDBSource()
+
+    private val lookedUpPairs = MutableStateFlow<List<StudentWithScannedGrade>>(listOf())
 
     override fun getClassSheets() = combine(
         studentsDBSource.getAllSections(),
@@ -77,6 +84,37 @@ class StudentsRepositoryImpl(): StudentsRepository {
                 sectionName = results.section.sectionName
             )
         )
+    }
+
+    override fun getLookupPairs(): Flow<List<StudentWithScannedGrade>> = lookedUpPairs.asStateFlow()
+
+    override suspend fun lookupStudents(
+        sectionPersistenceId: Long,
+        studentNamePairs: Set<Pair<String,String>>
+    ) {
+        val dbStudents = studentsDBSource.getSameListStudents(
+            sectionId = sectionPersistenceId
+        ).toSet()
+        val outputList = mutableListOf<StudentWithScannedGrade>()
+        studentNamePairs.forEach { (studentName, studentGrade) ->
+            val filteredDBStudents = dbStudents.filter { dbStudent ->
+                FuzzySearch.ratio(studentName,dbStudent.studentName) >= 90
+            }
+            filteredDBStudents.maxByOrNull { dbStudent ->
+                FuzzySearch.weightedRatio(studentName,dbStudent.studentName)
+            }?.let { studentEntity ->
+                outputList.add(
+                    StudentWithScannedGrade(
+                        studentPersistenceId = studentEntity.studentRoomId,
+                        orderId = studentEntity.orderId.toInt(),
+                        studentName = studentEntity.studentName,
+                        inputGrade = studentGrade,
+                        hasPostTest = studentEntity.hasPostTest
+                    )
+                )
+            }
+        }
+        lookedUpPairs.update { outputList }
     }
 
     override suspend fun updateStudent(student: Student, hasSortOperation: Boolean) {
@@ -147,3 +185,11 @@ class StudentsRepositoryImpl(): StudentsRepository {
     }
 
 }
+
+data class StudentWithScannedGrade(
+    var studentPersistenceId: Long,
+    var orderId: Int,
+    var studentName: String,
+    var inputGrade: String,
+    var hasPostTest: Boolean,
+)

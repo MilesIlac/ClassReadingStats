@@ -32,6 +32,9 @@ interface RoomDAO {
     @Query("SELECT * FROM students WHERE section_room_id = :sectionId AND sex = :sex")
     suspend fun getSameListStudents(sectionId: Long, sex: StudentSexOrient): List<StudentEntity>
 
+    @Query("SELECT * FROM students WHERE section_room_id = :sectionId")
+    suspend fun getSameListStudents(sectionId: Long): List<StudentEntity>
+
     @Query("DELETE FROM sections WHERE section_room_id = :sectionId")
     suspend fun deleteSection(sectionId: Long)
 
@@ -40,16 +43,4 @@ interface RoomDAO {
 
     @Query("DELETE FROM students WHERE student_room_id IN (:studentIds)")
     suspend fun deleteStudentsByRoomId(studentIds: List<Long>)
-
-//    @Query("UPDATE students SET gst_score = :gstScore WHERE student_room_id = :studentId")
-//    suspend fun updateGSTScore(studentId: Int, gstScore: Double)
-//
-//    @Query("UPDATE students SET pre_or_total_words = :preORTotalNumberOfWords WHERE student_room_id = :studentId")
-//    suspend fun updatePreORTotalNumberOfWords(studentId: Int, preORTotalNumberOfWords: Double)
-//
-//    @Query("UPDATE students SET pre_or_miscues = :preORNumberOfMiscues WHERE student_room_id = :studentId")
-//    suspend fun updatePreORNumberOfMiscues(studentId: Int, preORNumberOfMiscues: Double)
-//
-//    @Query("UPDATE students SET pre_rc_percent = :preRCInputPercentage WHERE student_room_id = :studentId")
-//    suspend fun updatePreRCInputPercentage(studentId: Int, preRCInputPercentage: Double)
 }
