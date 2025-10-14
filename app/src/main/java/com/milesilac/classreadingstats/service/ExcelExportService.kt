@@ -164,7 +164,7 @@ fun exportNewFileToExcel(
         contentValues.clear()
         contentValues.put(MediaStore.Downloads.IS_PENDING, 0)
         contentResolver.update(thisUri, contentValues, null, null)
-        onToast("Excel saved to Downloads")
+        onToast("workbook_csrapp.xlsx saved to Downloads")
     } ?: run {
         onToast("Failed to save file")
     }
