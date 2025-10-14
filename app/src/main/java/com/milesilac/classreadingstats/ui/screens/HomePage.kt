@@ -130,7 +130,7 @@ fun HomePage(
 //                        println("classInits homePager section reached else")
                         initClassSection()
                     }
-                    println("classInits homePager currentSection after flip $currentSection")
+//                    println("classInits homePager currentSection after flip $currentSection")
                 }
             }
     }

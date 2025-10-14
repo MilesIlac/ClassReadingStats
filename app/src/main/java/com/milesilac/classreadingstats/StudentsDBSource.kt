@@ -7,9 +7,9 @@ import com.milesilac.classreadingstats.persistence.model.StudentEntity
 
 class StudentsDBSource() {
 
-    init {
-        println("classInits ${this::class.simpleName} init")
-    }
+//    init {
+//        println("classInits ${this::class.simpleName} init")
+//    }
 
     private val roomDAO = AppDatabase.getInstance(appContext = CRSApplication.context).roomDao()
 

@@ -22,9 +22,9 @@ import kotlinx.coroutines.flow.update
 
 class StudentsRepositoryImpl(): StudentsRepository {
 
-    init {
-        println("classInits ${this::class.simpleName} init")
-    }
+//    init {
+//        println("classInits ${this::class.simpleName} init")
+//    }
 
     private val studentsDBSource = StudentsDBSource()
 

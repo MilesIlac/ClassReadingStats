@@ -25,14 +25,14 @@ inline fun String.inputFullCheckForIntString(
     errorValue: String,
     returnValue: (String) -> Unit
 ) {
-    println("classInits textInput currentValue $currentValue")
-    println("classInits textInput newValue $this")
+//    println("classInits textInput currentValue $currentValue")
+//    println("classInits textInput newValue $this")
     if (currentValue == errorValue) returnValue("")
     val repaired = this.repairInput(currentValue = currentValue, errorValue = errorValue)
-    println("classInits textInput repaired $repaired")
+//    println("classInits textInput repaired $repaired")
     if (repaired.isPositiveInteger()) {
-        println("classInits textInput isPositiveInteger")
-        println("classInits textInput removeExtraZeroes ${repaired.removeExtraZeroes()}")
+//        println("classInits textInput isPositiveInteger")
+//        println("classInits textInput removeExtraZeroes ${repaired.removeExtraZeroes()}")
         returnValue(repaired.removeExtraZeroes())
     }
 }
@@ -52,14 +52,14 @@ inline fun String.inputFullCheckForDecimalString(
     errorValue: String,
     returnValue: (String) -> Unit
 ) {
-    println("classInits textInput currentValue $currentValue")
-    println("classInits textInput newValue $this")
+//    println("classInits textInput currentValue $currentValue")
+//    println("classInits textInput newValue $this")
     if (currentValue == errorValue) returnValue("")
     val repaired = this.repairInput(currentValue = currentValue, errorValue = errorValue)
-    println("classInits textInput repaired $repaired")
+//    println("classInits textInput repaired $repaired")
     if (repaired.isProperPositiveDecimal()) {
-        println("classInits textInput isProperPositiveDecimal")
-        println("classInits textInput removeExtraZeroesForDecimal ${repaired.removeExtraZeroesForDecimal()}")
+//        println("classInits textInput isProperPositiveDecimal")
+//        println("classInits textInput removeExtraZeroesForDecimal ${repaired.removeExtraZeroesForDecimal()}")
         returnValue(repaired.removeExtraZeroesForDecimal())
     }
 }

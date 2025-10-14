@@ -41,9 +41,9 @@ import kotlinx.coroutines.launch
 
 class MainViewModel(private val savedStateHandle: SavedStateHandle): ViewModel() {
 
-    init {
-        println("classInits ${this::class.simpleName} init")
-    }
+//    init {
+//        println("classInits ${this::class.simpleName} init")
+//    }
 
     companion object {
         private const val TEMP_CLASS_SHEET = "tempClassSheet"
@@ -231,7 +231,7 @@ class MainViewModel(private val savedStateHandle: SavedStateHandle): ViewModel()
         .onStart {
             viewModelScope.launch {
                 repository.getClassSheets().collect { classSheets ->
-                    println("classInits classSheetsState: flowing")
+//                    println("classInits classSheetsState: flowing")
                     _tempRemainingClassSheetState.update { classSheets }
                 }
             }
@@ -344,7 +344,7 @@ class MainViewModel(private val savedStateHandle: SavedStateHandle): ViewModel()
         .onStart {
             viewModelScope.launch {
                 repository.getClassSheets().collect { classSheets ->
-                    println("classInits classSheetsState: flowing for _tempClassSheetsStateForInputGrades")
+//                    println("classInits classSheetsState: flowing for _tempClassSheetsStateForInputGrades")
                     _tempClassSheetsStateForInputGrades.update { classSheets }
                 }
             }
@@ -534,7 +534,7 @@ class MainViewModel(private val savedStateHandle: SavedStateHandle): ViewModel()
             null -> {
                 lookupTextJob = viewModelScope.launch(
                     CoroutineExceptionHandler { context, throwable ->
-                        println("classInits processOCRBitmap error: ${throwable.message}")
+//                        println("classInits processOCRBitmap error: ${throwable.message}")
                     }
                 ) {
                     repository.lookupStudents(
@@ -547,7 +547,7 @@ class MainViewModel(private val savedStateHandle: SavedStateHandle): ViewModel()
                 if (lookupTextJob?.isCompleted == true) {
                     lookupTextJob = viewModelScope.launch(
                         CoroutineExceptionHandler { context, throwable ->
-                            println("classInits processOCRBitmap error: ${throwable.message}")
+//                            println("classInits processOCRBitmap error: ${throwable.message}")
                         }
                     ) {
                         repository.lookupStudents(

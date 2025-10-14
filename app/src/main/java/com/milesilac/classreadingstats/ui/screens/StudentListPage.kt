@@ -153,8 +153,10 @@ fun EmptyWorkbookPage(modifier: Modifier = Modifier) {
             .fillMaxSize(),
         contentAlignment = Alignment.Center
     ) {
+//        val messageTest = "Click the 3-dots above to add or import an Excel workbook\nor\nStart a new one by adding a section using the Manage button below"
+        val message = "Start an Excel workbook by adding a section using the Manage button below"
         Text(
-            text = "Click the 3-dots above to add or import an Excel workbook\nor\nStart a new one by adding a section using the Manage button below",
+            text = message,
             modifier = Modifier
                 .padding(32.dp),
             color = ProjectColors.OffWhite4,

@@ -28,6 +28,7 @@ import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -66,6 +67,8 @@ import org.opencv.imgproc.Imgproc
 import kotlin.math.abs
 import kotlin.math.hypot
 import androidx.core.graphics.createBitmap
+import com.milesilac.classreadingstats.ui.components.PreparePermissionDialog
+import com.milesilac.classreadingstats.ui.components.RequestPermissionEvent
 
 
 @SuppressLint("ClickableViewAccessibility")
@@ -86,7 +89,12 @@ fun CameraScanPage(
     BackHandler { onBackClick() }
     val isPreview = LocalInspectionMode.current
 
-    //TODO camera permission request
+    var hasCameraPermission by rememberSaveable { mutableStateOf(false) }
+
+    PreparePermissionDialog(
+        event = RequestPermissionEvent.Camera(),
+        setHasPermission = { hasCameraPermission = it },
+    )
 
     var currentMLKitText by remember { mutableStateOf("") }
     var currentList by remember { mutableStateOf<List<StudentWithScannedGrade>>(listOf()) }
@@ -121,7 +129,7 @@ fun CameraScanPage(
     var testBitmap by remember { mutableStateOf<Bitmap?>(null) }
     var testTextLines by remember { mutableStateOf(listOf<Text.Line>()) }
 
-    if (isPreview.not()) {
+    if (isPreview.not() && hasCameraPermission) {
         DisposableEffect(Unit) {
             val textRecognizer = TextRecognition
                 .getClient(TextRecognizerOptions.DEFAULT_OPTIONS)
@@ -156,7 +164,7 @@ fun CameraScanPage(
                             testBitmap = bitmap
                             val centerX = inputImage.width / 2
                             val centerY = inputImage.height / 2
-                            println("classInits lookup ${visionText.text}")
+//                            println("classInits lookup ${visionText.text}")
 
                             when (scanEvent) {
                                 CameraScanEvent.AddStudentName -> {
@@ -234,7 +242,7 @@ fun CameraScanPage(
                 true
             }
 
-            onDispose {cameraProvider.unbindAll() }
+            onDispose { cameraProvider.unbindAll() }
         }
     }
 
