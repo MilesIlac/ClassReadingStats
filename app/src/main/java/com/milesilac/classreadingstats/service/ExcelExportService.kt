@@ -25,6 +25,7 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook
 @RequiresApi(Build.VERSION_CODES.Q)
 fun exportNewFileToExcel(
     contentResolver: ContentResolver,
+    excelName: String = "workbook",
     classBook: List<ClassSheet>,
     onToast: (String) -> Unit = {}
 ) {
@@ -146,7 +147,7 @@ fun exportNewFileToExcel(
     }
 
     val contentValues = ContentValues().apply {
-        put(MediaStore.Downloads.DISPLAY_NAME, "workbook_csrapp.xlsx")
+        put(MediaStore.Downloads.DISPLAY_NAME, "${excelName}_csrapp.xlsx")
         put(MediaStore.Downloads.MIME_TYPE, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
         put(MediaStore.Downloads.RELATIVE_PATH, Environment.DIRECTORY_DOWNLOADS)
         put(MediaStore.Downloads.IS_PENDING, 1)
@@ -164,7 +165,7 @@ fun exportNewFileToExcel(
         contentValues.clear()
         contentValues.put(MediaStore.Downloads.IS_PENDING, 0)
         contentResolver.update(thisUri, contentValues, null, null)
-        onToast("workbook_csrapp.xlsx saved to Downloads")
+        onToast("${excelName}_csrapp.xlsx saved to Downloads")
     } ?: run {
         onToast("Failed to save file")
     }

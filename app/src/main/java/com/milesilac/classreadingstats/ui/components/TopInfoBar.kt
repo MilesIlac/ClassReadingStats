@@ -15,6 +15,7 @@ import com.milesilac.classreadingstats.ui.dummyStudentListsEightAmethyst
 @Composable
 fun TopInfoBar(
     isDeleteMode: Boolean = false,
+    isEmptyWorkbook: Boolean = false,
     section: String,
     onExportClick: () -> Unit = {},
 ) {
@@ -26,7 +27,7 @@ fun TopInfoBar(
         },
         modifier = Modifier,
         actions = {
-            if (isDeleteMode.not()) {
+            if (isDeleteMode.not() && isEmptyWorkbook.not()) {
                 Text(
                     text = "EXPORT",
                     modifier = Modifier

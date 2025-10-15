@@ -46,6 +46,7 @@ import com.milesilac.classreadingstats.model.prepareStudentsToDelete
 import com.milesilac.classreadingstats.model.toSectionString
 import com.milesilac.classreadingstats.ui.components.AnimatedBottomBar
 import com.milesilac.classreadingstats.ui.components.ConfirmDeleteListBottomSheet
+import com.milesilac.classreadingstats.ui.components.ExportExcelDialog
 import com.milesilac.classreadingstats.ui.components.HomePageBottomSheet
 import com.milesilac.classreadingstats.ui.components.HomePageGradeLevelMenu
 import com.milesilac.classreadingstats.ui.components.TopInfoBar
@@ -68,7 +69,7 @@ fun HomePage(
     onDeleteStudentsClick: (List<StudentToDeleteBundle>) -> Unit = {},
     onEditGradesClick: (Long) -> Unit = {},
     onStudentEntryClick: (Boolean, Student) -> Unit = { _,_ -> },
-    onExportClick: (List<ClassSheet>) -> Unit = {},
+    onExportClick: (String, List<ClassSheet>) -> Unit = {  _,_ -> },
     bottomSheetState: SheetState = rememberModalBottomSheetState(
         skipPartiallyExpanded = true
     ),
@@ -105,6 +106,7 @@ fun HomePage(
 //    println("classInits homePager currentSheets size preLaunchEffect ${currentSheets.size}")
 //    println("classInits homePager currentSection $currentSection")
     var showGradeLevelMenu by remember { mutableStateOf(false) }
+    var showExportDialog by remember { mutableStateOf(false) }
     var showBottomSheet by remember { mutableStateOf(false) }
     var isDeleteMode by rememberSaveable { mutableStateOf(false) }
     var showDeleteStudentsBottomSheet by remember { mutableStateOf(false) }
@@ -147,13 +149,14 @@ fun HomePage(
     ) {
         TopInfoBar(
             isDeleteMode = isDeleteMode,
+            isEmptyWorkbook = currentSheets.isEmpty(),
             section = currentSection.toSectionString(
                 isSpaced = true,
                 isSectionNameUpperCased = false
             ),
             onExportClick = {
                 showGradeLevelMenu = false
-                onExportClick(currentSheets)
+                showExportDialog = true
             }
         )
         if (currentSheetsByGrade.isNotEmpty()) {
@@ -342,6 +345,17 @@ fun HomePage(
             .fillMaxSize()
     ) {
         //dialogs
+        when {
+            showExportDialog -> {
+                ExportExcelDialog(
+                    onDismissDialog = { showExportDialog = false },
+                    onOkayClick = {
+                        showExportDialog = false
+                        onExportClick(it, currentSheets)
+                    }
+                )
+            }
+        }
     }
 }
 

@@ -95,9 +95,10 @@ class MainActivity : AppCompatActivity() {
                             viewModel.getLocalSourceStudent(studentPersistenceId = student.persistenceId)
                             navController.navigate(Routes.RouteStudentDetails(isDeleteMode = isDeleteMode))
                         },
-                        onExportClick = { currentSheetLists ->
+                        onExportClick = { excelName, currentSheetLists ->
                             exportNewFileToExcel(
                                 contentResolver = contentResolver,
+                                excelName = excelName,
                                 classBook = currentSheetLists,
                                 onToast = { toastText ->
                                     this@MainActivity.run {
